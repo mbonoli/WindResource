@@ -17,6 +17,6 @@ getParam <- function (list, param) {
   else if (list$par2$name == param) {
     result <- list$par2$value
   }
-  else stop(paste("The parameter", param, "doesn't exist", param, "for the distribution", a$dist, sep = ""))
+  else stop(paste("The parameter", param, "doesn't exist", param, "for the distribution", list$dist, sep = ""))
   result
 }

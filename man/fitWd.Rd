@@ -11,8 +11,8 @@
   \item{ane}{a vector with the anemometers'name to study.
   By default "ane" takes the first anemometer.}
 
-  \item{distribution}{character string "name" naming a
-  distribution to be used (see details).}
+  \item{dist}{character string "name" naming a distribution
+  to be used (see details).}
 }
 \value{
   A list with the following components: -aic: Akaike Index

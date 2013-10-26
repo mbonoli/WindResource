@@ -57,14 +57,14 @@ tableWD <-
            ane=NA,
            var=c("speed"),
            type=c("histogram"),
-           by=c("none","month","hour")){
+           by=c("none","month","hour"),
+           since,
+           to){
     
-    library(reshape2)
-    library(plyr)
     rose_dir<-c("N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW")
     month.names<- c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
     hour.names2 <- c("00:00 - 01:59","02:00 - 03:59","04:00 - 05:59","06:00 - 07:59","08:00 - 09:59","10:00 - 11:59","12:00 - 13:59","14:00 - 15:59","16:00 - 17:59","18:00 - 19:59","20:00 - 21:59","22:00 - 23:59")
-    hour.names <- pref_0(0:23,2)
+    hour.names <- pref0(0:23,2)
     
     if (class(data) != "windata") stop("Los datos no correponden a la clase 'windata'.")
     
@@ -244,16 +244,16 @@ set_wd <-
     else {stop ("El formato de la Fecha no se corresponde con los admitidos")}
     
     if (time.format=="HHMM" | time.format=="HHMMSS") {
-      result$time$hour <-  as.numeric(substring(pref_0(result$data$time,4),1,2))
-      result$time$minute <- as.numeric(substring(pref_0(result$data$time,4),3,4))
+      result$time$hour <-  as.numeric(substring(pref0(result$data$time,4),1,2))
+      result$time$minute <- as.numeric(substring(pref0(result$data$time,4),3,4))
       
     }
     else if (time.format=="HH:MM" | time.format=="HH:MM:SS" | time.format=="HH.MM" | time.format=="HH.MM.SS") {
-      result$time$hour <-  as.numeric(substring(pref_0(result$data$time,5),1,2))
-      result$time$minute <- as.numeric(substring(pref_0(result$data$time,5),4,5))
+      result$time$hour <-  as.numeric(substring(pref0(result$data$time,5),1,2))
+      result$time$minute <- as.numeric(substring(pref0(result$data$time,5),4,5))
     }
     else {stop ("El formato de la Hora no se corresponde con los admitidos")}
-    result$time$dt <- as.POSIXct(paste(result$time$year,".",pref_0(result$time$month,2),".",pref_0(result$time$day,2)," ",pref_0(result$time$hour,2),":",pref_0(result$time$Min,2),":00",sep=""), "%Y.%m.%d %H:%M:%S", tz="")
+    result$time$dt <- as.POSIXct(paste(result$time$year,".",pref0(result$time$month,2),".",pref0(result$time$day,2)," ",pref0(result$time$hour,2),":",pref0(result$time$Min,2),":00",sep=""), "%Y.%m.%d %H:%M:%S", tz="")
     result$time$Q <- floor((result$time$month/3)-.01)+1
     
     # $speed  

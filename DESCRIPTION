@@ -12,12 +12,17 @@ Depends:
     grid,
     ggplot2
 Collate:
+    'add.cart.coord.R'
+    'circleFun.R'
     'fitWd.R'
     'getParam.R'
     'plotDistWd.R'
+    'plotWD.R'
+    'polar.theme.R'
     'pref0.R'
     'setWd.R'
     'tableFitDist.R'
-    'plotWD.R'
     'tableWD.R'
+    'wd.R'
+    'wd10.R'
 Packaged: 2013-09-25 20:31:50 UTC; Diego

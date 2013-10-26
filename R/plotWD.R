@@ -87,7 +87,7 @@ plotWD <-
 
     month.names<- c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
     hour.names2 <- c("00:00 - 01:59","02:00 - 03:59","04:00 - 05:59","06:00 - 07:59","08:00 - 09:59","10:00 - 11:59","12:00 - 13:59","14:00 - 15:59","16:00 - 17:59","18:00 - 19:59","20:00 - 21:59","22:00 - 23:59")
-    hour.names <- pref_0(0:23,2)
+    hour.names <- pref0(0:23,2)
     
     if (class(data) != "windata") stop("Los datos no correponden a la clase 'windata'.")
     

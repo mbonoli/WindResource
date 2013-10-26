@@ -115,9 +115,9 @@ plotDistWd <- function(data, ane = NA) {
   params.ga <- list(shape = a.gamma$par1[[3]], scale = a.gamma$par2[[3]])
   params.ln <- list(meanlog = a.ln$par1[[3]], sdlog = a.ln$par2[[3]])
  
-  print(ggplot(dr, aes(sample = speed)) + stat_qq(dist = qweibull, dparam = params.wei), vp = vplayout(1,2))
-  print(ggplot(dr, aes(sample = speed)) + stat_qq(dist = qgamma, dparam = params.ga), vp = vplayout(2,2))
-  print(ggplot(dr, aes(sample = speed)) + stat_qq(dist = qlnorm, dparam = params.ln), vp = vplayout(3,2))
+  print(ggplot(dr, aes(sample = speed)) + stat_qq(distribution = qweibull, dparams = params.wei), vp = vplayout(1,2))
+  print(ggplot(dr, aes(sample = speed)) + stat_qq(distribution = qgamma, dparams = params.ga), vp = vplayout(2,2))
+  print(ggplot(dr, aes(sample = speed)) + stat_qq(distribution = qlnorm, dparams = params.ln), vp = vplayout(3,2))
 
 }
 
