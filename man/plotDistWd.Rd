@@ -32,7 +32,7 @@
 }
 \examples{
 #Execute the function
-plotDistWd(Wd, ane=1)
+#plotDistWd(Wd, ane=1)
 }
 \author{
   Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego

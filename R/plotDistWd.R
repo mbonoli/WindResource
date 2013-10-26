@@ -27,7 +27,7 @@
 #' @import ggplot2
 #' @examples           
 #' #Execute the function
-#' plotDistWd(Wd, ane=1)
+#' #plotDistWd(Wd, ane=1)
 
 
 # Built histograms and qq-plots to choose the best fit

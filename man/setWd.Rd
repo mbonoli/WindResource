@@ -83,35 +83,10 @@
 }
 \examples{
 # simple example using the windspeed data set
-data(windspeed)
+data(wd)
 
 # let's examine windspeed to see the variables' names
-head(data)
-
-# create the object wd of class "windata"
-Wd <- setWd(data = data,
-             interval = 1,
-             date.var = "date",
-             date.format = "DD/MM/YYYY",
-             time.var = "time",
-             time.format = "HH:MM",
-             ane.names = c("Ane1", "Ane2"),
-             ane.height = c(9, 18),
-             speed.ave.var = c("ave", "ave2"),
-             speed.min.var = c("min", "min2"),
-             speed.max.var = c("max", "max2"),
-             speed.sd.var = c("sd", "sd2"),
-             speed.var.var = c(NA, NA),
-             speed.unit = "m/s",
-             dir.var = "dir",
-             dir.unit = "deg",
-             temp.var = NA,
-             temp.unit = "C",
-             pres.var = NA,
-             pres.unit = "bar")
-
-# let's examine wd
-str(Wd)
+head(wd)
 }
 \author{
   Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego

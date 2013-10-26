@@ -10,7 +10,7 @@
 #' @param ane an optional vector specifying a subset of anenemometers to plot
 #' @param var currently only method = "qr" is supported
 #' @param type the type of graphic to plot. Actually soported: 'histogram', 'rose', 
-#'        'correlogram', 'profiles' and 'boxplot'. See also ‘Details’.
+#'        'correlogram', 'profiles' and 'boxplot'. See also 'Details'.
 #' @param by an optional string stating if the plot is divided in panels by 'month' or 'hour'. 
 #' @param since an optional string indicating initial date to be taken into account to make the plot.
 #'        The string format is 'YYYY-MM-DD'.
@@ -21,35 +21,12 @@
 #' @author Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
 #' @examples
 #' # simple example using the windspeed data set
-#' data(windspeed)
+#' data(wd)
 #'  
 #' # let's examine windspeed to see the variables' names
-#' head(windspeed)
-#' 
-#' # create the object wd of class "windata"
-#' wd<-setwd (data=data, 
-#'              interval=1,
-#'              date.var="date", 
-#'              date.format="DD/MM/YYYY", 
-#'              time.var="time", 
-#'              time.format="HH:MM",
-#'              ane.names=c("Ane1", "Ane2"),
-#'              ane.height = c(9, 18),
-#'              speed.ave.var=c("ave", "ave2"),
-#'              speed.min.var=c("min", "min2"),
-#'              speed.max.var=c("max", "max2"),
-#'              speed.sd.var=c("sd", "sd2"),
-#'              speed.var.var=c(NA, NA),
-#'              speed.unit="m/s",
-#'              dir.var="dir",
-#'              dir.unit="deg",
-#'              temp.var=NA,
-#'              temp.unit="C",
-#'              pres.var=NA,
-#'              pres.unit="bar")
-#' 
-#' # let's examine wd
 #' str(wd)
+#' 
+
 
 plotWD <- 
   function(data,

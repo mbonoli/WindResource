@@ -23,7 +23,7 @@
 }
 \examples{
 #Execute the function
-tableFitDist(Wd, ane=1)
+#tableFitDist(Wd, ane=1)
 }
 \author{
   Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego

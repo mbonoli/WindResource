@@ -17,7 +17,7 @@
 #' @import fitdistrplus
 #' @examples           
 #' #Execute the function
-#' tableFitDist(Wd, ane=1)
+#' #tableFitDist(Wd, ane=1)
 
 tableFitDist <- function(data, ane = NA){
   

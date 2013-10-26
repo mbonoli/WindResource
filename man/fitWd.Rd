@@ -33,7 +33,7 @@
 }
 \examples{
 # simple example using the wd class
-list_para <- fitWd(Wd, ane=1, dist="weibull")
+# list_para <- fitWd(Wd, ane=1, dist="weibull")
 }
 \author{
   Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego
