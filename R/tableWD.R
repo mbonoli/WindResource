@@ -214,7 +214,7 @@ set_wd <-
     # Limpieza
     empty.rec<-which(is.na(data[,date.var]) | is.na(data[,time.var]))
     n.empty.rec<-length(empty.rec)
-    if (n.empty.rec==0) {cat ("\nTodos los registros registran información de fecha y hora")}
+    if (n.empty.rec==0) {cat ("\nTodos los registros registran informacion de fecha y hora")}
     else {cat (paste ("\n",n.empty.rec," registros sin fecha/hora fueron eliminados. Ver $cleaning$rwd",sep=""))}
     result$cleaning$rwd<-empty.rec
     data<-data[!is.na(data[,date.var]) & !is.na(data[,time.var]),]
