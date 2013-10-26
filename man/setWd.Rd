@@ -1,0 +1,120 @@
+\name{setWd}
+\alias{setWd}
+\title{Conversion of dataframe in class windata}
+\usage{
+  setWd(data, interval = 1, date.var,
+    date.format = c("YYYYMMDD", "YYYY-MM-DD", "YYYY.MM.DD", "DD/MM/YYYY"),
+    time.var,
+    time.format = c("HHMM", "HHMMSS", "HH:MM", "HH:MM:SS", "HH.MM", "HH.MM.SS"),
+    ane.names, ane.height, speed.ave.var,
+    speed.min.var = NA, speed.max.var = NA,
+    speed.sd.var = NA, speed.var.var = NA, speed.unit = NA,
+    dir.var, dir.unit = "deg", temp.var = NA,
+    temp.unit = "C", pres.var = NA, pres.unit = "bar")
+}
+\arguments{
+  \item{data}{a dataframe to be converted}
+
+  \item{interval}{interval of time betwen two registers.
+  Actually, it's only acepted intervals of 1 minut.}
+
+  \item{date.var}{the name of the variable that contains
+  the dates of measurements}
+
+  \item{date.format}{the admit formats are: -
+  "YYYYMMDD","YYYY-MM-DD","YYYY.MM.DD" or "DD/MM/YYYY"}
+
+  \item{time.var}{the name of the variable that contains
+  the times of measurements}
+
+  \item{time.format}{the admit formats are: -
+  "HHMM","HHMMSS","HH:MM","HH:MM:SS","HH.MM" or "HH.MM.SS"}
+
+  \item{ane.names}{the names to indicate the differents
+  anemometers in the list.}
+
+  \item{ane.height}{the heights of the anemometers}
+
+  \item{speed.ave.var}{the name/s of the variable/s that
+  contains the average speeds measures.}
+
+  \item{speed.min.var}{the name/s of the variable/s that
+  contains the min speeds measures.}
+
+  \item{speed.max.var}{the name/s of the variable/s that
+  contains the max speeds measures.}
+
+  \item{speed.sd.var}{the name/s of the variable/s that
+  contains the desvest standar of speeds measures.}
+
+  \item{speed.var.var}{the name/s of the variable/s that
+  contains the variance of speeds measures.}
+
+  \item{speed.unit}{unit wind speed. At the moment, the
+  unit that can be use is "m/s".}
+
+  \item{dir.var}{the name/s of the variable/s that contains
+  the wind's direction measures}
+
+  \item{dir.unit}{unit wind's directions. At the moment,
+  the unit that can be used is "deg".}
+
+  \item{temp.var}{the name/s of the variable/s that
+  contains the wind's temperature measures}
+
+  \item{temp.unit}{unit wind's temperatures. At the moment,
+  the unit that can be used is "deg".}
+
+  \item{pres.var}{he name/s of the variable/s that contains
+  the wind's atmospheric pressures measures.}
+
+  \item{pres.unit}{unit wind's atmospheric pressures. At
+  the moment, the unit that can be used is "deg".}
+}
+\value{
+  Object of class "windata" (see details).
+}
+\description{
+  Shape a dataframe in a class 'windata'
+}
+\details{
+  The object windata is a list with the parameters that
+  were mencionated before.
+}
+\examples{
+# simple example using the windspeed data set
+data(windspeed)
+
+# let's examine windspeed to see the variables' names
+head(data)
+
+# create the object wd of class "windata"
+Wd <- setWd(data = data,
+             interval = 1,
+             date.var = "date",
+             date.format = "DD/MM/YYYY",
+             time.var = "time",
+             time.format = "HH:MM",
+             ane.names = c("Ane1", "Ane2"),
+             ane.height = c(9, 18),
+             speed.ave.var = c("ave", "ave2"),
+             speed.min.var = c("min", "min2"),
+             speed.max.var = c("max", "max2"),
+             speed.sd.var = c("sd", "sd2"),
+             speed.var.var = c(NA, NA),
+             speed.unit = "m/s",
+             dir.var = "dir",
+             dir.unit = "deg",
+             temp.var = NA,
+             temp.unit = "C",
+             pres.var = NA,
+             pres.unit = "bar")
+
+# let's examine wd
+str(Wd)
+}
+\author{
+  Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego
+  Edwards
+}
+

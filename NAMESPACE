@@ -1,0 +1,7 @@
+export(fitWd)
+export(plotDistWd)
+export(setWd)
+export(tableFitDist)
+import(fitdistrplus)
+import(ggplot2)
+import(grid)
