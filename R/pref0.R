@@ -7,6 +7,7 @@
 #' @param charnum number of digits.
 #' @return parameter's value extracted.
 #' @author Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
+#' @export
 
 # Auxiliary function 
 pref0<-function (data, charnum){

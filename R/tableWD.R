@@ -19,6 +19,7 @@
 #' @return Object of class "windata" (see details)
 #' 
 #' @author Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
+#' @export
 #' @examples
 #' # simple example using the windspeed data set
 #' data(wd)

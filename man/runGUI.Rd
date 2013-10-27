@@ -14,7 +14,5 @@
 \details{
   The object windata is a list with the parameters that
   were mencionated before.
-
-  #runApp(paste(path.package("WindResource4"),"/shyniWD",sep=""))
 }
 

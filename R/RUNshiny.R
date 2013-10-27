@@ -6,8 +6,8 @@
 #' @param data a list of parameters.
 #' @details
 #' The object windata is a list with the parameters that were mencionated before.
-#'   
-#'   #runApp(paste(path.package("WindResource4"),"/shyniWD",sep=""))
+#' 
+#' @export
 runGUI <- function(data){
   if (class(data)=="windata"){
     dataWD <- data
