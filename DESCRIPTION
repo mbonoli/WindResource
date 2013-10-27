@@ -20,6 +20,7 @@ Collate:
     'plotWD.R'
     'polar.theme.R'
     'pref0.R'
+    'RUNshiny.R'
     'setWd.R'
     'tableFitDist.R'
     'tableWD.R'
