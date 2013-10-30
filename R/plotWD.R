@@ -32,7 +32,7 @@
 plotWD <- 
   function(data,
            ane=NA,
-           var=c("speed"),
+           var=NA,
            type=c("histogram"),
            by=c("none","month","hour"),
            since=NULL, 
@@ -72,10 +72,15 @@ plotWD <-
     if (is.na(ane)[1]) {ane<-names(data$ane)[1]}
     nane<-length(ane)
     if (type=="histogram"){
+      if (!(var=="speed" | is.na(var))) stop ("Only 'speed' var is supported for histograms at the moment.")
       if (by=="none"){
-        dp<-data.frame(speed=data$ane[[ane]]$ave)
-        ggplot(dp, aes(x=speed)) + 
-          geom_histogram(binwidth=.5, colour="black", fill="blue")
+        for (iane in ane){     
+          dp<-data.frame(speed=data$ane[[iane]]$ave)
+          print(
+            ggplot(dp, aes(x=speed)) + 
+              geom_histogram(binwidth=1, colour="black", fill="blue")
+          )
+        }
       }
       else if (by=="month"){
         ds<-data.frame(speed=data$ane[[ane]]$ave, 
