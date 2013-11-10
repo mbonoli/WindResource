@@ -11,7 +11,7 @@
 runGUI <- function(data){
   if (class(data)=="windata"){
     dataWD <- data
-    runApp(path.package("WindResource"))
+    runApp(paste(path.package("WindResource"),"/shiny",sep=""))
   }
   else stop ("data parameter must be windata class.")
 }

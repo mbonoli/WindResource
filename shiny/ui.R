@@ -1,6 +1,15 @@
-library(shiny)
-
-# Define UI for miles per gallon application
+#' @title Complete numbers
+#' 
+#' @description
+#' Function to Complete numbers
+#' 
+#' @param data a list of paramenters.
+#' @param charnum number of digits.
+#' @return parameter's value extracted.
+#' @author Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
+#' @export
+#' 
+#' 
 shinyUI(pageWithSidebar(
   
   # Application title

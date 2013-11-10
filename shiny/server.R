@@ -1,18 +1,16 @@
-library(shiny)
-library(datasets)
-library(ggplot2)
-setwd("C:\\congreso")
-source('C:\\CONGRESO\\funcionesMB.R', encoding='UTF-8', echo=TRUE)
-source('C:\\CONGRESO\\RUNshiny.R', encoding='UTF-8', echo=TRUE)
-source('C:\\CONGRESO\\tableWD.R', encoding='UTF-8', echo=TRUE)
-source('C:\\CONGRESO\\plotWD.R', encoding='UTF-8', echo=TRUE)
-# setwd("~/Investigacion/Vientos/BD/INTI")
-load(file="wd.Rdata")
-load(file="wd10.Rdata")
+#' @title Complete numbers
+#' 
+#' @description
+#' Function to Complete numbers
+#' 
+#' @param data a list of paramenters.
+#' @param charnum number of digits.
+#' @return parameter's value extracted.
+#' @author Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
+#' @export
 
 # Define server logic required to plot various variables against mpg
 shinyServer(function(input, output) {
-  
   datasetInput <- reactive({
     anelist<-c()
     if (input$Ane1==T) anelist<-c(anelist,"Ane1")
