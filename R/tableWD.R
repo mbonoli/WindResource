@@ -63,12 +63,12 @@ tableWD <-
     if (type=="histogram"){
       if (by=="none"){
         dp<-data.frame(speed=data$ane[[ane]]$ave)
-        histo <- hist(dp$speed,breaks=seq(0,max(as.numeric(dp$speed),na.rm=T)+.5,by=.5),plot =F)
+        histo <- hist(dp$speed,breaks=seq(0,max(as.numeric(dp$speed),na.rm=T)+1,by=1),plot =F)
         result <- list()
         for (i in 1:nane){
           result [[ane[i]]] <- data.frame(
-            LI=histo$breaks[-1],
-            LS=histo$breaks[-length(histo$breaks)],
+            Lower=histo$breaks[-length(histo$breaks)],
+            Upper=histo$breaks[-1],
             Freq=histo$counts)
         }     
       }

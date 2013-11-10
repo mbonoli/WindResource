@@ -45,13 +45,14 @@ shinyUI(pageWithSidebar(
              h4(textOutput("captionP2")),
              plotOutput("plot2")
              ),
-#       tabPanel("Tables",
-#                h4(textOutput("captionT1")), 
+     tabPanel("Tables",
+               h4("u") 
 #                htmlOutput("table1"),
 #                h4(textOutput("captionT2")),
 #                htmlOutput("table2"),
 #                h4(textOutput("captionT3")),
-#                htmlOutput("table3")),
+#                htmlOutput("table3")
+              ),
     tabPanel("Fit",
                 h4("Fit"),
                 img(imageOutput("pp",height=600))

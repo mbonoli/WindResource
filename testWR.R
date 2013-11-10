@@ -3,9 +3,15 @@ data(wd)
 
 runGUI(wd)
 
+# Histogram
 plotWD (data=wd, var="speed", type="histogram", by="none")
 plotWD (data=wd, var="speed", type="histogram", by="month")
 plotWD (data=wd, var="speed", type="histogram", by="hour")
+
+tableWD(data=wd,var="speed", type="histogram", by="none")
+table.wd (data=wd,var="speed", type="histogram", by="month")
+table.wd (data=wd,var="speed", type="histogram", by="hour")
+
 plotWD (data=wd,ane=c("Ane1", "Ane2"),var="speed", type="rose", by="none")
 plotWD (data=wd,ane=c("Ane1", "Ane2"),var="speed", type="rose", by="month")
 plotWD (data=wd,ane=c("Ane1", "Ane2"),var="speed", type="rose", by="hour")
