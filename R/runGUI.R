@@ -10,6 +10,7 @@
 #' @export
 runGUI <- function(data){
   if (class(data)=="windata"){
+    require(shiny)
     dataWD <- data
     runApp(paste(path.package("WindResource"),"/shiny",sep=""))
   }
