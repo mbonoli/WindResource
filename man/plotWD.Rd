@@ -2,9 +2,9 @@
 \alias{plotWD}
 \title{Plots for winddata objects}
 \usage{
-  plotWD(data, ane = NA, var = c("speed"),
-    type = c("histogram"), by = c("none", "month", "hour"),
-    since = NULL, to = NULL)
+  plotWD(data, ane = NA, var = NA, type = c("histogram"),
+    by = c("none", "month", "hour"), since = NULL,
+    to = NULL)
 }
 \arguments{
   \item{data}{an object of class winddata}
