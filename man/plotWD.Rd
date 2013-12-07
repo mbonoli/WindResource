@@ -2,7 +2,7 @@
 \alias{plotWD}
 \title{Plots for winddata objects}
 \usage{
-  plotWD(data, ane = NA, var = NA, type = c("histogram"),
+  plotWD(datawd, ane = NA, var = NA, type = c("histogram"),
     by = c("none", "month", "hour"), since = NULL,
     to = NULL)
 }

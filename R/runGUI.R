@@ -8,11 +8,12 @@
 #' The object windata is a list with the parameters that were mencionated before.
 #' 
 #' @export
-runGUI <- function(data){
+runGUI <- function(data, inRS=T){
   if (class(data)=="windata"){
     require(shiny)
-    dataWD <- data
-    runApp(paste(path.package("WindResource"),"/shiny",sep=""))
+    datawd <- data
+    if (inRS) runApp(paste(path.package("WindResource"),"/shiny",sep=""),launch.browser = rstudio::viewer)
+    else runApp(paste(path.package("WindResource"),"/shiny",sep=""))
   }
-  else stop ("data parameter must be windata class.")
+  else stop ("'data' parameter must be windata class.")
 }

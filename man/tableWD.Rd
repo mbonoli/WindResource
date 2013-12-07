@@ -2,7 +2,7 @@
 \alias{tableWD}
 \title{Plots for winddata objects}
 \usage{
-  tableWD(data, ane = NA, var = c("speed"),
+  tableWD(datawd, ane = NA, var = c("speed"),
     type = c("histogram"), by = c("none", "month", "hour"),
     since, to)
 }

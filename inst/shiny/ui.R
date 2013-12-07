@@ -23,7 +23,9 @@ shinyUI(pageWithSidebar(
                      "Histogram" = "histogram", 
                      "Rose" = "rose",
                      "Boxplot" = "boxplot", 
-                     "Correlation" = "correlation")),
+                     "Correlation" = "correlation",
+                     "Turbulence" = "turbulence",
+                     "Fit" = "fit")),
     selectInput("by", "By:",
                 list("None" = "none", 
                      "Month" = "month", 
@@ -39,24 +41,20 @@ shinyUI(pageWithSidebar(
   mainPanel(
     h3(textOutput("caption")),
     tabsetPanel(
-    tabPanel("Plot",
-             h4(textOutput("captionP1")),
-             plotOutput("plot1"),
-             h4(textOutput("captionP2")),
-             plotOutput("plot2")
-             ),
-     tabPanel("Tables",
-               h4("u") 
-#                htmlOutput("table1"),
-#                h4(textOutput("captionT2")),
-#                htmlOutput("table2"),
-#                h4(textOutput("captionT3")),
-#                htmlOutput("table3")
-              ),
-    tabPanel("Fit",
-                h4("Fit"),
-                img(imageOutput("pp",height=600))
-               )
-  )
+      tabPanel("Plot",
+               h4(textOutput("captionP1")),
+               plotOutput("plot1"),
+               h4(textOutput("captionP2")),
+               plotOutput("plot2")
+      ),
+      tabPanel("Tables",
+               h4(textOutput("captionT1")),
+               htmlOutput("table1"),
+               h4(textOutput("captionT2")),
+               htmlOutput("table2"),
+               h4(textOutput("captionT3")),
+               htmlOutput("table3")             
+      )
+    )
 )))
 

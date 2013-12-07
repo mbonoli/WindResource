@@ -1,11 +1,11 @@
-\name{add.cart.coord}
-\alias{add.cart.coord}
+\name{turbulence}
+\alias{turbulence}
 \title{Extracting paramenters}
 \usage{
-  add.cart.coord(dataplot)
+  turbulence(wd)
 }
 \arguments{
-  \item{dataplot}{a list of parameters.}
+  \item{plot}{a list of parameters.}
 }
 \value{
   The parameter value that was extracted.
@@ -15,6 +15,6 @@
 }
 \author{
   Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego
-  Edwards #'
+  Edwards
 }
 

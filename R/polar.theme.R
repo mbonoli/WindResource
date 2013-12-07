@@ -7,7 +7,7 @@
 #' @return The parameter value that was extracted.
 #' @author Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
 #' 
-#' 
+#' @export
 polar.theme <- function (plot){
   
   radialaxis<-data.frame(x=0,y=0,
