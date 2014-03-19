@@ -11,21 +11,4 @@ Depends:
     fitdistrplus,
     grid,
     ggplot2
-Collate:
-    'add.cart.coord.R'
-    'circleFun.R'
-    'fitWd.R'
-    'gen10m.R'
-    'plot.wind.serie.R'
-    'plotDistWd.R'
-    'plotWD.R'
-    'polar.theme.R'
-    'pref0.R'
-    'runGUI.R'
-    'setWd.R'
-    'tableFitDist.R'
-    'tableWD.R'
-    'turbulence.R'
-    'wd.R'
-    'wd10.R'
 Packaged: 2013-09-25 20:31:50 UTC; Diego
