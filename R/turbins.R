@@ -7,7 +7,7 @@ wtg_model <-list(
     Data=Enercon_E33 <- read.xlsx(file="Enercon_E33.xlsx", sheetName="Hoja1")),
   E48=list(
     branch="Enercon",
-    model="E33",
+    model="E48",
     Data=Enercon_E48 <- read.xlsx(file="Enercon_E48.xlsx", sheetName="Hoja1"))
 )
 

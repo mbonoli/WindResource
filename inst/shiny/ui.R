@@ -18,6 +18,8 @@ shinyUI(pageWithSidebar(
   # Sidebar with controls to select the variable to plot against mpg
   # and to specify whether outliers should be included
   sidebarPanel(
+    uiOutput("selector1"),
+    uiOutput("selector2"),
     selectInput("type", "Type:",
                 list(
                      "Histogram" = "histogram", 
@@ -26,11 +28,12 @@ shinyUI(pageWithSidebar(
                      "Correlation" = "correlation",
                      "Turbulence" = "turbulence",
                      "Fit" = "fit")),
-    selectInput("by", "By:",
-                list("None" = "none", 
-                     "Month" = "month", 
-                     "Hour" = "hour")),
+#     selectInput("by", "By:",
+#                 list("None" = "none", 
+#                      "Month" = "month", 
+#                      "Hour" = "hour")),
 #     htmlOutput("selectUI"),
+    
     checkboxInput("Ane1", "Ane1", T),
     checkboxInput("Ane2", "Ane2", T),
     submitButton("Update View"),

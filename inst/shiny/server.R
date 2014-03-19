@@ -12,6 +12,36 @@
 datawd<-wd10
 shinyServer(function(input, output) {
   
+  output$selector1 <- renderUI({
+    selectInput("selector1", "Type:",
+              list(
+                "Windspeed" = "windspeed", 
+                "Turbulence" = "turbulence",
+                "Fit" = "fit", 
+                "CP" = "correlation",
+                "cp" = "turbulence"))
+  })
+  browser()
+  if (outputOptions(output, 'selector1', suspendWhenHidden=FALSE)=="windspeed"){
+    output$selector2 <- renderUI({
+      selectInput("selector2", "Type:",
+                  list(
+                    "Windspeed" = "windspeed", 
+                    "Turbulence" = "turbulence",
+                    "Fit" = "fit", 
+                    "CP" = "correlation",
+                    "cp" = "turbulence"))
+  })}  else {
+    output$selector2 <- renderUI({
+    selectInput("selector2", "Type:",
+                list(
+                  "1" = "windspeed", 
+                  "2" = "turbulence",
+                  "2" = "fit", 
+                  "3" = "correlation",
+                  "3" = "turbulence"))
+  })
+}
   datasetInput <- reactive({
     anelist<-c()
     if (input$Ane1==T) anelist<-c(anelist,"Ane1")
