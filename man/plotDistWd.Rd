@@ -36,6 +36,6 @@
 }
 \author{
   Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego
-  Edwards
+  Edwards Molina
 }
 
