@@ -181,8 +181,9 @@ tableWD <-
                                         loglik = c(floor(param$loglik.wei), floor(param$loglik.ga), floor(param$loglik.ln)),
                                         aic = c(floor(param$aic.wei), floor(param$aic.ga), floor(param$aic.ln))), 
                                   row.names = c("Weibull", "Gamma", "Lognormal"))
-        
+       result <- summary(c(1:10)) 
       }
     }
     result
+
   }

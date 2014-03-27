@@ -26,18 +26,30 @@ shinyServer(function(input, output) {
       selectInput("SELplottype","Plot type:",
                   list("Histogram" = "histogram", 
                        "Rose" = "rose",
+                       "Profile" = "profile",
                        "BoxPlot" = "boxplot", 
                        "TimeSerie" = "ts"))
     } else NULL
   })
-  # Plot By Selector
-  output$UIplotby <- renderUI({
+  # Plot By Selector with none
+  output$UIplotby3 <- renderUI({
     if(input$SELanalysis=="plots"){
-      radioButtons("SELplotby","By:",selected="none",
-                   list("None" = "none", 
-                        "Month" = "month", 
-                        "Hour" = "hour")
-      )
+      if(input$SELplottype=="histogram" | input$SELplottype=="rose"){
+        radioButtons("SELplotby","By:",selected="none",
+                       list("None" = "none", 
+                            "Month" = "month", 
+                            "Hour" = "hour"))
+      }
+    } else NULL
+  })
+  # Plot By Selector without none
+  output$UIplotby2 <- renderUI({
+    if(input$SELanalysis=="plots"){
+      if(input$SELplottype=="profile"){
+        radioButtons("SELplotby","By:",selected="hour",
+                     list("Month" = "month", 
+                          "Hour" = "hour"))
+      }
     } else NULL
   })
   # Anemometer Checklist 
@@ -52,8 +64,8 @@ shinyServer(function(input, output) {
     if(input$SELanalysis=="plots"){
       tabs <- list(NULL)
       skip <-0
-      if (input$SELplottype=="rose"){ 
-        tabs[[1]] <- tabPanel("All", h1("www"), plotOutput("plotRose"))
+      if (input$SELplottype=="rose" | input$SELplottype=="profile" | input$SELplottype=="boxplot"){ 
+        tabs[[1]] <- tabPanel("All", h1("www"), plotOutput("plotAll"))
         skip <- 1
       }
       for (i in 1:nane){
@@ -94,9 +106,15 @@ shinyServer(function(input, output) {
                  #                  plotOutput("plot2")
         )
       )
+    } else if(input$SELanalysis=="turbulence"){
+      tabsetPanel(
+          tabPanel("Plot", plotOutput("plotTurbulence")),
+          tabPanel("Data", verbatimTextOutput(("tableTurbulence"))
+        )
+      )
     }
+    
   })
-  
   
   datasetInput <- reactive({
     tableWD(data=datawd,var="speed", ane=input$SELane, input$SELplottype, by=input$SELplotby)
@@ -104,13 +122,13 @@ shinyServer(function(input, output) {
   #   
   # Compute the forumla text in a reactive expression since it is 
   # shared by the output$caption and output$mpgPlot expressions
-  formulaText <- reactive({
-    ane <- c()
-    if (input$Ane1==T) ane <- "Ane1"
-    if (input$Ane2==T) ane <- c(ane,"Ane2")
-    ane
-    paste('plotWD(data=data,var="speed", ane=',ane,',type=',input$SELplottype,', by=',input$SELplotby,')')
-  })
+#   formulaText <- reactive({
+#     ane <- c()
+#     if (input$Ane1==T) ane <- "Ane1"
+#     if (input$Ane2==T) ane <- c(ane,"Ane2")
+#     ane
+#     paste('plotWD(data=data,var="speed", ane=',ane,',type=',input$SELplottype,', by=',input$SELplotby,')')
+#   })
   
   output$downloadData <- downloadHandler(
     filename = function() { 'data.csv' },
@@ -135,7 +153,7 @@ shinyServer(function(input, output) {
   for (x in ane.names){local({
     i <- x
     output[[paste("plot",i,sep="")]] <- renderPlot({
-      if (input$SELplottype=="histogram" | input$SELplottype=="rose"){
+      if (input$SELplottype=="histogram" | input$SELplottype=="rose" | input$SELplottype=="profile" | input$SELplottype=="boxplot"){
         if (i %in% input$SELane){
           print(plotWD(data=datawd,var="speed", ane=i ,type=input$SELplottype, by=input$SELplotby))
         } else NULL
@@ -143,9 +161,9 @@ shinyServer(function(input, output) {
     })
   })}
   
-  # Plot Generation Rose
-  output$plotRose <- renderPlot({
-    if (input$SELplottype=="rose"){
+  # Plot Generation All Ane
+  output$plotAll <- renderPlot({
+    if (input$SELplottype=="rose" | input$SELplottype=="profile"){
       print(plotWD(data=datawd,var="speed", ane=input$SELane ,type=input$SELplottype, by=input$SELplotby))
     } else NULL
   })
@@ -154,7 +172,7 @@ shinyServer(function(input, output) {
   for (x in ane.names){local({
     i <- x
     output[[paste("table",i,sep="")]] <- renderTable({
-      if (input$SELplottype=="histogram" | input$SELplottype=="rose"){
+      if (input$SELplottype=="histogram" | input$SELplottype=="rose" | input$SELplottype=="profile" | input$SELplottype=="boxplot"){
         if (i %in% input$SELane){
           as.data.frame(tableWD(data=datawd,var="speed", ane=i ,type=input$SELplottype, by=input$SELplotby)[[i]])
         }
@@ -162,11 +180,35 @@ shinyServer(function(input, output) {
     })
   })}
   
-  # Plot Generation Rose
-  output$tableRose <- renderTable({
+  # Plot Generation All Ane
+  output$tableAll <- renderTable({
     if (input$SELplottype=="rose"){
-      print(tableWD(data=datawd,var="speed", ane=input$SELane ,type=input$SELplottype, by=input$SELplotby))
-      tableWD(data=datawd,var="speed", ane=input$SELane ,type=input$SELplottype, by=input$SELplotby)
+      tableWD(data=datawd,
+              var="speed", 
+              ane=input$SELane ,
+              type=input$SELplottype, 
+              by=input$SELplotby3)
+    } else if (input$SELplottype=="profile"){
+      tableWD(data=datawd,
+              var="speed", 
+              ane=input$SELane ,
+              type=input$SELplottype, 
+              by=input$SELplotby2)
+    } else NULL
+  })
+ 
+  # tableTurbulence
+  output$tableTurbulence <- renderPrint({
+#     summary(c(1:10))
+    if(input$SELanalysis=="turbulence"){
+      tableWD(data=datawd, type="turbulence")
+    } else NULL
+  })
+  
+  # plotTurbulence
+  output$plotTurbulence <- renderPlot({
+    if (input$SELanalysis=="turbulence"){
+      print(plotWD(data=datawd, type="turbulence"))
     } else NULL
   })
   
@@ -174,7 +216,7 @@ shinyServer(function(input, output) {
     filename = 'curPlot.pdf',
     content = function(file){
       pdf(file = file, width=11, height=8.5)
-      plotWD(data=datawd,var="speed", ane=i ,type=input$SELplottype, by=input$SELplotby)
+#       plotWD(data=datawd,var="speed", ane=i ,type=input$SELplottype, by=input$SELplotby)
       #doPlot(margins=c(6,6,10,2))
       dev.off()
     }
@@ -183,7 +225,7 @@ shinyServer(function(input, output) {
   output$dldat <- downloadHandler(
     filename = function() { paste("name", '.csv', sep='') },
     content = function(file) {
-      write.csv(as.data.frame(tableWD(data=datawd,var="speed", ane=i ,type=input$SELplottype, by=input$SELplotby)[[1]]),file)
+#       write.csv(as.data.frame(tableWD(data=datawd,var="speed", ane=i ,type=input$SELplottype, by=input$SELplotby)[[1]]),file)
       #           as.data.frame(as.matrix(1:10,nrows=2))), file)
     }
   )

@@ -24,9 +24,11 @@ shinyUI(pageWithSidebar(
                         "Fit" = "fit", 
                         "Power Curve" = "pc")) ,
     uiOutput("UIplottype"),
-    uiOutput("UIplotby"),
+    uiOutput("UIplotby2"),
+    uiOutput("UIplotby3"),
     uiOutput("UIane")
 #     downloadButton("dlCurPlot", "Download Graphic"),
+
 #     downloadButton('dldat', 'Download Sample')
 
 #     submitButton("Update View"),
