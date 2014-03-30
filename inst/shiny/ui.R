@@ -18,6 +18,7 @@ shinyUI(pageWithSidebar(
   # Sidebar with controls to select the variable to plot against mpg
   # and to specify whether outliers should be included
   sidebarPanel(
+    
     selectInput("SELanalysis","Analysis type:",list(
                         "Plots" = "plots", 
                         "Turbulence" = "turbulence",
@@ -26,13 +27,12 @@ shinyUI(pageWithSidebar(
     uiOutput("UIplottype"),
     uiOutput("UIplotby2"),
     uiOutput("UIplotby3"),
-    uiOutput("UIane")
-#     downloadButton("dlCurPlot", "Download Graphic"),
+    wellPanel(uiOutput("UIbin")),
+    uiOutput("UIane"),
+    uiOutput("UIdates"),
+    downloadButton('dldat', 'Download Table'),
+    downloadButton("dlCurPlot", "Download Plot")
 
-#     downloadButton('dldat', 'Download Sample')
-
-#     submitButton("Update View"),
-#    downloadButton('downloadData', 'Download')
   ),
  
   # Show the caption and plot of the requested variable against mpg

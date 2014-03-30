@@ -36,33 +36,22 @@ plotWD <-
            type=c("histogram"),
            by=c("none","month","hour"),
            since=NULL, 
-           to=NULL){
+           to=NULL,
+           binwidth=1){
 
     require(plyr)
-#    browser()
-#     if (!is.na(since)){
-#       date.since <- as.POSIXct(since)
-#       date.to <- as.POSIXct(to)
-#       valid.cases <- (datawd$time$dt >= date.since) & (datawd$time$dt <= date.to) & !is.na(datawd$time$dt)
-#       for (i in c("data","time","dir")){
-#         for (j in length(datawd[[i]])){
-#           datawd[[i]][[j]] <- datawd[[i]][[j]][valid.cases]
-#         }
-#       }
-#       for (i in length(datawd[["ane"]])){
-#         for (j in length(datawd[["ane"]][[i]])){
-#           datawd[["ane"]][[i]][[j]] <- datawd[["ane"]][[i]][[j]][valid.cases]
-#         }
-# #       }
-#       
-#       datawd$data <- datawd$data[valid.cases]
-#       datawd$dir <- datawd$dir[valid.cases,]
-#       datawd$time <- datawd$time[valid.cases,]
-#       for (i in ane) {
-#         datawd$ane <- datawd$ane[[i]]
-#       } 
-#       
-#     }
+
+    # Apply date filter
+    if (!is.null(since)){
+      date.since <- as.POSIXct(since)
+      date.to <- as.POSIXct(to)
+      valid.cases <- (datawd$time$dt >= date.since) & (datawd$time$dt <= date.to) & !is.na(datawd$time$dt)
+      datawd[["time"]] <- datawd[["time"]][valid.cases,]
+      datawd[["dir"]] <- datawd[["dir"]][valid.cases,]
+      for (i in names(datawd[["ane"]])){
+          datawd[["ane"]][[i]] <- datawd[["ane"]][[i]][valid.cases,]
+      }
+    }
   
     month.names<- c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
     hour.names2 <- c("00:00 - 01:59","02:00 - 03:59","04:00 - 05:59","06:00 - 07:59","08:00 - 09:59","10:00 - 11:59","12:00 - 13:59","14:00 - 15:59","16:00 - 17:59","18:00 - 19:59","20:00 - 21:59","22:00 - 23:59")
@@ -80,7 +69,7 @@ plotWD <-
           dp<-data.frame(speed=datawd$ane[[iane]]$ave)
           print(
             ggplot(dp, aes(x=speed)) + 
-              geom_histogram(binwidth=1, colour="black", fill="blue")
+              geom_histogram(binwidth=binwidth, colour="black", fill="blue")
           )
         }
       }
@@ -90,7 +79,7 @@ plotWD <-
                          month=factor(month.names[datawd$time$month], levels=month.names))
           print(
             ggplot(ds, aes(x=speed)) + 
-            geom_histogram(binwidth=1, colour="black", fill="blue") +
+            geom_histogram(binwidth=binwidth, colour="black", fill="blue") +
             facet_wrap(  ~ month, ncol=3, drop=F)
           )
         }
@@ -101,7 +90,7 @@ plotWD <-
                          hour=factor(hour.names2[floor(datawd$time$hour/2)+1], levels=hour.names2))
           print(
             ggplot(ds, aes(x=speed)) + 
-            geom_histogram(binwidth=1, colour="black", fill="blue") +
+            geom_histogram(binwidth=binwidth, colour="black", fill="blue") +
             facet_wrap(  ~ hour, ncol=3, drop=F)
           )
         }

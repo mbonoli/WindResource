@@ -35,8 +35,9 @@ tableWD <-
            var=c("speed"),
            type=c("histogram"),
            by=c("none","month","hour"),
-           since,
-           to){
+           since=NULL, 
+           to=NULL,
+           binwidth=1){
     
     require (reshape2)
     
@@ -46,6 +47,18 @@ tableWD <-
     hour.names <- pref0(0:23,2)
     
     if (class(datawd) != "windata") stop("Los datos no correponden a la clase 'windata'.")
+    
+    # Apply date filter
+    if (!is.null(since)){
+      date.since <- as.POSIXct(since)
+      date.to <- as.POSIXct(to)
+      valid.cases <- (datawd$time$dt >= date.since) & (datawd$time$dt <= date.to) & !is.na(datawd$time$dt)
+      datawd[["time"]] <- datawd[["time"]][valid.cases,]
+      datawd[["dir"]] <- datawd[["dir"]][valid.cases,]
+      for (i in names(datawd[["ane"]])){
+        datawd[["ane"]][[i]] <- datawd[["ane"]][[i]][valid.cases,]
+      }
+    }
     
     # Control anemometros
 #     browser()
@@ -57,7 +70,7 @@ tableWD <-
         result <- list()
         for (i in ane.names){
           dp<-data.frame(speed=datawd$ane[[i]]$ave)
-          histo <- hist(dp$speed,breaks=seq(0,max(as.numeric(dp$speed),na.rm=T)+1,by=1),plot =F)
+          histo <- hist(dp$speed,breaks=seq(0,max(as.numeric(dp$speed),na.rm=T)+1,by=binwidth),plot =F)
           result [[i]] <- data.frame(
             Lower=histo$breaks[-length(histo$breaks)],
             Upper=histo$breaks[-1],
@@ -69,7 +82,7 @@ tableWD <-
         for (i in ane.names){
           dp<-data.frame(speed=datawd$ane[[i]]$ave,
                          month=month.names3[datawd$time$month])
-          histo <- hist(dp$speed,breaks=seq(0,max(as.numeric(dp$speed),na.rm=T)+1,by=1),plot =F)
+          histo <- hist(dp$speed,breaks=seq(0,max(as.numeric(dp$speed),na.rm=T)+1,by=binwidth),plot =F)
           breaks <- histo$breaks
           result [[i]] <- data.frame(
             Lower=histo$breaks[-length(histo$breaks)],
@@ -86,7 +99,7 @@ tableWD <-
         for (i in ane.names){
           dp<-data.frame(speed=datawd$ane[[i]]$ave,
                          hour=factor(hour.names2[floor(datawd$time$hour/2)+1], levels=hour.names2))
-          histo <- hist(dp$speed,breaks=seq(0,max(as.numeric(dp$speed),na.rm=T)+1,by=1),plot =F)
+          histo <- hist(dp$speed,breaks=seq(0,max(as.numeric(dp$speed),na.rm=T)+1,by=binwidth),plot =F)
           breaks <- histo$breaks
           result[[i]] <- data.frame(
             Lower=histo$breaks[-length(histo$breaks)],

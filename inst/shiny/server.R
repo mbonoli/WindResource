@@ -14,6 +14,8 @@ library("WindResource")
 data(wd10)
 wd10$dir$ang_16 <- (wd10$dir$sect_16-1)*22.5
 class(wd10)<-"windata"
+mindate <- min(wd10[["time"]]$dt)
+maxdate <- max(wd10[["time"]]$dt)
 datawd<-wd10
 nane <- 2
 
@@ -33,23 +35,27 @@ shinyServer(function(input, output) {
   })
   # Plot By Selector with none
   output$UIplotby3 <- renderUI({
-    if(input$SELanalysis=="plots"){
-      if(input$SELplottype=="histogram" | input$SELplottype=="rose"){
-        radioButtons("SELplotby","By:",selected="none",
+      if(input$SELanalysis=="plots"){
+       if(!is.null(input$SELplottype)){ # Esto no se muy bien porque pero tirar error sino.
+        if(input$SELplottype=="histogram" | input$SELplottype=="rose"){
+          radioButtons("SELplotby","By:",selected="none",
                        list("None" = "none", 
                             "Month" = "month", 
                             "Hour" = "hour"))
-      }
-    } else NULL
+        } else NULL
+      } else NULL
+     } else NULL
   })
   # Plot By Selector without none
   output$UIplotby2 <- renderUI({
     if(input$SELanalysis=="plots"){
-      if(input$SELplottype=="profile"){
-        radioButtons("SELplotby","By:",selected="hour",
-                     list("Month" = "month", 
-                          "Hour" = "hour"))
-      }
+      if(!is.null(input$SELplottype)){ # Esto no se muy bien porque pero tirar error sino.
+        if(input$SELplottype=="profile"){
+          radioButtons("SELplotby","By:",selected="hour",
+                       list("Month" = "month", 
+                            "Hour" = "hour"))
+        } else NULL
+      } else NULL
     } else NULL
   })
   # Anemometer Checklist 
@@ -58,24 +64,53 @@ shinyServer(function(input, output) {
     names(anelist) <- ane.names
     checkboxGroupInput("SELane", "Anemometers:",anelist,choices=ane.names )
   })  
+  # sliderInput Histogram bins
+  output$UIbin <- renderUI({
+    if (input$SELplottype == 'histogram'){
+      if(!is.null(input$SELplottype)){ # Esto no se muy bien porque pero tirar error sino.
+        sliderInput("binwidth", 
+                    "bin:", 
+                    min = .1,
+                    max = 2, 
+                    step = .1,
+                    value = 1)
+      }
+    }
+  })
+  
+  output$UIdates <- renderUI({
+    wellPanel(
+      dateRangeInput("dates", label="Dates filter", start = mindate, end = maxdate, min = mindate,
+                   max = maxdate, format = "yyyy-mm-dd", startview = "month", weekstart = 0,
+                   language = "en", separator = " to ")
+    )
+  })
+  
   
   #   UI Tabs
   output$UItabs <- renderUI ({
     if(input$SELanalysis=="plots"){
-      tabs <- list(NULL)
-      skip <-0
-      if (input$SELplottype=="rose" | input$SELplottype=="profile" | input$SELplottype=="boxplot"){ 
-        tabs[[1]] <- tabPanel("All", h1("www"), plotOutput("plotAll"))
-        skip <- 1
-      }
-      for (i in 1:nane){
-        tabs[[i+skip]] <- tabPanel(ane.names[i], 
-                                   tabsetPanel(
-                                     tabPanel("Plot", h1("www") ,plotOutput(paste("plot",ane.names[i],sep=""))),
-                                     tabPanel("Data", h1("www"),tableOutput(as.name(paste("table",ane.names[i],sep=""))))
-                                   ))
-      }
-      do.call(tabsetPanel, tabs)
+      if(!is.null(input$SELplottype)){ # Esto no se muy bien porque pero tirar error sino.
+        tabs <- list(NULL)
+        skip <-0
+        if (input$SELplottype=="rose" | input$SELplottype=="profile" | input$SELplottype=="boxplot"){ 
+          tabs[[1]] <- tabPanel("All", h1("www"), plotOutput("plotAll"))
+          skip <- 1
+        }
+        for (i in 1:nane){
+          tabs[[i+skip]] <- tabPanel(ane.names[i], 
+                                     tabsetPanel(
+                                       tabPanel("Plot",
+                                                h1("www1"),
+                                                plotOutput(paste("plot",ane.names[i],sep="")),
+                                                h1("www3")),
+                                       tabPanel("Data", 
+                                                h1("www"),
+                                                tableOutput(as.name(paste("table",ane.names[i],sep="")))) #, downloadButton('dldat', 'Download Sample'))
+                                     ))
+        }
+        do.call(tabsetPanel, tabs)
+      } else NULL
     } else if(input$SELanalysis=="fit"){
       tabsetPanel(
         tabPanel("Summary",
@@ -108,8 +143,8 @@ shinyServer(function(input, output) {
       )
     } else if(input$SELanalysis=="turbulence"){
       tabsetPanel(
-          tabPanel("Plot", plotOutput("plotTurbulence")),
-          tabPanel("Data", verbatimTextOutput(("tableTurbulence"))
+        tabPanel("Plot", plotOutput("plotTurbulence")),
+        tabPanel("Data", verbatimTextOutput(("tableTurbulence"))
         )
       )
     }
@@ -155,7 +190,7 @@ shinyServer(function(input, output) {
     output[[paste("plot",i,sep="")]] <- renderPlot({
       if (input$SELplottype=="histogram" | input$SELplottype=="rose" | input$SELplottype=="profile" | input$SELplottype=="boxplot"){
         if (i %in% input$SELane){
-          print(plotWD(data=datawd,var="speed", ane=i ,type=input$SELplottype, by=input$SELplotby))
+          print(plotWD(data=datawd,var="speed", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth))
         } else NULL
       }
     })
@@ -164,7 +199,7 @@ shinyServer(function(input, output) {
   # Plot Generation All Ane
   output$plotAll <- renderPlot({
     if (input$SELplottype=="rose" | input$SELplottype=="profile"){
-      print(plotWD(data=datawd,var="speed", ane=input$SELane ,type=input$SELplottype, by=input$SELplotby))
+      print(plotWD(data=datawd,var="speed", ane=input$SELane ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth))
     } else NULL
   })
   
@@ -174,7 +209,7 @@ shinyServer(function(input, output) {
     output[[paste("table",i,sep="")]] <- renderTable({
       if (input$SELplottype=="histogram" | input$SELplottype=="rose" | input$SELplottype=="profile" | input$SELplottype=="boxplot"){
         if (i %in% input$SELane){
-          as.data.frame(tableWD(data=datawd,var="speed", ane=i ,type=input$SELplottype, by=input$SELplotby)[[i]])
+          as.data.frame(tableWD(data=datawd,var="speed", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth)[[i]])
         }
       } else NULL
     })
@@ -213,20 +248,23 @@ shinyServer(function(input, output) {
   })
   
   output$dlCurPlot <- downloadHandler(
-    filename = 'curPlot.pdf',
+    filename = function() { paste(input$SELanalysis,
+                                  '-',
+                                  input$SELplottype,'.pdf', sep='')},
     content = function(file){
       pdf(file = file, width=11, height=8.5)
-#       plotWD(data=datawd,var="speed", ane=i ,type=input$SELplottype, by=input$SELplotby)
-      #doPlot(margins=c(6,6,10,2))
+      plotWD(data=datawd,var="speed", ane="Ane1" ,type=input$SELplottype, by=input$SELplotby)
+#       doPlot(margins=c(6,6,10,2))
       dev.off()
     }
   )
   
   output$dldat <- downloadHandler(
-    filename = function() { paste("name", '.csv', sep='') },
+    filename = function() { paste(input$SELanalysis,
+                                  '-',
+                                  input$SELplottype,'.csv', sep='') },
     content = function(file) {
-#       write.csv(as.data.frame(tableWD(data=datawd,var="speed", ane=i ,type=input$SELplottype, by=input$SELplotby)[[1]]),file)
-      #           as.data.frame(as.matrix(1:10,nrows=2))), file)
+        write.csv(as.data.frame(tableWD(data=datawd,var="speed", ane="Ane1" ,type=input$SELplottype, by=input$SELplotby)[[1]]),file)
     }
   )
   
