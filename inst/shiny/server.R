@@ -31,7 +31,7 @@ shinyServer(function(input, output) {
                        "Profile" = "profile",
                        "BoxPlot" = "boxplot", 
                        "TimeSerie" = "ts"))
-    } else NULL
+    } else return(NULL)
   })
   # Plot By Selector with none
   output$UIplotby3 <- renderUI({
@@ -42,9 +42,9 @@ shinyServer(function(input, output) {
                        list("None" = "none", 
                             "Month" = "month", 
                             "Hour" = "hour"))
-        } else NULL
-      } else NULL
-     } else NULL
+        } else return(NULL)
+      } else return(NULL)
+     } else return(NULL)
   })
   # Plot By Selector without none
   output$UIplotby2 <- renderUI({
@@ -54,9 +54,9 @@ shinyServer(function(input, output) {
           radioButtons("SELplotby","By:",selected="hour",
                        list("Month" = "month", 
                             "Hour" = "hour"))
-        } else NULL
-      } else NULL
-    } else NULL
+        } else return(NULL)
+      } else return(NULL)
+    } else return(NULL)
   })
   # Anemometer Checklist 
   output$UIane <- renderUI({
@@ -66,14 +66,14 @@ shinyServer(function(input, output) {
   })  
   # sliderInput Histogram bins
   output$UIbin <- renderUI({
-    if (input$SELplottype == 'histogram'){
-      if(!is.null(input$SELplottype)){ # Esto no se muy bien porque pero tirar error sino.
-        sliderInput("binwidth", 
+    if(!is.null(input$SELplottype)){ # Esto no se muy bien porque pero tirar error sino.
+      if (input$SELplottype == 'histogram'){
+        wellPanel(sliderInput("binwidth", 
                     "bin:", 
                     min = .1,
                     max = 2, 
                     step = .1,
-                    value = 1)
+                    value = 1))
       }
     }
   })
@@ -110,7 +110,7 @@ shinyServer(function(input, output) {
                                      ))
         }
         do.call(tabsetPanel, tabs)
-      } else NULL
+      } else return(NULL)
     } else if(input$SELanalysis=="fit"){
       tabsetPanel(
         tabPanel("Summary",
@@ -191,7 +191,7 @@ shinyServer(function(input, output) {
       if (input$SELplottype=="histogram" | input$SELplottype=="rose" | input$SELplottype=="profile" | input$SELplottype=="boxplot"){
         if (i %in% input$SELane){
           print(plotWD(data=datawd,var="speed", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth))
-        } else NULL
+        } else return(NULL)
       }
     })
   })}
@@ -200,7 +200,7 @@ shinyServer(function(input, output) {
   output$plotAll <- renderPlot({
     if (input$SELplottype=="rose" | input$SELplottype=="profile"){
       print(plotWD(data=datawd,var="speed", ane=input$SELane ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth))
-    } else NULL
+    } else return(NULL)
   })
   
   # Table Generation
@@ -211,7 +211,7 @@ shinyServer(function(input, output) {
         if (i %in% input$SELane){
           as.data.frame(tableWD(data=datawd,var="speed", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth)[[i]])
         }
-      } else NULL
+      } else return(NULL)
     })
   })}
   
@@ -229,7 +229,7 @@ shinyServer(function(input, output) {
               ane=input$SELane ,
               type=input$SELplottype, 
               by=input$SELplotby2)
-    } else NULL
+    } else return(NULL)
   })
  
   # tableTurbulence
@@ -237,14 +237,14 @@ shinyServer(function(input, output) {
 #     summary(c(1:10))
     if(input$SELanalysis=="turbulence"){
       tableWD(data=datawd, type="turbulence")
-    } else NULL
+    } else return(NULL)
   })
   
   # plotTurbulence
   output$plotTurbulence <- renderPlot({
     if (input$SELanalysis=="turbulence"){
       print(plotWD(data=datawd, type="turbulence"))
-    } else NULL
+    } else return(NULL)
   })
   
   output$dlCurPlot <- downloadHandler(
@@ -254,7 +254,6 @@ shinyServer(function(input, output) {
     content = function(file){
       pdf(file = file, width=11, height=8.5)
       plotWD(data=datawd,var="speed", ane="Ane1" ,type=input$SELplottype, by=input$SELplotby)
-#       doPlot(margins=c(6,6,10,2))
       dev.off()
     }
   )

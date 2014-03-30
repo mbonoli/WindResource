@@ -27,7 +27,7 @@ shinyUI(pageWithSidebar(
     uiOutput("UIplottype"),
     uiOutput("UIplotby2"),
     uiOutput("UIplotby3"),
-    wellPanel(uiOutput("UIbin")),
+    uiOutput("UIbin"),
     uiOutput("UIane"),
     uiOutput("UIdates"),
     downloadButton('dldat', 'Download Table'),
