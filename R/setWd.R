@@ -107,7 +107,7 @@ setWd <-function (data,
       result$time$minute <- as.numeric(substring(pref0(result$data$time, 5), 4, 5))
     }
     else {stop ("The format isn't admit")}
-    result$time$dt <- as.POSIXct(paste(result$time$year,".",pref0(result$time$month,2),".",pref0(result$time$day,2)," ",pref0(result$time$hour,2),":",pref0(result$time$Min,2),":00",sep=""), "%Y.%m.%d %H:%M:%S", tz="")
+    result$time$dt <- as.POSIXct(paste(result$time$year,".",pref0(result$time$month,2),".",pref0(result$time$day,2)," ",pref0(result$time$hour,2),":",pref0(result$time$min,2),":00",sep=""), "%Y.%m.%d %H:%M:%S", tz="")
     result$time$Q <- floor((result$time$month/3) - .01) + 1
     
     # $speed  

@@ -2,7 +2,7 @@
 \alias{circleFun}
 \title{Extracting paramenters}
 \usage{
-  circleFun(center = c(0, 0), radio = 1, npoints = 100)
+circleFun(center = c(0, 0), radio = 1, npoints = 100)
 }
 \arguments{
   \item{center}{a list of parameters.}
@@ -13,13 +13,12 @@
   extracted.}
 }
 \value{
-  The parameter value that was extracted.
+The parameter value that was extracted.
 }
 \description{
-  Function to extract a parameter value from a list
+Function to extract a parameter value from a list
 }
 \author{
-  Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego
-  Edwards
+Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
 }
 

@@ -2,15 +2,13 @@
 \alias{setWd}
 \title{Conversion of dataframe in class windata}
 \usage{
-  setWd(data, interval = 1, date.var,
-    date.format = c("YYYYMMDD", "YYYY-MM-DD", "YYYY.MM.DD", "DD/MM/YYYY"),
-    time.var,
-    time.format = c("HHMM", "HHMMSS", "HH:MM", "HH:MM:SS", "HH.MM", "HH.MM.SS"),
-    ane.names, ane.height, speed.ave.var,
-    speed.min.var = NA, speed.max.var = NA,
-    speed.sd.var = NA, speed.var.var = NA, speed.unit = NA,
-    dir.var, dir.unit = "deg", temp.var = NA,
-    temp.unit = "C", pres.var = NA, pres.unit = "bar")
+setWd(data, interval = 1, date.var, date.format = c("YYYYMMDD",
+  "YYYY-MM-DD", "YYYY.MM.DD", "DD/MM/YYYY"), time.var, time.format = c("HHMM",
+  "HHMMSS", "HH:MM", "HH:MM:SS", "HH.MM", "HH.MM.SS"), ane.names, ane.height,
+  speed.ave.var, speed.min.var = NA, speed.max.var = NA,
+  speed.sd.var = NA, speed.var.var = NA, speed.unit = NA, dir.var,
+  dir.unit = "deg", temp.var = NA, temp.unit = "C", pres.var = NA,
+  pres.unit = "bar")
 }
 \arguments{
   \item{data}{a dataframe to be converted}
@@ -72,14 +70,14 @@
   the moment, the unit that can be used is "deg".}
 }
 \value{
-  Object of class "windata" (see details).
+Object of class "windata" (see details).
 }
 \description{
-  Shape a dataframe in a class 'windata'
+Shape a dataframe in a class 'windata'
 }
 \details{
-  The object windata is a list with the parameters that
-  were mencionated before.
+The object windata is a list with the parameters that were
+mencionated before.
 }
 \examples{
 # simple example using the windspeed data set
@@ -89,7 +87,6 @@ data(wd)
 head(wd)
 }
 \author{
-  Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego
-  Edwards
+Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
 }
 

@@ -47,7 +47,6 @@ plot.wind.serie<-function(wd,
                           axis=c("Ave","Min","Max","Temp","Pres","Dir")) {
   
   require (googleVis)
-  browser()
   data<-data.frame(dt=as.POSIXct(NA),val=NA,type=NA)
   
   colorlines<-"["
@@ -72,10 +71,10 @@ plot.wind.serie<-function(wd,
     data<- rbind(data,data.frame(dt=wd$time$dt,val=wd$par$pres$value,type="Pres")[wd$time$year==year & wd$time$month==month,])
     colorlines<-paste(colorlines,ifelse(nchar(colorlines)==1,"",",")," 'lightgreen'",sep="")
   }
-  if ("Dir" %in% vars) {
-    data<- rbind(data,data.frame(dt=wd$time$dt,val=wd$dir$value,type="Dir")[wd$time$year==year & wd$time$month==month,])
-    colorlines<-paste(colorlines,ifelse(nchar(colorlines)==1,"",",")," 'black'",sep="")
-  }
+#   if ("Dir" %in% vars) {
+#     data<- rbind(data,data.frame(dt=wd$time$dt,val=wd$dir$value,type="Dir")[wd$time$year==year & wd$time$month==month,])
+#     colorlines<-paste(colorlines,ifelse(nchar(colorlines)==1,"",",")," 'black'",sep="")
+#   }
   colorlines<-paste(colorlines,"]")
   
   # Borro registros sin datos
@@ -90,20 +89,21 @@ plot.wind.serie<-function(wd,
   if (length(axis)==1) {
     scalecol<-paste("[",which(vars==axis[1])-1,"]",sep="")}
   else {
-    scalecol<-paste("[",which(vars==axis[1])-1,",",which(vars==axis[2])-1,"]",sep="")}
-  browser()  
-  dataplot <- gvisAnnotatedtimeLine(data,
+    scalecol<-paste("[",which(vars==axis[1])-1,",",which(vars==axis[2])-1,"]",sep="")}  
+  dataplot <- gvisAnnotatedTimeLine(data,
                                     datevar="dt",
                                     numvar="val", 
-                                    idvar="type",
-                                    options=list(
-                                      colors=colorlines,
-                                      zoomStarttime=min(data$dt[wd$time$year==year & wd$time$month==month]),
-                                      zoomEndtime=min(data$dt[wd$time$year==year & wd$time$month==month])+3600*24,
-                                      legendPosition='newRow',
-                                      width=1000, 
-                                      height=700, 
-                                      scaleColumns="[0,3]", #scalecol,
-                                      scaleType='allfixed'))
+                                    idvar="type"
+                                    #                                   ,
+                                    #                                   options=list(
+                                    #                                     colors=colorlines,
+                                    #                                     zoomStarttime=min(data$dt[wd$time$year==year & wd$time$month==month]),
+                                    #                                     zoomEndtime=min(data$dt[wd$time$year==year & wd$time$month==month])+3600*24,
+                                    #                                     legendPosition='newRow',
+                                    #                                     width=1000, 
+                                    #                                     height=700, 
+                                    #                                     scaleColumns="[0,3]", #scalecol,
+                                    #                                     scaleType='allfixed')
+  )
   plot(dataplot)
 }

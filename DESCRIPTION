@@ -10,5 +10,6 @@ License: GPL-2 | GPL-3
 Depends:
     fitdistrplus,
     grid,
-    ggplot2
+    ggplot2,
+    googleVis
 Packaged: 2013-09-25 20:31:50 UTC; Diego

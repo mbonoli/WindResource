@@ -2,9 +2,9 @@
 \alias{tableWD}
 \title{Plots for winddata objects}
 \usage{
-  tableWD(datawd, ane = NA, var = c("speed"),
-    type = c("histogram"), by = c("none", "month", "hour"),
-    since, to)
+tableWD(datawd, ane = NA, var = c("speed"), type = c("histogram"),
+  by = c("none", "month", "hour"), since = NULL, to = NULL,
+  binwidth = 1)
 }
 \arguments{
   \item{data}{an object of class winddata}
@@ -30,15 +30,15 @@
   is 'YYYY-MM-DD'.}
 }
 \value{
-  Object of class "windata" (see details)
+Object of class "windata" (see details)
 }
 \description{
-  Shape a dataframe in a object which will be use by the
-  diferents functions in the package......
+Shape a dataframe in a object which will be use by the
+diferents functions in the package......
 }
 \details{
-  The object windata is a list with the parameters that
-  were mencionated before.
+The object windata is a list with the parameters that were
+mencionated before.
 }
 \examples{
 # simple example using the windspeed data set
@@ -48,7 +48,6 @@ data(wd)
 head(wd)
 }
 \author{
-  Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego
-  Edwards
+Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
 }
 

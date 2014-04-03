@@ -42,6 +42,8 @@
 
 gen10m <- function (wd, Ns=60) {
   
+  # HECER ESTA CORRECCION
+  # wd10$dir$ang_16 <- (wd10$dir$sect_16-1)*22.5
   require(plyr)
   df<-data.frame()
   for (i in 1:(wd$nane)){
@@ -90,6 +92,7 @@ gen10m <- function (wd, Ns=60) {
                            rose=dir.rose(df$dir)
   )
   result$info <- wd$info
+  class(result) <- "windata"
   
   result
 }

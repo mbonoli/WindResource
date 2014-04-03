@@ -2,17 +2,17 @@
 \alias{runGUI}
 \title{Plots for winddata objects}
 \usage{
-  runGUI(data)
+runGUI(data, inRS = T)
 }
 \arguments{
   \item{data}{a list of parameters.}
 }
 \description{
-  Shape a dataframe in a object which will be use by the
-  diferents functions in the package......
+Shape a dataframe in a object which will be use by the
+diferents functions in the package......
 }
 \details{
-  The object windata is a list with the parameters that
-  were mencionated before.
+The object windata is a list with the parameters that were
+mencionated before.
 }
 

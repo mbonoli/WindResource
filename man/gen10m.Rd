@@ -2,7 +2,7 @@
 \alias{gen10m}
 \title{Conversion of dataframe in class windata}
 \usage{
-  gen10m(wd, Ns = 60)
+gen10m(wd, Ns = 60)
 }
 \arguments{
   \item{data}{a dataframe to be converted}
@@ -64,14 +64,14 @@
   the moment, the unit that can be used is "deg".}
 }
 \value{
-  Object of class "windata" (see details).
+Object of class "windata" (see details).
 }
 \description{
-  Shape a dataframe in a class 'windata'
+Shape a dataframe in a class 'windata'
 }
 \details{
-  The object windata is a list with the parameters that
-  were mencionated before.
+The object windata is a list with the parameters that were
+mencionated before.
 }
 \examples{
 # simple example using the windspeed data set
@@ -81,7 +81,6 @@ data(wd)
 head(wd)
 }
 \author{
-  Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego
-  Edwards
+Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
 }
 

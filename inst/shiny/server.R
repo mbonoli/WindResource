@@ -34,27 +34,58 @@ shinyServer(function(input, output) {
     } else return(NULL)
   })
   # Plot By Selector with none
-  output$UIplotby3 <- renderUI({
-      if(input$SELanalysis=="plots"){
-       if(!is.null(input$SELplottype)){ # Esto no se muy bien porque pero tirar error sino.
-        if(input$SELplottype=="histogram" | input$SELplottype=="rose"){
-          radioButtons("SELplotby","By:",selected="none",
-                       list("None" = "none", 
-                            "Month" = "month", 
-                            "Hour" = "hour"))
-        } else return(NULL)
-      } else return(NULL)
-     } else return(NULL)
-  })
+#   output$UIplotby3 <- renderUI({
+#       if(input$SELanalysis=="plots"){
+#        if(!is.null(input$SELplottype)){ # Esto no se muy bien porque pero tirar error sino.
+#         if(input$SELplottype=="histogram" | input$SELplottype=="rose"){
+#           radioButtons("SELplotby","By:",
+#                        selected="none",
+#                        list("None" = "none", 
+#                             "Month" = "month", 
+#                             "Hour" = "hour"))
+#         } else return(NULL)
+#       } else return(NULL)
+#      } else return(NULL)
+#   })
   # Plot By Selector without none
-  output$UIplotby2 <- renderUI({
+#   output$UIplotby2 <- renderUI({
+#     if(input$SELanalysis=="plots"){
+#       if(!is.null(input$SELplottype)){ # Esto no se muy bien porque pero tirar error sino.
+#         if(input$SELplottype=="profile"){
+#           radioButtons("SELplotby","By:",selected="hour",
+#                        list("Month" = "month", 
+#                             "Hour" = "hour"))
+#         } else return(NULL)
+#       } else return(NULL)
+#     } else return(NULL)
+#   })
+  # Si funciona sacar plotby 2 y 3
+  output$UIplotby <- renderUI({
     if(input$SELanalysis=="plots"){
       if(!is.null(input$SELplottype)){ # Esto no se muy bien porque pero tirar error sino.
-        if(input$SELplottype=="profile"){
-          radioButtons("SELplotby","By:",selected="hour",
-                       list("Month" = "month", 
-                            "Hour" = "hour"))
-        } else return(NULL)
+        if(input$SELplottype=="histogram" | input$SELplottype=="rose"){
+          selectInput("SELplotby","By:",
+                      list("None" = "none", 
+                           "Month" = "month", 
+                           "Hour" = "hour"))
+#             "Plots" = "plots", 
+#             "Turbulence" = "turbulence",
+#             "Fit" = "fit", 
+#             "Power Curve" = "pc"))
+#           radioButtons("SELplotby","By:",
+# #                        selected="none",
+#                        list("None" = "none", 
+#                             "Month" = "month", 
+#                             "Hour" = "hour"))
+        } else if(input$SELplottype=="profile"){
+          selectInput("SELplotby3","By:",
+                      list("Month" = "month", 
+                           "Hour" = "hour"))
+#           radioButtons("SELplotby","By:",
+# #                        selected="hour",
+#                        list("Month" = "month", 
+#                             "Hour" = "hour"))
+          } else return(NULL)
       } else return(NULL)
     } else return(NULL)
   })
@@ -98,6 +129,17 @@ shinyServer(function(input, output) {
           skip <- 1
         }
         for (i in 1:nane){
+          if(input$SELplottype=="ts"){
+            tabs[[i+skip]] <- tabPanel(ane.names[i], 
+                                       tabsetPanel(
+                                         tabPanel("Plot",
+                                                  h1("www"),
+                                                  plotOutput("plotSerie")),      
+                                         tabPanel("Data", 
+                                                  h1("www"),
+                                                  verbatimTextOutput("tableTurbulence"))
+                                         ))
+          } else {
           tabs[[i+skip]] <- tabPanel(ane.names[i], 
                                      tabsetPanel(
                                        tabPanel("Plot",
@@ -108,6 +150,7 @@ shinyServer(function(input, output) {
                                                 h1("www"),
                                                 tableOutput(as.name(paste("table",ane.names[i],sep="")))) #, downloadButton('dldat', 'Download Sample'))
                                      ))
+        }
         }
         do.call(tabsetPanel, tabs)
       } else return(NULL)
@@ -147,7 +190,7 @@ shinyServer(function(input, output) {
         tabPanel("Data", verbatimTextOutput(("tableTurbulence"))
         )
       )
-    }
+    } else return(NULL)
     
   })
   
@@ -202,7 +245,15 @@ shinyServer(function(input, output) {
       print(plotWD(data=datawd,var="speed", ane=input$SELane ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth))
     } else return(NULL)
   })
-  
+
+# Plot Generation All Ane
+output$plotSerie <- renderGvis({
+  if (input$SELplottype=="ts"){
+    return(plot.wind.serie(wd10,2013,2,vars=c("Ave","Min","Max","Dir"),
+                          axis=c("Ave","Min","Max","Dir")))
+  } else return(NULL)
+})
+
   # Table Generation
   for (x in ane.names){local({
     i <- x
@@ -222,13 +273,13 @@ shinyServer(function(input, output) {
               var="speed", 
               ane=input$SELane ,
               type=input$SELplottype, 
-              by=input$SELplotby3)
+              by=input$SELplotby) # by=input$SELplotby3)
     } else if (input$SELplottype=="profile"){
       tableWD(data=datawd,
               var="speed", 
               ane=input$SELane ,
               type=input$SELplottype, 
-              by=input$SELplotby2)
+              by=input$SELplotby) # by=input$SELplotby2)
     } else return(NULL)
   })
  

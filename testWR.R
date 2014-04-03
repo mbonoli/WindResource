@@ -1,8 +1,7 @@
 library("WindResource")
 library(shiny)
 data(wd10)
-wd10$dir$ang_16 <- (wd10$dir$sect_16-1)*22.5
-class(wd10)<-"windata"
+# Esta es la forma de guardar los archivos: save(wd10,file="wd10.rda",compress=TRUE)
 runGUI(wd10)
 runApp("~/GitHub/WindResource/inst/shiny",launch.browser = rstudio::viewer)
 
