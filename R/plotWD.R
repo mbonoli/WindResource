@@ -38,9 +38,9 @@ plotWD <-
            since=NULL, 
            to=NULL,
            binwidth=1){
-
+    
     require(plyr)
-
+    
     # Apply date filter
     if (!is.null(since)){
       date.since <- as.POSIXct(since)
@@ -49,19 +49,19 @@ plotWD <-
       datawd[["time"]] <- datawd[["time"]][valid.cases,]
       datawd[["dir"]] <- datawd[["dir"]][valid.cases,]
       for (i in names(datawd[["ane"]])){
-          datawd[["ane"]][[i]] <- datawd[["ane"]][[i]][valid.cases,]
+        datawd[["ane"]][[i]] <- datawd[["ane"]][[i]][valid.cases,]
       }
     }
-  
+    
     month.names<- c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
     hour.names2 <- c("00:00 - 01:59","02:00 - 03:59","04:00 - 05:59","06:00 - 07:59","08:00 - 09:59","10:00 - 11:59","12:00 - 13:59","14:00 - 15:59","16:00 - 17:59","18:00 - 19:59","20:00 - 21:59","22:00 - 23:59")
     hour.names <- pref0(0:23,2)
-
+    
     if (class(datawd) != "windata") stop("Los datos no correponden a la clase 'windata'.")
     
     if (is.na(ane[1])) {ane.names <- names(datawd$ane)}
     else {ane.names <- ane}
-   
+    
     if (type=="histogram"){
       if (!(var=="speed" | is.na(var))) stop ("Only 'speed' var is supported for histograms at the moment.")
       if (by=="none"){
@@ -79,8 +79,8 @@ plotWD <-
                          month=factor(month.names[datawd$time$month], levels=month.names))
           print(
             ggplot(ds, aes(x=speed)) + 
-            geom_histogram(binwidth=binwidth, colour="black", fill="blue") +
-            facet_wrap(  ~ month, ncol=3, drop=F)
+              geom_histogram(binwidth=binwidth, colour="black", fill="blue") +
+              facet_wrap(  ~ month, ncol=3, drop=F)
           )
         }
       }
@@ -90,8 +90,8 @@ plotWD <-
                          hour=factor(hour.names2[floor(datawd$time$hour/2)+1], levels=hour.names2))
           print(
             ggplot(ds, aes(x=speed)) + 
-            geom_histogram(binwidth=binwidth, colour="black", fill="blue") +
-            facet_wrap(  ~ hour, ncol=3, drop=F)
+              geom_histogram(binwidth=binwidth, colour="black", fill="blue") +
+              facet_wrap(  ~ hour, ncol=3, drop=F)
           )
         }
       }
@@ -155,7 +155,7 @@ plotWD <-
         ylab(paste("Wind Speed ",datawd$info$ane$height[2],"m [",datawd$info$unit$speed,"]",sep=""))
     }
     else if (type=="profile"){
-#       browser()
+      #       browser()
       df <- data.frame()
       for (i in ane){
         df <- rbind(df,
@@ -215,55 +215,50 @@ plotWD <-
                     axis.title.y = element_text(face="bold", size=12))  )
     }
     else if (type=="fit"){
-      
       for (i in ane.names){
-        
-        param <- fitWd(data, ane=i)
-        
-        #Busco el valor mas alto de las funciones de densidad
-        max.y<-max(dweibull(param$A*((param$K-1)/param$K)^(1/param$K), shape=param$K, scale =param$A, log = FALSE),
-                   dgamma((param$alpha-1)*param$beta, shape=param$alpha, scale=param$beta),
-                   dlnorm(exp(param$meanlog-param$sdlog^2), meanlog=param$meanlog, sdlog=param$sdlog))
-        xfit<-seq(0,max(param$data),length=200)
-        ylim<-c(0,max.y)
-        
-        # Weibull Density
-        par(mfrow=c(2,3))
-        hist(param$data,probability=T, col="gray", main="Distribution Weibull", xlab="Wind speed", ylab="frecuency density",ylim=ylim)
-        text(max(param$data)*0.8,max.y*0.8, paste("K=",round(param$K,digits=4)))
-        text(max(param$data)*0.8,max.y*0.7, paste("C=",round(param$A,digits=4)))
-        text(max(param$data)*0.8,max.y*0.6, paste("Loglik=", round(param$loglik.wei,digits=0)))
-        xfit<-seq(0,max(param$data),length=200)
-        yfit<-dweibull(xfit, shape=param$K, scale=param$A)  
-        lines(xfit, yfit, col="red", lwd=2.8)
-        
-        # Gamma Density
-        hist(param$data,probability=T, col="gray", main="Distribution Gamma", xlab="Wind speed", ylab="frecuency density",ylim=ylim)
-        text(max(param$data)*0.8,max.y*0.8, paste("alpha=",round(param$alpha,digits=4))) 
-        text(max(param$data)*0.8,max.y*0.7, paste("beta=",round(param$beta,digits=4)))
-        text(max(param$data)*0.8,max.y*0.6, paste("Loglik=",round(param$loglik.ga,digits=0)))
-        yfit <-dgamma(xfit, shape=param$alpha, scale=param$beta) 
-        lines(xfit, yfit, col="red", lwd=2.8)
-        
-        # LogNormal Density
-        hist(param$data,probability=T, col="gray", main="Distribution Lognormal", xlab="Wind speed", ylab="frecuency density",ylim=ylim)
-        text(max(param$data)*0.8,max.y*0.8, paste("m=",round(param$meanlog,digits=4))) 
-        text(max(param$data)*0.8,max.y*0.7, paste("D=",round(param$sdlog,digits=4)))
-        text(max(param$data)*0.8,max.y*0.6, paste("Loglik=",round(param$loglik.ln,digits=0)))
-        yfit <-dlnorm(xfit, meanlog=param$meanlog, sdlog=param$sdlog) 
-        lines(xfit, yfit, col="red", lwd=2.8)
-        
-        #Q-Q plots
-        c <- seq(0,0.9999,length=length(param$data))
-        dist.teo_w <- qweibull(c[1:length(c)],shape=param$K, scale=param$A)
-        qqplot(dist.teo_w,param$data,main="QQ-plot Dist. Weibull", xlab="theoretical distribution", ylab="speed")
-        abline(0,1)
-        dist.teo_g <- qgamma(c[1:length(c)], shape=param$alpha, scale=param$beta)
-        qqplot(dist.teo_g, param$data, main="QQ-plot Dist. Gamma", xlab="theoretical distribution", ylab="speed")
-        abline(0,1)
-        dist.teo_l <- qlnorm(c[1:length(c)],meanlog=param$meanlog, sdlog=param$sdlog)
-        qqplot(dist.teo_l, param$data, main="QQ-plot Dist. Lognorm", xlab="theoretical distribution", ylab="speed")
-        abline(0,1)       
+        param <- fitWd(datawd, ane=i)
+        data1 <- c(0, param$data)
+        y.wei <- dweibull(data1, shape = param$K, scale = param$A)
+        y.ga <- dgamma(data1, shape = param$alpha, scale = param$beta)
+        y.ln <- dlnorm(data1, meanlog = param$meanlog, sdlog = param$sdlog)
+        dr <- rbind(data.frame(dist = "wei", speed = data1, ajust = y.wei), data.frame(dist = "ga", speed = data1, ajust = y.ga), data.frame(dist = "ln", speed = data1, ajust = y.ln))
+        dw <- rbind(data.frame(dist = "wei", speed = data1, ajust = y.wei))
+        dg <- rbind(data.frame(dist = "ga", speed = data1, ajust = y.ga))
+        dl <- rbind(data.frame(dist = "ln", speed = data1, ajust = y.ln))
+        distr <- c("wei", "ga", "ln")
+        tittle <- c("Weibull Distribution", "Gamma Distribution", "Lognormal Distribution")
+        namep1 <- c("K", "alpha", "m")
+        para1 <- c(param$K, param$alpha, param$meanlog)
+        namep2 <- c("A", "beta", "D")
+        para2 <- c(param$A, param$beta, param$sdlog)
+        lo <- c(param$loglik.wei, param$loglik.ga, param$loglik.ln)
+        grid.newpage()
+        pushViewport(viewport(layout = grid.layout(2, 3)))  
+        vplayout <- function(x, y) viewport(layout.pos.col = x, layout.pos.row = y)
+        for (i in 1:3) {
+          print(ggplot(dr[dr$dist == distr[i], ], aes(x = speed)) + geom_histogram(aes(y = ..density..), binwidth=binwidth, colour = "black", fill = "blue") +
+                  ggtitle(tittle[i]) + geom_line(aes(y = ajust), colour = "red", size = 1) + annotate("text", x=max(data1)*0.8, y=0.11, label = paste(namep1[i], " = ", round(para1[i], digits = 4)), size=3.5) + 
+                  annotate("text", x=max(data1)*0.8, y=0.09, label = paste(namep2[i], " = ", round(para2[i], digits = 4)), size=3.5) + annotate("text", x=max(data1)*0.8, y=0.07, label=paste("Loglik =", round(lo[i], digits = 4)), size=3.5),
+                vp = vplayout(rep(1:3)[i], 1))
+          
+        }
+        params.wei <- list(shape = param$K, scale = param$A)
+        params.ga <- list(shape = param$alpha, scale = param$beta)
+        params.ln <- list(meanlog = param$meanlog, sdlog = param$sdlog)
+        print(ggplot(dr, aes(sample = speed)) + stat_qq(distribution = qweibull, dparams = params.wei), vp = vplayout(1,2))
+        print(ggplot(dr, aes(sample = speed)) + stat_qq(distribution = qgamma, dparams = params.ga), vp = vplayout(2,2))
+        print(ggplot(dr, aes(sample = speed)) + stat_qq(distribution = qlnorm, dparams = params.ln), vp = vplayout(3,2))
+      }
+    } else if (type=="boxplot"){
+      for (i in ane.names){
+        dfbox <- data.frame(hour=datawd$time$hour, day=datawd$time$day, month=datawd$time$month, ave=datawd$ane[[i]]$ave)
+        if (by=="hour"){
+          print(ggplot(dfbox, aes(factor(hour), ave)) + geom_boxplot())
+        } else if (by=="day"){
+          print(ggplot(dfbox, aes(factor(day), ave)) + geom_boxplot())
+        } else if (by=="month"){
+          print(ggplot(dfbox, aes(factor(month), ave)) + geom_boxplot())
+        }
       }
     }
     else stop(paste("invalid plot type '",type,"'",sep=""))

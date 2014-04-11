@@ -196,7 +196,27 @@ tableWD <-
                                   row.names = c("Weibull", "Gamma", "Lognormal"))
        result <- summary(c(1:10)) 
       }
+  } else if (type=="boxplot"){
+    
+    result<-list()
+    
+    for (i in ane.names){  
+      
+      df <- data.frame(hour=datawd$time$hour, day=datawd$time$day, month=datawd$time$month, ave=datawd$ane[[i]]$ave)
+      
+      a    <- tapply(df$ave, df[[by]], summary)
+      dfsd <- subset(df, !is.na(df$ave))
+      desv <- tapply(dfsd$ave, dfsd[[by]], sd)
+      
+      for (j in 1:length(table(df[by]))){
+        if (length(a[[j]]) < 7) {a[[j]][7] <- 0}  
+      }
+      
+      result[[i]] <- data.frame(t(sapply(a,c)), round(desv,4))
+      colnames(result[[i]]) <- c("Min","1st Qu", "Median", "Mean", "3rd Qu.", "Max.", "Nas", "DS")
+      
     }
+    } else {stop(paste("invalid plot type '",type,"'.",sep=""))}
     result
 
   }

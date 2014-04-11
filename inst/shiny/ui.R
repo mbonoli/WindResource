@@ -25,10 +25,11 @@ shinyUI(pageWithSidebar(
                         "Fit" = "fit", 
                         "Power Curve" = "pc")) ,
     uiOutput("UIplottype"),
+    uiOutput("UIturbinetype"),
+    uiOutput("UIwtg"),
+    uiOutput("UIplotopt"),
     uiOutput("UIplotby"),
-#     uiOutput("UIplotby3"),
     uiOutput("UIbin"),
-    uiOutput("UIane"),
     uiOutput("UIdates"),
     downloadButton('dldat', 'Download Table'),
     downloadButton("dlCurPlot", "Download Plot")

@@ -33,7 +33,7 @@ tableWD (data=wd10, type="turbulence")
 library("WindResource")
 data(wd)
 data(wd10)
-wd10$dir$ang_16 <- (wd10$dir$sect_16-1)*22.5
+# wd10$dir$ang_16 <- (wd10$dir$sect_16-1)*22.5
 class(wd10)<-"windata"
 runGUI(wd10)
 
