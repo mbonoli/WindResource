@@ -114,16 +114,19 @@ plotWD <-
         dataplot$ang.end <- ifelse(dataplot$ang.start + 22.5 >= 360, dataplot$ang.start - 337.5,dataplot$ang.start + 22.5)
         dataplot$speed.end <- dataplot[apply(dataplot, 1, function(x) ifelse(length(which(as.numeric(dataplot$ang.start)==as.numeric(x["ang.end"]) & dataplot$ane== x["ane"]))==0,NA,which(as.numeric(dataplot$ang.start)==as.numeric(x["ang.end"]) & dataplot$ane== x["ane"]))),"speed.start"]
         dataplot <- add.cart.coord(dataplot)
-        polar.theme(ggplot(data=dataplot)) +
+        print(polar.theme(ggplot(data=dataplot)) +
           geom_segment(data=dataplot, mapping=aes(
             x=x, y=y, 
             xend=xend, yend=yend, 
-            color=ane, group=ane),size=1)
+            color=ane, group=ane),size=1))
       }
       else if (by=="month"){
         dataplot <- aggregate(speed.start ~ rose + ane + ang.start + month , data = dfall, mean)
         dataplot$ang.end <- ifelse(dataplot$ang.start + 22.5 >= 360, dataplot$ang.start - 337.5,dataplot$ang.start + 22.5)
-        dataplot$speed.end <- dataplot[apply(dataplot, 1, function(x) ifelse(length(which(as.numeric(dataplot$ang.start)==as.numeric(x["ang.end"]) & dataplot$ane== x["ane"] & dataplot$month==x["month"]))==0,NA,which(as.numeric(dataplot$ang.start)==as.numeric(x["ang.end"]) & dataplot$ane== x["ane"] & dataplot$month==x["month"]))),"speed.start"]
+        dataplot$speed.end <- dataplot[apply(dataplot, 1, function(x) ifelse(length(which(as.numeric(dataplot$ang.start)==as.numeric(x["ang.end"]) 
+                                                                                          & dataplot$ane== x["ane"] 
+                                                                                          & dataplot$month==x["month"]))==0,
+                                                                             1111,which(as.numeric(dataplot$ang.start)==as.numeric(x["ang.end"]) & dataplot$ane== x["ane"] & dataplot$month==x["month"]))),"speed.start"]
         dataplot <- add.cart.coord(dataplot)
         polar.theme(ggplot(data=dataplot)) +
           geom_segment(data=dataplot, mapping=aes(
