@@ -21,9 +21,38 @@ tableWD (data=wd10, var="speed", since='2012-11-01', to='2012-12-31', type="hist
 tableWD (data=wd10, var="speed", type="histogram", by="none", binwidth=.2)
 
 # Rose
-plotWD (data=wd10,ane=c("Ane1", "Ane2"),var="speed", type="rose", by="none")
-plotWD (data=wd10,ane=c("Ane1", "Ane2"),var="speed", type="rose", by="hour")
-tableWD (data=wd10,ane=c("Ane1", "Ane2"),var="speed", type="rose", by="hour")
+plotWD (data=wd10,ane=c("Ane1","Ane2"),var="mean", type="rose", by="none")
+plotWD (data=wd10,ane=c("Ane1","Ane2"),var="mean", type="rose", by="month")
+plotWD (data=wd10,ane=c("Ane1","Ane2"),var="mean", type="rose", by="hour")
+plotWD (data=wd10,ane=c("Ane1","Ane2"),var="min", type="rose", by="none")
+plotWD (data=wd10,ane=c("Ane1","Ane2"),var="min", type="rose", by="month")
+plotWD (data=wd10,ane=c("Ane1","Ane2"),var="min", type="rose", by="hour")
+plotWD (data=wd10,ane=c("Ane1","Ane2"),var="max", type="rose", by="none")
+plotWD (data=wd10,ane=c("Ane1","Ane2"),var="max", type="rose", by="month")
+plotWD (data=wd10,ane=c("Ane1","Ane2"),var="max", type="rose", by="hour")
+plotWD (data=wd10,ane=c("Ane1","Ane2"),var="frec", type="rose", by="none")
+plotWD (data=wd10,ane=c("Ane1","Ane2"),var="frec", type="rose", by="month")
+plotWD (data=wd10,ane=c("Ane1","Ane2"),var="frec", type="rose", by="hour")
+
+tableWD (data=wd10,ane=c("Ane1","Ane2"),var="mean", type="rose", by="none")
+tableWD (data=wd10,ane=c("Ane1","Ane2"),var="mean", type="rose", by="month")
+tableWD (data=wd10,ane=c("Ane1","Ane2"),var="mean", type="rose", by="hour")
+tableWD (data=wd10,ane=c("Ane1","Ane2"),var="min", type="rose", by="none")
+tableWD (data=wd10,ane=c("Ane1","Ane2"),var="min", type="rose", by="month")
+tableWD (data=wd10,ane=c("Ane1","Ane2"),var="min", type="rose", by="hour")
+tableWD (data=wd10,ane=c("Ane1","Ane2"),var="max", type="rose", by="none")
+tableWD (data=wd10,ane=c("Ane1","Ane2"),var="max", type="rose", by="month")
+tableWD (data=wd10,ane=c("Ane1","Ane2"),var="max", type="rose", by="hour")
+tableWD (data=wd10,ane=c("Ane1","Ane2"),var="frec", type="rose", by="none")
+tableWD (data=wd10,ane=c("Ane1","Ane2"),var="frec", type="rose", by="month")
+tableWD (data=wd10,ane=c("Ane1","Ane2"),var="frec", type="rose", by="hour")
+
+# boxplot
+tableWD (data=wd10,ane="Ane2",var="speed", type="boxplot", by="hour")
+tableWD (data=wd10,ane="Ane2",var="speed", type="boxplot", by="month")
+
+plotWD (data=wd10,ane="Ane2",var="speed", type="boxplot", by="hour")
+plotWD (data=wd10,ane="Ane2",var="speed", type="boxplot", by="month")
 
 plotWD (data=wd10,var="speed", type="correlation", by="hour")
 

@@ -115,20 +115,27 @@ tableWD <-
     else if (type=="rose"){
       dfs<-list()
       result<-list()
+      
+      if (var=="ave") {j <- 1
+        } else if (var=="min") {j <- 2
+          } else if (var=="max") {j  <- 3
+          } else {j <- 4}     
+      
       for (i in ane.names){
-        dfs[[i]]=data.frame(ave=datawd$ane[[i]]$ave,
+        dfs[[i]]=data.frame(ave=datawd$ane[[i]][[j]],
                             rose=datawd$dir$rose, 
                             month=datawd$time$month,
                             hour=factor(hour.names2[floor(datawd$time$hour/2)+1]))
       }
       for (i in ane.names){
         if (by=="none"){
-          result[[i]] <- aggregate(ave ~ rose , data = dfs[[i]], mean)}
-        else if (by=="month"){
+          result[[i]] <- aggregate(ave ~ rose , data = dfs[[i]], mean)
+        
+          } else if (by=="month"){
           result[[i]] <- aggregate(ave ~ rose + month  , data = dfs[[i]], mean)
           result[[i]] <- dcast(result[[i]], rose~month, mean, value.var="ave")
-        }
-        else if (by=="hour"){
+            
+            } else if (by=="hour"){
           result[[i]] <- aggregate(ave ~ rose + hour  , data = dfs[[i]], mean)
           result[[i]] <- dcast(result[[i]], rose~hour, mean, value.var="ave")
         }
@@ -186,7 +193,7 @@ tableWD <-
       result<-list()
       for (i in ane.names){
         
-        param <- fitWd(data, i)
+        param <- fitWd(datawd, ane=i)
         
         #Building the table
         result[[i]] <- data.frame(cbind(Parameter1 = c(paste("k=", round(param$K, digits = 4)), paste("alpha=", round(param$alpha, digits = 4)), paste("m=", round(param$meanlog, digits = 4))), 
@@ -194,7 +201,7 @@ tableWD <-
                                         loglik = c(floor(param$loglik.wei), floor(param$loglik.ga), floor(param$loglik.ln)),
                                         aic = c(floor(param$aic.wei), floor(param$aic.ga), floor(param$aic.ln))), 
                                   row.names = c("Weibull", "Gamma", "Lognormal"))
-       result <- summary(c(1:10)) 
+        #result <- summary(c(1:10)) 
       }
   } else if (type=="boxplot"){
     
@@ -203,20 +210,24 @@ tableWD <-
     for (i in ane.names){  
       
       df <- data.frame(hour=datawd$time$hour, day=datawd$time$day, month=datawd$time$month, ave=datawd$ane[[i]]$ave)
+          
+          a    <- tapply(df$ave, df[[by]], summary)
       
-      a    <- tapply(df$ave, df[[by]], summary)
-      dfsd <- subset(df, !is.na(df$ave))
-      desv <- tapply(dfsd$ave, dfsd[[by]], sd)
-      
-      for (j in 1:length(table(df[by]))){
-        if (length(a[[j]]) < 7) {a[[j]][7] <- 0}  
-      }
-      
-      result[[i]] <- data.frame(t(sapply(a,c)), round(desv,4))
-      colnames(result[[i]]) <- c("Min","1st Qu", "Median", "Mean", "3rd Qu.", "Max.", "Nas", "DS")
-      
-    }
-    } else {stop(paste("invalid plot type '",type,"'.",sep=""))}
+          desv <- tapply(df$ave, df[[by]], sd, na.rm = TRUE)
+          
+          for (j in 1:length(table(df[by]))){
+            
+            if (length(a[[j]]) < 7) {a[[j]][7] <- 0}  
+           }
+          
+          
+          result[[i]] <- data.frame(t(sapply(a,c)), round(desv,4))
+          colnames(result[[i]]) <- c("Min","1st Qu", "Median", "Mean", "3rd Qu.", "Max.", "Nas", "DS")
+          
+          }  
+      } 
+     else {stop(paste("invalid plot type '",type,"'.",sep=""))}
+    
     result
-
   }
+  

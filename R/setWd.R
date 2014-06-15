@@ -95,7 +95,7 @@ setWd <-function (data,
                                 month = as.numeric(substring(result$data$date, 4, 5)),
                                 day = as.numeric(substring(result$data$date, 1, 2)))      
     }
-    else {stop ("The format isn't admit")}
+    else {stop ("The format isn't admited")}
     
     if (time.format == "HHMM" | time.format == "HHMMSS") {
       result$time$hour <-  as.numeric(substring(pref0(result$data$time, 4), 1, 2))
