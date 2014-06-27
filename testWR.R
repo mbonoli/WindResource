@@ -10,15 +10,15 @@ runApp("~/GitHub/WindResource/inst/shiny")
 
 str(wd10)
 # Histogram
-plotWD (data=wd10, var="speed", type="histogram", by="none")
-plotWD (data=wd10, var="speed", type="histogram", by="none", binwidth=.2)
-plotWD (data=wd10, var="speed", since='2012-11-01', to='2012-12-31', type="histogram", by="none")
-plotWD (data=wd10, var="speed", type="histogram", by="none")
-tableWD(data=wd10,var="speed", type="histogram", by="none")
-plotWD (data=wd10, var="speed", ane="Ane2", type="histogram", by="month")
-tableWD (data=wd10,var="speed", ane="Ane2", type="histogram", by="month")
-tableWD (data=wd10, var="speed", since='2012-11-01', to='2012-12-31', type="histogram", by="none")
-tableWD (data=wd10, var="speed", type="histogram", by="none", binwidth=.2)
+plotWD (data=wd10, var="mean", type="histogram", by="none")
+plotWD (data=wd10, var="mean", type="histogram", by="none", binwidth=.2)
+plotWD (data=wd10, var="mean", since='2012-11-01', to='2012-12-31', type="histogram", by="none")
+plotWD (data=wd10, var="mean", type="histogram", by="none")
+tableWD(data=wd10,var="mean", type="histogram", by="none")
+plotWD (data=wd10, var="mean", ane="Ane2", type="histogram", by="month")
+tableWD (data=wd10,var="mean", ane="Ane2", type="histogram", by="month")
+tableWD (data=wd10, var="mean", since='2012-11-01', to='2012-12-31', type="histogram", by="none")
+tableWD (data=wd10, var="mean", type="histogram", by="none", binwidth=.2)
 
 # Rose
 plotWD (data=wd10,ane=c("Ane1","Ane2"),var="mean", type="rose", by="none")
@@ -48,15 +48,15 @@ tableWD (data=wd10,ane=c("Ane1","Ane2"),var="frec", type="rose", by="month")
 tableWD (data=wd10,ane=c("Ane1","Ane2"),var="frec", type="rose", by="hour")
 
 # boxplot
-tableWD (data=wd10,ane="Ane2",var="speed", type="boxplot", by="hour")
-tableWD (data=wd10,ane="Ane2",var="speed", type="boxplot", by="month")
+tableWD (data=wd10,ane="Ane2",var="mean", type="boxplot", by="hour")
+tableWD (data=wd10,ane="Ane2",var="mean", type="boxplot", by="month")
 
-plotWD (data=wd10,ane="Ane2",var="speed", type="boxplot", by="hour")
-plotWD (data=wd10,ane="Ane2",var="speed", type="boxplot", by="month")
+plotWD (data=wd10,ane="Ane2",var="mean", type="boxplot", by="hour")
+plotWD (data=wd10,ane="Ane2",var="mean", type="boxplot", by="month")
 
-plotWD (data=wd10,var="speed", type="correlation", by="hour")
+plotWD (data=wd10,var="mean", type="correlation", by="hour")
 
-plotWD (data=wd10,ane=c("Ane1", "Ane2"),var="speed", type="profile", by="hour")
+plotWD (data=wd10,ane=c("Ane1", "Ane2"),var="mean", type="profile", by="hour")
 
 plotWD (data=wd10, type="turbulence")
 tableWD (data=wd10, type="turbulence")
@@ -70,33 +70,33 @@ class(wd10)<-"windata"
 runGUI(wd10)
 
 # Histogram
-plotWD (data=wd10, var="speed", type="histogram", by="none")
-plotWD (data=wd10, var="speed", type="histogram", by="month")
-plotWD (data=wd10, var="speed", type="histogram", by="hour")
+plotWD (data=wd10, var="mean", type="histogram", by="none")
+plotWD (data=wd10, var="mean", type="histogram", by="month")
+plotWD (data=wd10, var="mean", type="histogram", by="hour")
 
-tableWD(data=wd10,var="speed", type="histogram", by="none")
-tableWD (data=wd10,var="speed", type="histogram", by="month")
-tableWD (data=wd10,var="speed", type="histogram", by="hour")
+tableWD(data=wd10,var="mean", type="histogram", by="none")
+tableWD (data=wd10,var="mean", type="histogram", by="month")
+tableWD (data=wd10,var="mean", type="histogram", by="hour")
 
-plotWD (data=wd10,ane=c("Ane1", "Ane2"),var="speed", type="rose", by="none")
-plotWD (data=wd10,ane=c("Ane1", "Ane2"),var="speed", type="rose", by="month")
-plotWD (data=wd10,ane=c("Ane1", "Ane2"),var="speed", type="rose", by="hour")
-plotWD (data=wd10,var="speed", type="rose", by="none")
-plotWD (data=wd10,var="speed", type="rose", by="month")
-plotWD (data=wd10,var="speed", type="rose", by="hour")
+plotWD (data=wd10,ane=c("Ane1", "Ane2"),var="mean", type="rose", by="none")
+plotWD (data=wd10,ane=c("Ane1", "Ane2"),var="mean", type="rose", by="month")
+plotWD (data=wd10,ane=c("Ane1", "Ane2"),var="mean", type="rose", by="hour")
+plotWD (data=wd10,var="mean", type="rose", by="none")
+plotWD (data=wd10,var="mean", type="rose", by="month")
+plotWD (data=wd10,var="mean", type="rose", by="hour")
 
-tableWD (data=wd10,ane=c("Ane1", "Ane2"),var="speed", type="rose", by="none")
-tableWD (data=wd10,ane=c("Ane1", "Ane2"),var="speed", type="rose", by="month")
-tableWD (data=wd10,ane=c("Ane1", "Ane2"),var="speed", type="rose", by="hour")
+tableWD (data=wd10,ane=c("Ane1", "Ane2"),var="mean", type="rose", by="none")
+tableWD (data=wd10,ane=c("Ane1", "Ane2"),var="mean", type="rose", by="month")
+tableWD (data=wd10,ane=c("Ane1", "Ane2"),var="mean", type="rose", by="hour")
 
-plotWD (data=wd10,var="speed", type="correlation", by="hour")
+plotWD (data=wd10,var="mean", type="correlation", by="hour")
 
-plotWD (data=wd10,ane=c("Ane1", "Ane2"),var="speed", type="profile", by="month")
-plotWD (data=wd10,ane=c("Ane1", "Ane2"),var="speed", type="profile", by="hour")
-plotWD (data=wd10,ane=c("Ane1", "Ane2"),var="speed", type="profile", by="hour",since="2013-02-01",to="2013-02-28")
-tableWD (data=wd10,ane=c("Ane1", "Ane2"),var="speed", type="profile", by="month")
-tableWD (data=wd10,ane=c("Ane1", "Ane2"),var="speed", type="profile", by="hour")
-tableWD (data=wd10,ane=c("Ane1", "Ane2"),var="speed", type="profile", by="hour",since="2013-02-01",to="2013-02-28")
+plotWD (data=wd10,ane=c("Ane1", "Ane2"),var="mean", type="profile", by="month")
+plotWD (data=wd10,ane=c("Ane1", "Ane2"),var="mean", type="profile", by="hour")
+plotWD (data=wd10,ane=c("Ane1", "Ane2"),var="mean", type="profile", by="hour",since="2013-02-01",to="2013-02-28")
+tableWD (data=wd10,ane=c("Ane1", "Ane2"),var="mean", type="profile", by="month")
+tableWD (data=wd10,ane=c("Ane1", "Ane2"),var="mean", type="profile", by="hour")
+tableWD (data=wd10,ane=c("Ane1", "Ane2"),var="mean", type="profile", by="hour",since="2013-02-01",to="2013-02-28")
 
 
 plotWD (data=wd10, type="turbulence")

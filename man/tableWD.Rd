@@ -3,7 +3,7 @@
 \alias{tableWD}
 \title{Plots for winddata objects}
 \usage{
-tableWD(datawd, ane = NA, var = c("speed"), type = c("histogram"),
+tableWD(datawd, ane = NA, var = c("mean"), type = c("histogram"),
   by = c("none", "month", "hour"), since = NULL, to = NULL,
   binwidth = 1)
 }

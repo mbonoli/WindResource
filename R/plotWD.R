@@ -66,19 +66,19 @@ plotWD <-
       #if (!(var=="speed" | is.na(var))) stop ("Only 'speed' var is supported for histograms at the moment.")
       if (by=="none"){
         for (iane in ane.names){     
-          dp<-data.frame(speed=datawd$ane[[iane]]$ave)
+          dp<-data.frame(mean=datawd$ane[[iane]]$ave)
           print(
-            ggplot(dp, aes(x=speed)) + 
+            ggplot(dp, aes(x=mean)) + 
               geom_histogram(binwidth=binwidth, colour="black", fill="blue")
           )
         }
       }
       else if (by=="month"){
         for (iane in ane.names){
-          ds<-data.frame(speed=datawd$ane[[iane]]$ave, 
+          ds<-data.frame(mean=datawd$ane[[iane]]$ave, 
                          month=factor(month.names[datawd$time$month], levels=month.names))
           print(
-            ggplot(ds, aes(x=speed)) + 
+            ggplot(ds, aes(x=mean)) + 
               geom_histogram(binwidth=binwidth, colour="black", fill="blue") +
               facet_wrap(  ~ month, ncol=3, drop=F)
           )
@@ -86,10 +86,10 @@ plotWD <-
       }
       else if (by=="hour"){
         for (iane in ane.names){
-          ds<-data.frame(speed=datawd$ane[[iane]]$ave, 
+          ds<-data.frame(mean=datawd$ane[[iane]]$ave, 
                          hour=factor(hour.names2[floor(datawd$time$hour/2)+1], levels=hour.names2))
           print(
-            ggplot(ds, aes(x=speed)) + 
+            ggplot(ds, aes(x=mean)) + 
               geom_histogram(binwidth=binwidth, colour="black", fill="blue") +
               facet_wrap(  ~ hour, ncol=3, drop=F)
           )
@@ -322,10 +322,10 @@ plotWD <-
         y.wei <- dweibull(data1, shape = param$K, scale = param$A)
         y.ga <- dgamma(data1, shape = param$alpha, scale = param$beta)
         y.ln <- dlnorm(data1, meanlog = param$meanlog, sdlog = param$sdlog)
-        dr <- rbind(data.frame(dist = "wei", speed = data1, ajust = y.wei), data.frame(dist = "ga", speed = data1, ajust = y.ga), data.frame(dist = "ln", speed = data1, ajust = y.ln))
-        dw <- rbind(data.frame(dist = "wei", speed = data1, ajust = y.wei))
-        dg <- rbind(data.frame(dist = "ga", speed = data1, ajust = y.ga))
-        dl <- rbind(data.frame(dist = "ln", speed = data1, ajust = y.ln))
+        dr <- rbind(data.frame(dist = "wei", mean = data1, ajust = y.wei), data.frame(dist = "ga", mean = data1, ajust = y.ga), data.frame(dist = "ln", mean = data1, ajust = y.ln))
+        dw <- rbind(data.frame(dist = "wei", mean = data1, ajust = y.wei))
+        dg <- rbind(data.frame(dist = "ga", mean = data1, ajust = y.ga))
+        dl <- rbind(data.frame(dist = "ln", mean = data1, ajust = y.ln))
         distr <- c("wei", "ga", "ln")
         tittle <- c("Weibull Distribution", "Gamma Distribution", "Lognormal Distribution")
         namep1 <- c("K", "alpha", "m")
@@ -337,7 +337,7 @@ plotWD <-
         pushViewport(viewport(layout = grid.layout(2, 3)))  
         vplayout <- function(x, y) viewport(layout.pos.col = x, layout.pos.row = y)
         for (i in 1:3) {
-          print(ggplot(dr[dr$dist == distr[i], ], aes(x = speed)) + geom_histogram(aes(y = ..density..), binwidth=binwidth, colour = "black", fill = "blue") +
+          print(ggplot(dr[dr$dist == distr[i], ], aes(x = mean)) + geom_histogram(aes(y = ..density..), binwidth=binwidth, colour = "black", fill = "blue") +
                   ggtitle(tittle[i]) + geom_line(aes(y = ajust), colour = "red", size = 1) + annotate("text", x=max(data1)*0.8, y=0.11, label = paste(namep1[i], " = ", round(para1[i], digits = 4)), size=3.5) + 
                   annotate("text", x=max(data1)*0.8, y=0.09, label = paste(namep2[i], " = ", round(para2[i], digits = 4)), size=3.5) + annotate("text", x=max(data1)*0.8, y=0.07, label=paste("Loglik =", round(lo[i], digits = 4)), size=3.5),
                 vp = vplayout(rep(1:3)[i], 1))
@@ -346,9 +346,9 @@ plotWD <-
         params.wei <- list(shape = param$K, scale = param$A)
         params.ga <- list(shape = param$alpha, scale = param$beta)
         params.ln <- list(meanlog = param$meanlog, sdlog = param$sdlog)
-        print(ggplot(dr, aes(sample = speed)) + stat_qq(distribution = qweibull, dparams = params.wei), vp = vplayout(1,2))
-        print(ggplot(dr, aes(sample = speed)) + stat_qq(distribution = qgamma, dparams = params.ga), vp = vplayout(2,2))
-        print(ggplot(dr, aes(sample = speed)) + stat_qq(distribution = qlnorm, dparams = params.ln), vp = vplayout(3,2))
+        print(ggplot(dr, aes(sample = mean)) + stat_qq(distribution = qweibull, dparams = params.wei), vp = vplayout(1,2))
+        print(ggplot(dr, aes(sample = mean)) + stat_qq(distribution = qgamma, dparams = params.ga), vp = vplayout(2,2))
+        print(ggplot(dr, aes(sample = mean)) + stat_qq(distribution = qlnorm, dparams = params.ln), vp = vplayout(3,2))
       }
     } else if (type=="boxplot"){
       for (i in ane.names){

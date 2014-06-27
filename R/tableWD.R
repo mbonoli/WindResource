@@ -32,7 +32,7 @@
 tableWD <- 
   function(datawd,
            ane=NA,
-           var=c("speed"),
+           var=c("mean"),
            type=c("histogram"),
            by=c("none","month","hour"),
            since=NULL, 
@@ -69,8 +69,8 @@ tableWD <-
       if (by=="none"){
         result <- list()
         for (i in ane.names){
-          dp<-data.frame(speed=datawd$ane[[i]]$ave)
-          histo <- hist(dp$speed,breaks=seq(0,max(as.numeric(dp$speed),na.rm=T)+1,by=binwidth),plot =F)
+          dp<-data.frame(mean=datawd$ane[[i]]$ave)
+          histo <- hist(dp$mean,breaks=seq(0,max(as.numeric(dp$mean),na.rm=T)+1,by=binwidth),plot =F)
           result [[i]] <- data.frame(
             Lower=histo$breaks[-length(histo$breaks)],
             Upper=histo$breaks[-1],
@@ -80,16 +80,16 @@ tableWD <-
       else if (by=="month"){
         result <- list()
         for (i in ane.names){
-          dp<-data.frame(speed=datawd$ane[[i]]$ave,
+          dp<-data.frame(mean=datawd$ane[[i]]$ave,
                          month=month.names3[datawd$time$month])
-          histo <- hist(dp$speed,breaks=seq(0,max(as.numeric(dp$speed),na.rm=T)+1,by=binwidth),plot =F)
+          histo <- hist(dp$mean,breaks=seq(0,max(as.numeric(dp$mean),na.rm=T)+1,by=binwidth),plot =F)
           breaks <- histo$breaks
           result [[i]] <- data.frame(
             Lower=histo$breaks[-length(histo$breaks)],
             Upper=histo$breaks[-1])
           for (m in month.names3) {
             dpm <- subset(dp,month==m)
-            histo <- hist(dpm$speed,breaks=breaks,plot =F)
+            histo <- hist(dpm$mean,breaks=breaks,plot =F)
             result [[i]][m]<- histo$counts
           }
         }
@@ -97,16 +97,16 @@ tableWD <-
       else if (by=="hour"){
         result <- list()
         for (i in ane.names){
-          dp<-data.frame(speed=datawd$ane[[i]]$ave,
+          dp<-data.frame(mean=datawd$ane[[i]]$ave,
                          hour=factor(hour.names2[floor(datawd$time$hour/2)+1], levels=hour.names2))
-          histo <- hist(dp$speed,breaks=seq(0,max(as.numeric(dp$speed),na.rm=T)+1,by=binwidth),plot =F)
+          histo <- hist(dp$mean,breaks=seq(0,max(as.numeric(dp$mean),na.rm=T)+1,by=binwidth),plot =F)
           breaks <- histo$breaks
           result[[i]] <- data.frame(
             Lower=histo$breaks[-length(histo$breaks)],
             Upper=histo$breaks[-1])
           for (h in hour.names2) {
             dpm <- subset(dp,hour==h)
-            histo <- hist(dpm$speed,breaks=breaks,plot =F)
+            histo <- hist(dpm$mean,breaks=breaks,plot =F)
             result[[i]][h]<- histo$counts
           }
         }

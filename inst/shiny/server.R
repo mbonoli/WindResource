@@ -212,7 +212,7 @@ shinyServer(function(input, output) {
   })
   
   datasetInput <- reactive({
-    tableWD(data=datawd,var="speed", ane=ane.names, input$SELplottype, by=input$SELplotby)
+    tableWD(data=datawd,var="mean", ane=ane.names, input$SELplottype, by=input$SELplotby)
   })
   
   output$downloadData <- downloadHandler(
@@ -242,14 +242,14 @@ shinyServer(function(input, output) {
         if (input$SELplottype=="histogram" | input$SELplottype=="profile" | 
               input$SELplottype=="boxplot" | input$SELplottype=="rose"){
           if (input$SELplottype == 'rose' & input$SELplotby != 'none'){
-            plot(plotWD(data=datawd,var="speed", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth))
+            plot(plotWD(data=datawd,var="mean", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth))
           } else {
-            plotWD(data=datawd,var="speed", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth)
+            plotWD(data=datawd,var="mean", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth)
           } 
         }
         else return(NULL)
       } else if (input$SELanalysis=="fit") {
-        plotWD(data=datawd, var="speed", ane=i, type=input$SELanalysis, binwidth=input$binwidth)
+        plotWD(data=datawd, var="mean", ane=i, type=input$SELanalysis, binwidth=input$binwidth)
       }
     })
   })}
@@ -257,9 +257,9 @@ shinyServer(function(input, output) {
   # Plot Generation All Ane
   output$plotAll <- renderPlot({
     if (input$SELplottype == 'rose' & input$SELplotby != 'none'){
-      print(plotWD(data=datawd,var="speed", ane=ane.names ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth))
+      print(plotWD(data=datawd,var="mean", ane=ane.names ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth))
     } else {
-      plotWD(data=datawd,var="speed", ane=ane.names ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth)
+      plotWD(data=datawd,var="mean", ane=ane.names ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth)
     }
   })
   
@@ -296,7 +296,7 @@ shinyServer(function(input, output) {
       if(input$SELanalysis=="plots"){
         if (input$SELplottype=="histogram" | input$SELplottype=="rose" | input$SELplottype=="profile" | input$SELplottype=="boxplot"){
           #         if (i %in% input$SELane){
-          as.data.frame(tableWD(data=datawd,var="speed", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth)[[i]])
+          as.data.frame(tableWD(data=datawd,var="mean", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth)[[i]])
           #         }
         } else return(NULL)
       } else if (input$SELanalysis=="fit"){
@@ -311,13 +311,13 @@ shinyServer(function(input, output) {
   output$tableAll <- renderTable({
     if (input$SELplottype=="rose"){
       tableWD(data=datawd,
-              var="speed", 
+              var="mean", 
               ane=ane.names,
               type=input$SELplottype, 
               by=input$SELplotby) 
     } else if (input$SELplottype=="profile"){
       tableWD(data=datawd,
-              var="speed", 
+              var="mean", 
               ane=ane.names,
               type=input$SELplottype, 
               by=input$SELplotby) 
@@ -359,7 +359,7 @@ shinyServer(function(input, output) {
                                   input$SELplottype,'.pdf', sep='')},
     content = function(file){
       pdf(file = file, width=11, height=8.5)
-      plotWD(data=datawd,var="speed", ane="Ane1" ,type=input$SELplottype, by=input$SELplotby)
+      plotWD(data=datawd,var="mean", ane="Ane1" ,type=input$SELplottype, by=input$SELplotby)
       dev.off()
     }
   )
@@ -369,7 +369,7 @@ shinyServer(function(input, output) {
                                   '-',
                                   input$SELplottype,'.csv', sep='') },
     content = function(file) {
-      write.csv(as.data.frame(tableWD(data=datawd,var="speed", ane="Ane1" ,type=input$SELplottype, by=input$SELplotby)[[1]]),file)
+      write.csv(as.data.frame(tableWD(data=datawd,var="mean", ane="Ane1" ,type=input$SELplottype, by=input$SELplotby)[[1]]),file)
     }
   )
   
