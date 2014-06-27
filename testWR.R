@@ -1,3 +1,8 @@
+## Instalar paquete desde GitHub   #######
+library(devtools)
+install_github("mbonoli/WindResource")
+###########################################
+
 library("WindResource")
 library(shiny)
 data(wd)
