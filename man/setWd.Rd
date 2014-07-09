@@ -3,13 +3,12 @@
 \alias{setWd}
 \title{Conversion of dataframe in class windata}
 \usage{
-setWd(data, interval = 1, date.var, date.format = c("YYYYMMDD",
-  "YYYY-MM-DD", "YYYY.MM.DD", "DD/MM/YYYY"), time.var, time.format = c("HHMM",
-  "HHMMSS", "HH:MM", "HH:MM:SS", "HH.MM", "HH.MM.SS"), ane.names, ane.height,
-  speed.ave.var, speed.min.var = NA, speed.max.var = NA,
-  speed.sd.var = NA, speed.var.var = NA, speed.unit = NA, dir.var,
-  dir.unit = "deg", temp.var = NA, temp.unit = "C", pres.var = NA,
-  pres.unit = "bar")
+setWd(data, date.var, date.format = c("YYYYMMDD", "YYYY-MM-DD", "YYYY.MM.DD",
+  "DD/MM/YYYY"), time.var, time.format = c("HHMM", "HHMMSS", "HH:MM",
+  "HH:MM:SS", "HH.MM", "HH.MM.SS"), ane.names, ane.height, speed.ave.var,
+  speed.min.var = NA, speed.max.var = NA, speed.sd.var = NA,
+  speed.unit = NA, dir.var, dir.unit = "deg", temp.var = NA,
+  temp.unit = "C", pres.var = NA, pres.unit = "bar", NA.values = NA)
 }
 \arguments{
 \item{data}{a dataframe to be converted}

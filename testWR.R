@@ -1,14 +1,106 @@
-## Instalar paquete desde GitHub   #######
+###########################################
+#       Instalar paquete desde GitHub     #
+###########################################
 library(devtools)
 install_github("mbonoli/WindResource")
 ###########################################
 
+
+###########################################
+#             setWd                       #
+###########################################
+dataOlavarria <- read.csv("~/Investigacion/Vientos/datos/Olavarria.csv", sep=";")
+wdOlavarria <- setWd (dataOlavarria, 
+                      interval = 1,
+                      date.var = "Fecha", 
+                      date.format = "YYYYMMDD", 
+                      time.var ="Hora", 
+                      time.format = "HHMM",
+                      ane.names = c("Ane1"),
+                      ane.height= NA,
+                      speed.ave.var = "Vel",
+                      speed.min.var = NA,
+                      speed.max.var = NA,
+                      speed.sd.var = NA,
+                      speed.var.var = NA,
+                      speed.unit = NA,
+                      dir.var = "Dir",
+                      dir.unit = "deg",
+                      temp.var = "Temp",
+                      temp.unit = "C",
+                      pres.var = "Pres",
+                      pres.unit = "bar")
+str(wdOlavarria)
+save(wdOlavarria, file="~/Investigacion/Vientos/WindResource/data/wdOlavarria.rda")
+
+MtTom.0032_1999.12.01_2002.12.31 <- read.csv("~/Investigacion/Vientos/datos/MtTom-0032_1999-12-01_2002-12-31.dat")
+MtTom.0032_1999.12.01_2002.12.31$date <- substr(MtTom.0032_1999.12.01_2002.12.31[,1],1,10)
+MtTom.0032_1999.12.01_2002.12.31$time <- substr(MtTom.0032_1999.12.01_2002.12.31[,1],12,17)
+wdMtTom <- setWd (MtTom.0032_1999.12.01_2002.12.31, 
+                  interval = 1,
+                  date.var = "date", 
+                  date.format = "YYYY-MM-DD", 
+                  time.var ="time", 
+                  time.format = "HH:MM",
+                  ane.names = c("Anem24aMS","Anem24bMS","Anem37aMS","Anem37bMS"),
+                  ane.height= c(24,24,37,37),
+                  speed.ave.var = c("Anem24aMS","Anem24bMS","Anem37aMS","Anem37bMS"),
+                  speed.min.var = NA,
+                  speed.max.var = NA,
+                  speed.sd.var = c("AnemSD24aMS","AnemSD24bMS","AnemSD37aMS","AnemSD37bMS"),
+                  speed.var.var = NA,
+                  speed.unit = NA,
+                  dir.var = c("Vane24aDEG","Vane24aDEG","Vane37aDEG","Vane37aDEG"),
+                  dir.unit = "deg",
+                  temp.var = "Etmp3aDEGC",
+                  temp.unit = "C",
+                  pres.var = NA,
+                  pres.unit = NA,
+                  NA.values = c(-988, -989, -991, -999))
+str(wdMtTom)
+save(wdMtTom, file="~/Investigacion/Vientos/WindResource/data/wdMtTom.rda")
+
+
+data <- read.csv("~/Investigacion/Vientos/BD/INTI/CH1_29072012_f1_V10_V18_Dir.csv")
+data$date <- substr(data[,1],1,10)
+data$time <- substr(data[,1],12,17)
+wd <- setWd (data, 
+             date.var = "date", 
+             date.format = "DD/MM/YYYY", 
+             time.var ="time", 
+             time.format = "HH:MM",
+             ane.names = c("ane10","ane18"),
+             ane.height= c(10,18),
+             speed.ave.var = c("ave1","ave2"),
+             speed.min.var = c("min1","min2"),
+             speed.max.var = c("max1","max2"),
+             speed.sd.var = c("sd1","sd2"),
+             speed.unit = NA,
+             dir.var = c("dir","dir"),
+             dir.unit = "deg",
+             temp.var = NA,
+             temp.unit = NA,
+             pres.var = NA,
+             pres.unit = NA,
+             NA.values = NA)
+str(wd)
+save(wd, file="~/Investigacion/Vientos/WindResource/data/wd.rda")
+
+data(wd)
+w <- gen10m(wd)
+
+
+
 library("WindResource")
-library(shiny)
 data(wd)
 data(wd10)
 
+data(wdOlavarria)
+runGUI(wdOlavarria)
+
+str(wdOlavarria)
 # Esta es la forma de guardar los archivos: save(wd10,file="wd10.rda",compress=TRUE)
+
 runGUI(wd10)
 runApp("~/GitHub/WindResource/inst/shiny",launch.browser = rstudio::viewer)
 runApp("~/GitHub/WindResource/inst/shiny")
@@ -134,7 +226,7 @@ plotwindserie(datawd,
 plotcalendar (wd10, var="ave", ane="Ane1", shiny=F)
 plotcalendar (wd10, var="ave", ane="Ane2", shiny=F)
 plotcalendar (wd10, var="min", ane="Ane1", shiny=F)
-  
+
 
 # 
 # prefijos0<-function(numero, caracteres=NA) {

@@ -46,7 +46,7 @@ gen10m <- function (wd, Ns=60) {
   # wd10$dir$ang_16 <- (wd10$dir$sect_16-1)*22.5
   require(plyr)
   df<-data.frame()
-  for (i in 1:(wd$nane)){
+  for (i in 1:(wd$ane$nane)){
     df <- rbind(df, data.frame(
       date=wd$data$date, 
       time=wd$data$time,

@@ -11,7 +11,8 @@
 runGUI <- function(data, inRS=T){
   if (class(data)=="windata"){
     require(shiny)
-    datawd <- data
+    dataGUIwd <- data
+    save(dataGUIwd,file=paste(path.package("WindResource"),"/shiny/dataGUIwd.Rd",sep=""))
     if (inRS) runApp(paste(path.package("WindResource"),"/shiny",sep=""),launch.browser = rstudio::viewer)
     else runApp(paste(path.package("WindResource"),"/shiny",sep=""))
   }

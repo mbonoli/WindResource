@@ -9,19 +9,20 @@
 #' @author Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
 #' @export
 
-library("WindResource")
-data(wd10)
-data(wtgData)
-wd10$dir$ang_16 <- (wd10$dir$sect_16-1)*22.5
-class(wd10)<-"windata"
-mindate <- min(wd10[["time"]]$dt)
-maxdate <- max(wd10[["time"]]$dt)
-datawd<-wd10
-nane <- 2
+# library("WindResource")
+# data(wd10)
+# data(wtgData)
+# wd10$dir$ang_16 <- (wd10$dir$sect_16-1)*22.5
+# class(wd10)<-"windata"
+
+# dataGUIwd<-wd10
+print(getwd())
+load(file=paste(path.package("WindResource"),"/shiny/dataGUIwd.Rd",sep=""))
 
 shinyServer(function(input, output) {
-  
-  ane.names <- wd10$info$ane$ane.names
+  mindate <- min(dataGUIwd[["time"]]$dt)
+  maxdate <- max(dataGUIwd[["time"]]$dt)
+  ane.names <- dataGUIwd$info$ane$ane.names
   
   # Plot Type Selector
   output$UIplottype <- renderUI({
@@ -177,7 +178,7 @@ shinyServer(function(input, output) {
             tabs[[1]] <- tabPanel("All", h1("www"), plotOutput("plotAll"))
             skip <- 1
           }
-          for (i in 1:nane){
+          for (i in 1:length(ane.names)){
             tabs[[i+skip]] <- tabPanel(ane.names[i], 
                                        tabsetPanel(
                                          tabPanel("Plot",
@@ -186,7 +187,7 @@ shinyServer(function(input, output) {
                                                   h1("www3")),
                                          tabPanel("Data", 
                                                   h1("www"),
-                                                  tableOutput(as.name(paste("table",ane.names[i],sep="")))) #, downloadButton('dldat', 'Download Sample'))
+                                                  tableOutput(as.name(paste("table",ane.names[i],sep="")))) 
                                        ))
           }
           do.call(tabsetPanel, tabs)
@@ -212,7 +213,7 @@ shinyServer(function(input, output) {
   })
   
   datasetInput <- reactive({
-    tableWD(data=datawd,var="mean", ane=ane.names, input$SELplottype, by=input$SELplotby)
+    tableWD(data=dataGUIwd,var="mean", ane=ane.names, input$SELplottype, by=input$SELplotby)
   })
   
   output$downloadData <- downloadHandler(
@@ -242,14 +243,14 @@ shinyServer(function(input, output) {
         if (input$SELplottype=="histogram" | input$SELplottype=="profile" | 
               input$SELplottype=="boxplot" | input$SELplottype=="rose"){
           if (input$SELplottype == 'rose' & input$SELplotby != 'none'){
-            plot(plotWD(data=datawd,var="mean", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth))
+            plot(plotWD(data=dataGUIwd,var="mean", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth))
           } else {
-            plotWD(data=datawd,var="mean", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth)
+            plotWD(data=dataGUIwd,var="mean", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth)
           } 
         }
         else return(NULL)
       } else if (input$SELanalysis=="fit") {
-        plotWD(data=datawd, var="mean", ane=i, type=input$SELanalysis, binwidth=input$binwidth)
+        plotWD(data=dataGUIwd, var="mean", ane=i, type=input$SELanalysis, binwidth=input$binwidth)
       }
     })
   })}
@@ -257,9 +258,9 @@ shinyServer(function(input, output) {
   # Plot Generation All Ane
   output$plotAll <- renderPlot({
     if (input$SELplottype == 'rose' & input$SELplotby != 'none'){
-      print(plotWD(data=datawd,var="mean", ane=ane.names ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth))
+      print(plotWD(data=dataGUIwd,var="mean", ane=ane.names ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth))
     } else {
-      plotWD(data=datawd,var="mean", ane=ane.names ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth)
+      plotWD(data=dataGUIwd,var="mean", ane=ane.names ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth)
     }
   })
   
@@ -267,7 +268,7 @@ shinyServer(function(input, output) {
   output$plotTs <- renderGvis({
       if(input$SELanalysis=="plots"){
         if (input$SELplottype=="ts"){
-          plotwindserie(datawd,
+          plotwindserie(dataGUIwd,
                         2012, #as.numeric(input$SELyear),
                         09,#as.numeric(input$SELmonth),
                         vars=c("Ave"),
@@ -281,7 +282,7 @@ shinyServer(function(input, output) {
   output$plotCalendar <- renderGvis({
       if(input$SELanalysis=="plots"){
         if (input$SELplottype=="calendar"){
-          plotcalendar (datawd, 
+          plotcalendar (dataGUIwd, 
                         var="ave", 
                         ane="Ane1",
                         shiny=T)
@@ -296,12 +297,12 @@ shinyServer(function(input, output) {
       if(input$SELanalysis=="plots"){
         if (input$SELplottype=="histogram" | input$SELplottype=="rose" | input$SELplottype=="profile" | input$SELplottype=="boxplot"){
           #         if (i %in% input$SELane){
-          as.data.frame(tableWD(data=datawd,var="mean", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth)[[i]])
+          as.data.frame(tableWD(data=dataGUIwd,var="mean", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth)[[i]])
           #         }
         } else return(NULL)
       } else if (input$SELanalysis=="fit"){
         #         if (i %in% input$SELane){
-        as.data.frame(tableWD(data=datawd, var=input$SELplotvar, ane=i, type=input$SELanalysis)[[i]])
+        as.data.frame(tableWD(data=dataGUIwd, var=input$SELplotvar, ane=i, type=input$SELanalysis)[[i]])
         #         }
       }  
     })
@@ -310,13 +311,13 @@ shinyServer(function(input, output) {
   # Plot Generation All Ane
   output$tableAll <- renderTable({
     if (input$SELplottype=="rose"){
-      tableWD(data=datawd,
+      tableWD(data=dataGUIwd,
               var="mean", 
               ane=ane.names,
               type=input$SELplottype, 
               by=input$SELplotby) 
     } else if (input$SELplottype=="profile"){
-      tableWD(data=datawd,
+      tableWD(data=dataGUIwd,
               var="mean", 
               ane=ane.names,
               type=input$SELplottype, 
@@ -328,14 +329,14 @@ shinyServer(function(input, output) {
   output$tableTurbulence <- renderPrint({
     #     summary(c(1:10))
     if(input$SELanalysis=="turbulence"){
-      tableWD(data=datawd, type="turbulence")
+      tableWD(data=dataGUIwd, type="turbulence")
     } else return(NULL)
   })
   
   # plotTurbulence
   output$plotTurbulence <- renderPlot({
     if (input$SELanalysis=="turbulence"){
-      plotWD(data=datawd, type="turbulence")
+      plotWD(data=dataGUIwd, type="turbulence")
     } else return(NULL)
   })
   
@@ -359,7 +360,7 @@ shinyServer(function(input, output) {
                                   input$SELplottype,'.pdf', sep='')},
     content = function(file){
       pdf(file = file, width=11, height=8.5)
-      plotWD(data=datawd,var="mean", ane="Ane1" ,type=input$SELplottype, by=input$SELplotby)
+      plotWD(data=dataGUIwd,var="mean", ane="Ane1" ,type=input$SELplottype, by=input$SELplotby)
       dev.off()
     }
   )
@@ -369,7 +370,7 @@ shinyServer(function(input, output) {
                                   '-',
                                   input$SELplottype,'.csv', sep='') },
     content = function(file) {
-      write.csv(as.data.frame(tableWD(data=datawd,var="mean", ane="Ane1" ,type=input$SELplottype, by=input$SELplotby)[[1]]),file)
+      write.csv(as.data.frame(tableWD(data=dataGUIwd,var="mean", ane="Ane1" ,type=input$SELplottype, by=input$SELplotby)[[1]]),file)
     }
   )
   
