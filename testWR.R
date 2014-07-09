@@ -102,7 +102,6 @@ str(wdOlavarria)
 # Esta es la forma de guardar los archivos: save(wd10,file="wd10.rda",compress=TRUE)
 
 runGUI(wd10)
-runApp("~/GitHub/WindResource/inst/shiny",launch.browser = rstudio::viewer)
 runApp("~/GitHub/WindResource/inst/shiny")
 
 str(wd10)
