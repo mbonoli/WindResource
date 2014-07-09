@@ -29,33 +29,48 @@
 
 
 # Function to estimate parameters of differents distributions
-fitWd <- function(data, ane = NA, dist = c("weibull", "gamma", "lognormal")) {
-  result <- list()
-  result$data <- data
-  result$dist <- dist
-  if (dist == "weibull") {
-    fit_w <- fitdist(data, "weibull")
-    result$loglik <- fit_w$loglik
-    result$aic <- fit_w$aic
-    result$par1 <- list(name = "k", type = "shape", value = as.numeric(fit_w$estimate[1]), sd = as.numeric(fit_w$sd[1]))
-    result$par2 <- list(name = "A", type = "scale", value = as.numeric(fit_w$estimate[2]), sd = as.numeric(fit_w$sd[2]))
+fitWD <- function(data, ane){
+  
+  #if (is.na(ane)[i]) {ane<-names(data$ane)[i]}
+  dat <- data$ane[[ane]]$ave
+  dat <- dat[!is.na(dat)]
+  dat <- dat[dat!=0] 
+  
+  
+  if (length(dat)>20000){
+    vec <- seq(0, length(dat), floor(length(dat)/20000))
+    dat <- dat[vec]
   }
-  if (dist == "gamma") {
-    fit_w <- fitdist(data, "gamma")
-    result$loglik <- fit_w$loglik
-    result$aic <- fit_w$aic
-    result$par1 <- list(name = "alpha", type = "shape", value = as.numeric(fit_w$estimate[1]), sd = as.numeric(fit_w$sd[1]))
-    result$par2 <- list(name = "beta", type = "scale", value = 1/as.numeric(fit_w$estimate[2]), sd = as.numeric(fit_w$sd[2]))
-  }
-  if (dist == "lnorm") {
-    fit_w <- fitdist(data, "lnorm")
-    result$loglik <- fit_w$loglik
-    result$aic <- fit_w$aic
-    result$par1 <- list(name = "meanlog", type = "shape", value = as.numeric(fit_w$estimate[1]), sd = as.numeric(fit_w$sd[1]))
-    result$par2 <- list(name = "sdlog", type = "shape", value = as.numeric(fit_w$estimate[2]), sd = as.numeric(fit_w$sd[2]))
+  else  {
+    dat <- dat
   }
   
+  wd.wei <- fitdist(dat, dist = "weibull")
+  wd.gam <- fitdist(dat, dist = "gamma")
+  wd.ln  <- fitdist(dat, dist = "lnorm")
+  
+  
+  result <- list()
+  
+  result$data <- dat
+  
+  result$K          <- wd.wei$estimate[[1]]
+  result$A          <- wd.wei$estimate[[2]]
+  result$loglik.wei <- wd.wei$loglik
+  result$aic.wei    <- wd.wei$aic
+  
+  result$alpha      <- wd.gam$estimate[[1]]
+  result$beta       <- 1/wd.gam$estimate[[2]]
+  result$loglik.ga  <- wd.gam$loglik
+  result$aic.ga     <- wd.gam$aic
+  
+  result$meanlog    <- wd.ln$estimate[[1]]
+  result$sdlog      <- wd.ln$estimate[[2]]
+  result$loglik.ln  <- wd.ln$loglik
+  result$aic.ln     <- wd.ln$aic
+  
   result
+  
 }
 
             
