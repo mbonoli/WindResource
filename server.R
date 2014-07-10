@@ -9,7 +9,7 @@
 #' @author Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
 #' @export
 
-# library("WindResource")
+library("WindResource")
 # data(wd10)
 # data(wtgData)
 # wd10$dir$ang_16 <- (wd10$dir$sect_16-1)*22.5
