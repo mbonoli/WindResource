@@ -9,11 +9,11 @@
 #' 
 #' @export
 runGUI <- function(data, inRS=T){
-  if (class(data)=="windata"){
-    require(shiny)
-    dataGUIwd <- data
-    save(dataGUIwd,file=paste(path.package("WindResource"),"/shiny/dataGUIwd.Rd",sep=""))
-    runApp(paste(path.package("WindResource"),"/shiny",sep=""))
-  }
-  else stop ("'data' parameter must be windata class.")
+#   if (class(data)=="windata"){
+#     require(shiny)
+#     dataGUIwd <- data
+#     save(dataGUIwd,file=paste(path.package("WindResource"),"/shiny/dataGUIwd.Rd",sep=""))
+#     runApp(paste(path.package("WindResource"),"/shiny",sep=""))
+#   }
+#   else stop ("'data' parameter must be windata class.")
 }

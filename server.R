@@ -16,9 +16,11 @@
 # class(wd10)<-"windata"
 
 # dataGUIwd<-wd10
-print(getwd())
-load(file=paste(path.package("WindResource"),"/shiny/dataGUIwd.Rd",sep=""))
+# print(getwd())
+# load(file=paste(path.package("WindResource"),"/shiny/dataGUIwd.Rd",sep=""))
 
+data(wd10)
+dataGUIwd <- wd10
 shinyServer(function(input, output) {
   mindate <- min(dataGUIwd[["time"]]$dt)
   maxdate <- max(dataGUIwd[["time"]]$dt)
