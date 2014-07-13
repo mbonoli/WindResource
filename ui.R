@@ -19,11 +19,13 @@ shinyUI(pageWithSidebar(
   # and to specify whether outliers should be included
   sidebarPanel(
     
+    selectInput("dataset", "Choose a dataset:", 
+                choices = c("sample1", "sample2", "sample3", "sample4")),
     selectInput("SELanalysis","Analysis type:",list(
-                        "Plots" = "plots", 
-                        "Turbulence" = "turbulence",
-                        "Fit" = "fit", 
-                        "Power Curve" = "pc")) ,
+      "Plots" = "plots", 
+      "Turbulence" = "turbulence",
+      "Fit" = "fit", 
+      "Power Curve" = "pc")) ,
     uiOutput("UIplottype"),
     uiOutput("UIturbinetype"),
     uiOutput("UIwtg"),
@@ -33,27 +35,12 @@ shinyUI(pageWithSidebar(
     uiOutput("UIdates"),
     downloadButton('dldat', 'Download Table'),
     downloadButton("dlCurPlot", "Download Plot")
-
+    
   ),
- 
+  
   # Show the caption and plot of the requested variable against mpg
   mainPanel(
     uiOutput("UItabs")
-#     h3(textOutput("caption")),
-#     tabsetPanel(
-#       tabPanel("Plot",
-#                h4(textOutput("captionP1")),
-#                plotOutput("plot1"),
-#                h4(textOutput("captionP2")),
-#                plotOutput("plot2")
-#       ),
-#       tabPanel("Tables",
-#                h4(textOutput("captionT1")),
-#                htmlOutput("table1"),
-#                h4(textOutput("captionT2")),
-#                htmlOutput("table2"),
-#                h4(textOutput("captionT3")),
-#                htmlOutput("table3")             
-#       )
-#     )
-)))
+  )
+)
+)

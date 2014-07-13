@@ -106,17 +106,19 @@ runApp("~/GitHub/WindResource/inst/shiny")
 
 str(wd10)
 # Histogram
-plotWD (data=wd10, var="mean", type="histogram", by="none")
+plotWD (data=wdOlavarria, var="mean", type="histogram", by="none")
 plotWD (data=wd10, var="mean", type="histogram", by="none", binwidth=.2)
 plotWD (data=wd10, var="mean", since='2012-11-01', to='2012-12-31', type="histogram", by="none")
 plotWD (data=wd10, var="mean", type="histogram", by="none")
 tableWD(data=wd10,var="mean", type="histogram", by="none")
-plotWD (data=wd10, var="mean", ane="Ane2", type="histogram", by="month")
+plotWD (data=wdOlavarria, var="mean", ane="Anem24bMS", type="histogram", by="month")
 tableWD (data=wd10,var="mean", ane="Ane2", type="histogram", by="month")
 tableWD (data=wd10, var="mean", since='2012-11-01', to='2012-12-31', type="histogram", by="none")
 tableWD (data=wd10, var="mean", type="histogram", by="none", binwidth=.2)
 
 # Rose
+plotWD (data=wdOlavarria,ane=NA,var="mean", type="rose", by="none")
+plotWD (data=wdOlavarria,ane=c("Anem24aMS","Anem37bMS"),var="mean", type="rose", by="none")
 plotWD (data=wd10,ane=c("Ane1","Ane2"),var="mean", type="rose", by="none")
 plotWD (data=wd10,ane=c("Ane1","Ane2"),var="mean", type="rose", by="month")
 plotWD (data=wd10,ane=c("Ane1","Ane2"),var="mean", type="rose", by="hour")

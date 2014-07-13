@@ -115,15 +115,10 @@ tableWD <-
     else if (type=="rose"){
       dfs<-list()
       result<-list()
-      
-      if (var=="ave") {j <- 1
-        } else if (var=="min") {j <- 2
-          } else if (var=="max") {j  <- 3
-          } else {j <- 4}     
-      
+      selcol <- ifelse (var=="mean", "ave", var)   
       for (i in ane.names){
-        dfs[[i]]=data.frame(ave=datawd$ane[[i]][[j]],
-                            rose=datawd$dir$rose, 
+        dfs[[i]]=data.frame(ave=datawd$ane[[i]][,selcol],
+                            rose=datawd$ane[[i]]$rose, 
                             month=datawd$time$month,
                             hour=factor(hour.names2[floor(datawd$time$hour/2)+1]))
       }

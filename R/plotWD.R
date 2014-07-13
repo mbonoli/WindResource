@@ -38,8 +38,17 @@ plotWD <-
            since=NULL, 
            to=NULL,
            binwidth=1){
-
+    
     require(plyr)
+    
+    # Set default values
+    if (is.na(ane)[1])
+      ane <- datawd$ane$ane.names
+    
+    # Checks
+    if (sum(ane %in% datawd$ane$ane.names) != length(ane) & !is.na(ane)[1])
+      stop ("The anemometer names don't match with de dataset")
+    
     
     # Apply date filter
     if (!is.null(since)){
@@ -52,18 +61,16 @@ plotWD <-
         datawd[["ane"]][[i]] <- datawd[["ane"]][[i]][valid.cases,]
       }
     }
-  
+    
     month.names<- c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
     hour.names2 <- c("00:00 - 01:59","02:00 - 03:59","04:00 - 05:59","06:00 - 07:59","08:00 - 09:59","10:00 - 11:59","12:00 - 13:59","14:00 - 15:59","16:00 - 17:59","18:00 - 19:59","20:00 - 21:59","22:00 - 23:59")
     hour.names <- pref0(0:23,2)
-
+    
     if (class(datawd) != "windata") stop("Los datos no correponden a la clase 'windata'.")
     
-    if (is.na(ane[1])) {ane.names <- names(datawd$ane)}
-    else {ane.names <- ane}
-   
+    ane.names <- datawd[["ane"]][["ane.names"]]
+    
     if (type=="histogram"){
-      #if (!(var=="speed" | is.na(var))) stop ("Only 'speed' var is supported for histograms at the moment.")
       if (by=="none"){
         for (iane in ane.names){     
           dp<-data.frame(mean=datawd$ane[[iane]]$ave)
@@ -98,37 +105,15 @@ plotWD <-
     }
     else if (type=="rose"){
       dfall<-data.frame()
-      
-      if (var=="mean") {j = 1
-        } else if (var=="min") {j=2
-          } else if (var=="max") {j=3
-           } else {j =4}
-      
-      for (i in ane.names){
-        dfall <- rbind(dfall,
-                       data.frame(speed.start=datawd$ane[[i]][[j]],
-                                  rose=as.factor(datawd$dir$rose), 
-                                  ang.start=datawd$dir$ang_16, 
-                                  ane=i, 
-                                  month=factor(month.names[datawd$time$month], levels=month.names),
-                                  hour=factor(hour.names2[floor(datawd$time$hour/2)+1])))
-                          
-      }
-            
       if (var=="frec"){
-        
         df <- data.frame()          
         t <- list()
-       
         if (by=="none"){
-          #browser()
           for (j in ane.names){
-            
             t[[j]] <- data.frame(table(rose=dfall$rose), ane=j, ang.start=c(90.0, 67.5, 92.5, 0, 45, 22.5, 337.5, 315, 180, 135, 157.5, 202.5, 225, 270, 292.5, 247.5))           
             t[[j]]["Freq"] <- t[[j]]["Freq"]/sum(t[[j]]["Freq"])
             df <- rbind(df, t[[j]])
           }
-          
           dataplot <- data.frame(rose=df$rose, ane=df$ane, ang.start=df$ang.start, speed.start = df$Freq)
           dataplot <- dataplot[do.call("order", dataplot["ang.start"]), , drop=FALSE]
           print(dataplot)
@@ -147,15 +132,12 @@ plotWD <-
               color=ane, group=ane),size=1)
         }
         else if (by=="month"){
-          
           for (i in ane.names){
             #browser()
             t[[i]] <- data.frame(table(rose=dfall$rose, month=dfall$month), ane=i, ang.start=c(90.0, 67.5, 92.5, 0, 45, 22.5, 337.5, 315, 180, 135, 157.5, 202.5, 225, 270, 292.5, 247.5))           
             t[[i]]["Freq"] <- t[[i]]["Freq"]/sum(t[[i]]["Freq"])
             df <- rbind(df, t[[i]])
-          
           }
-          
           dataplot <- data.frame(rose=df$rose, ane=df$ane, month=df$month, ang.start=df$ang.start, speed.start = df$Freq)
           #dataplot <- dataplot[do.call("order", dataplot["ang.start"]), , drop=FALSE]
           dataplot$ang.end <- ifelse(dataplot$ang.start + 22.5 >= 360, dataplot$ang.start - 337.5,dataplot$ang.start + 22.5)
@@ -172,22 +154,17 @@ plotWD <-
             facet_wrap(  ~ month, ncol=4, drop=F)
         }
         else if (by=="hour"){
-          
           for (i in ane.names){
             #browser()
             t[[i]] <- data.frame(table(rose=dfall$rose, hour=dfall$hour), ane=i, ang.start=c(90.0, 67.5, 92.5, 0, 45, 22.5, 337.5, 315, 180, 135, 157.5, 202.5, 225, 270, 292.5, 247.5))           
             t[[i]]["Freq"] <- t[[i]]["Freq"]/sum(t[[i]]["Freq"])
             df <- rbind(df, t[[i]])
-            
           }
-          
           dataplot <- data.frame(rose=df$rose, ane=df$ane, hour=df$hour, ang.start=df$ang.start, speed.start = df$Freq)
           dataplot$ang.end <- ifelse(dataplot$ang.start + 22.5 >= 360, dataplot$ang.start - 337.5,dataplot$ang.start + 22.5)
           dataplot$speed.end <- dataplot[apply(dataplot, 1, function(x) ifelse(length(which(as.numeric(dataplot$ang.start)==as.numeric(x["ang.end"]) & dataplot$ane== x["ane"] & dataplot$hour==x["hour"]))==0,NA,which(as.numeric(dataplot$ang.start)==as.numeric(x["ang.end"]) & dataplot$ane== x["ane"] & dataplot$hour==x["hour"]))),"speed.start"]
           dataplot <- add.cart.coord(dataplot)
-          print(head(dataplot, 50))
           maxi <- max(dataplot[5])
-          print(maxi)
           polar.theme(ggplot(data=dataplot), maxi=maxi) +
             geom_segment(data=dataplot, mapping=aes(
               x=x, y=y, 
@@ -195,16 +172,25 @@ plotWD <-
               color=ane, group=ane),size=1) +
             facet_wrap(  ~ hour, ncol=4, drop=F)
         }      
-      } else {
-        
+      } 
+      else { # var != frec
+        selcol <- ifelse (var=="mean", "ave", var) 
+        for (i in ane.names){
+          dfall <- rbind(dfall,
+                         data.frame(speed.start=datawd$ane[[i]][,selcol],
+                                    rose=as.factor(datawd$ane[[i]][,"rose"]), 
+                                    ang.start=datawd$ane[[i]][,"ang_16"], 
+                                    ane=i, 
+                                    month=factor(month.names[datawd$time$month], levels=month.names),
+                                    hour=factor(hour.names2[floor(datawd$time$hour/2)+1])))       
+        }  
         if (by=="none"){
-
           dataplot <- aggregate(speed.start ~ rose + ane + ang.start , data = dfall, FUN=var)
-          print(dataplot)
           dataplot$ang.end <- ifelse(dataplot$ang.start + 22.5 >= 360, dataplot$ang.start - 337.5,dataplot$ang.start + 22.5)
+          dataplot$ang.end[dataplot$ang.end==0] <- 360 
           dataplot$speed.end <- dataplot[apply(dataplot, 1, function(x) ifelse(length(which(as.numeric(dataplot$ang.start)==as.numeric(x["ang.end"]) & dataplot$ane== x["ane"]))==0,NA,which(as.numeric(dataplot$ang.start)==as.numeric(x["ang.end"]) & dataplot$ane== x["ane"]))),"speed.start"] 
           dataplot <- add.cart.coord(dataplot)
-          print(dataplot)
+          dataplot <- dataplot[dataplot$ane %in% ane,]
           maxi <- max(dataplot[4])
           polar.theme(ggplot(data=dataplot), maxi=maxi) +
             geom_segment(data=dataplot, mapping=aes(
@@ -243,7 +229,6 @@ plotWD <-
               color=ane, group=ane),size=1) +
             facet_wrap(  ~ hour, ncol=4, drop=F)
         }
-        
       }
     }
     else if (type=="correlation"){
@@ -256,7 +241,6 @@ plotWD <-
         ylab(paste("Wind Speed ",datawd$info$ane$height[2],"m [",datawd$info$unit$speed,"]",sep=""))
     }
     else if (type=="profile"){
-#       browser()
       df <- data.frame()
       for (i in ane){
         df <- rbind(df,
@@ -292,8 +276,7 @@ plotWD <-
       else stop("Profiles plots requires that the By paremeter takes values 'month' or 'hour'.")
     }
     else if (type=="turbulence"){
-      require (sqldf)
-      
+      require (sqldf)     
       df <- data.frame(ave=datawd$ane[[1]]$ave,
                        sd=datawd$ane[[1]]$sd)
       df$I <- df$sd/df$ave*100
@@ -361,7 +344,7 @@ plotWD <-
           print(ggplot(dfbox, aes(factor(month), ave)) + geom_boxplot())
         }
       }
-    
+      
     } else stop(paste("invalid plot type '",type,"'",sep=""))
-  
+    
   }
