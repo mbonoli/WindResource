@@ -9,9 +9,9 @@
 #' @author Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
 #' @export
 
-# Auxiliary function 
-pref0<-function (data, charnum){
-  .str <- paste("000000000", data, sep = "")
-  .str_nchar <- nchar(.str)
-  substring(.str, .str_nchar - charnum + 1, .str_nchar)
-}
+# Auxiliary function
+pref0 <- function(data, charnum) {
+    .str <- paste("000000000", data, sep = "")
+    .str_nchar <- nchar(.str)
+    substring(.str, .str_nchar - charnum + 1, .str_nchar)
+} 

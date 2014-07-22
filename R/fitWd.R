@@ -4,11 +4,11 @@
 #' Fit of univariate distribution by maximum likelihood.
 #' 
 #' @details
-#' The "name" of distribution must be one of "Weibull", "Gamma", "Lognormal".
+#' The 'name' of distribution must be one of 'Weibull', 'Gamma', 'Lognormal'.
 #' 
 #' @param data object of class wd.
-#' @param ane a vector with the anemometers'name to study. By default "ane" takes the first anemometer.
-#' @param dist character string "name" naming a distribution to be used (see details).
+#' @param ane a vector with the anemometers'name to study. By default 'ane' takes the first anemometer.
+#' @param dist character string 'name' naming a distribution to be used (see details).
 #' @return 
 #' A list with the following components:
 #' -aic: Akaike Index Coefficient.
@@ -25,53 +25,49 @@
 #' @export
 #' @examples
 #' # simple example using the wd class
-#' # list_para <- fitWd(Wd, ane=1, dist="weibull")
+#' # list_para <- fitWd(Wd, ane=1, dist='weibull')
 
 
 # Function to estimate parameters of differents distributions
-fitWD <- function(data, ane){
-  
-  #if (is.na(ane)[i]) {ane<-names(data$ane)[i]}
-  dat <- data$ane[[ane]]$ave
-  dat <- dat[!is.na(dat)]
-  dat <- dat[dat!=0] 
-  
-  
-  if (length(dat)>20000){
-    vec <- seq(0, length(dat), floor(length(dat)/20000))
-    dat <- dat[vec]
-  }
-  else  {
-    dat <- dat
-  }
-  
-  wd.wei <- fitdist(dat, dist = "weibull")
-  wd.gam <- fitdist(dat, dist = "gamma")
-  wd.ln  <- fitdist(dat, dist = "lnorm")
-  
-  
-  result <- list()
-  
-  result$data <- dat
-  
-  result$K          <- wd.wei$estimate[[1]]
-  result$A          <- wd.wei$estimate[[2]]
-  result$loglik.wei <- wd.wei$loglik
-  result$aic.wei    <- wd.wei$aic
-  
-  result$alpha      <- wd.gam$estimate[[1]]
-  result$beta       <- 1/wd.gam$estimate[[2]]
-  result$loglik.ga  <- wd.gam$loglik
-  result$aic.ga     <- wd.gam$aic
-  
-  result$meanlog    <- wd.ln$estimate[[1]]
-  result$sdlog      <- wd.ln$estimate[[2]]
-  result$loglik.ln  <- wd.ln$loglik
-  result$aic.ln     <- wd.ln$aic
-  
-  result
-  
-}
-
-            
-                          
+fitWD <- function(data, ane) {
+    
+    # if (is.na(ane)[i]) {ane<-names(data$ane)[i]}
+    dat <- data$ane[[ane]]$ave
+    dat <- dat[!is.na(dat)]
+    dat <- dat[dat != 0]
+    
+    
+    if (length(dat) > 20000) {
+        vec <- seq(0, length(dat), floor(length(dat)/20000))
+        dat <- dat[vec]
+    } else {
+        dat <- dat
+    }
+    
+    wd.wei <- fitdist(dat, dist = "weibull")
+    wd.gam <- fitdist(dat, dist = "gamma")
+    wd.ln <- fitdist(dat, dist = "lnorm")
+    
+    
+    result <- list()
+    
+    result$data <- dat
+    
+    result$K <- wd.wei$estimate[[1]]
+    result$A <- wd.wei$estimate[[2]]
+    result$loglik.wei <- wd.wei$loglik
+    result$aic.wei <- wd.wei$aic
+    
+    result$alpha <- wd.gam$estimate[[1]]
+    result$beta <- 1/wd.gam$estimate[[2]]
+    result$loglik.ga <- wd.gam$loglik
+    result$aic.ga <- wd.gam$aic
+    
+    result$meanlog <- wd.ln$estimate[[1]]
+    result$sdlog <- wd.ln$estimate[[2]]
+    result$loglik.ln <- wd.ln$loglik
+    result$aic.ln <- wd.ln$aic
+    
+    result
+    
+} 

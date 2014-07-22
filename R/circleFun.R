@@ -9,10 +9,10 @@
 #' @return The parameter value that was extracted.
 #' @author Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
 
-circleFun <- function(center = c(0,0),radio = 1, npoints = 100){
-  r = radio
-  tt <- seq(0,2*pi,length.out = npoints)
-  xx <- center[1] + r * cos(tt)
-  yy <- center[2] + r * sin(tt)
-  return(data.frame(x = xx, y = yy))
-}
+circleFun <- function(center = c(0, 0), radio = 1, npoints = 100) {
+    r = radio
+    tt <- seq(0, 2 * pi, length.out = npoints)
+    xx <- center[1] + r * cos(tt)
+    yy <- center[2] + r * sin(tt)
+    return(data.frame(x = xx, y = yy))
+} 
