@@ -92,7 +92,8 @@ plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"), by = c("no
                   drop = F))
             }
         }
-    } else if (type == "rose") {
+    } 
+    else if (type == "rose") {
         dfall <- data.frame()
         if (var == "frec") {
             df <- data.frame()
@@ -175,7 +176,8 @@ plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"), by = c("no
                   mapping = aes(x = x, y = y, xend = xend, yend = yend, color = ane, 
                     group = ane), size = 1) + facet_wrap(~hour, ncol = 4, drop = F)
             }
-        } else {
+        } 
+        else {
             # var != frec
             selcol <- ifelse(var == "mean", "ave", var)
             for (i in ane.names) {
@@ -197,42 +199,41 @@ plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"), by = c("no
                     dataplot$ane == x["ane"]))), "speed.start"]
                 dataplot <- add.cart.coord(dataplot)
                 dataplot <- dataplot[dataplot$ane %in% ane, ]
-                maxi <- max(dataplot[4])
+                maxi <- max(dataplot$speed.start)
                 polar.theme(ggplot(data = dataplot), maxi = maxi) + geom_segment(data = dataplot, 
                   mapping = aes(x = x, y = y, xend = xend, yend = yend, color = ane, 
                     group = ane), size = 1)
             } else if (by == "month") {
                 dataplot <- aggregate(speed.start ~ rose + ane + ang.start + month, 
                   data = dfall, FUN = var)
-                print(dataplot)
                 dataplot$ang.end <- ifelse(dataplot$ang.start + 22.5 >= 360, dataplot$ang.start - 
                   337.5, dataplot$ang.start + 22.5)
+                dataplot$ang.end[dataplot$ang.end == 0] <- 360
                 dataplot$speed.end <- dataplot[apply(dataplot, 1, function(x) ifelse(length(which(as.numeric(dataplot$ang.start) == 
                   as.numeric(x["ang.end"]) & dataplot$ane == x["ane"] & dataplot$month == 
                   x["month"])) == 0, NA, which(as.numeric(dataplot$ang.start) == 
                   as.numeric(x["ang.end"]) & dataplot$ane == x["ane"] & dataplot$month == 
                   x["month"]))), "speed.start"]
                 dataplot <- add.cart.coord(dataplot)
-                # print(dataplot)
-                maxi <- max(dataplot[5])
-                print(maxi)
+                dataplot <- dataplot[dataplot$ane %in% ane, ]
+                maxi <- max(dataplot$speed.start)
                 polar.theme(ggplot(data = dataplot), maxi = maxi) + geom_segment(data = dataplot, 
                   mapping = aes(x = x, y = y, xend = xend, yend = yend, color = ane, 
-                    group = ane), size = 1) + facet_wrap(~month, ncol = 4, drop = F)
+                    group = ane), size = 1) + facet_wrap(~month, ncol = 4, drop = F)  
             } else if (by == "hour") {
                 dataplot <- aggregate(speed.start ~ rose + ane + ang.start + hour, 
                   data = dfall, FUN = var)
                 dataplot$ang.end <- ifelse(dataplot$ang.start + 22.5 >= 360, dataplot$ang.start - 
                   337.5, dataplot$ang.start + 22.5)
+                dataplot$ang.end[dataplot$ang.end == 0] <- 360
                 dataplot$speed.end <- dataplot[apply(dataplot, 1, function(x) ifelse(length(which(as.numeric(dataplot$ang.start) == 
                   as.numeric(x["ang.end"]) & dataplot$ane == x["ane"] & dataplot$hour == 
                   x["hour"])) == 0, NA, which(as.numeric(dataplot$ang.start) == 
                   as.numeric(x["ang.end"]) & dataplot$ane == x["ane"] & dataplot$hour == 
                   x["hour"]))), "speed.start"]
                 dataplot <- add.cart.coord(dataplot)
-                print(head(dataplot, 50))
-                maxi <- max(dataplot[5])
-                print(maxi)
+                dataplot <- dataplot[dataplot$ane %in% ane, ]
+                maxi <- max(dataplot$speed.start)
                 polar.theme(ggplot(data = dataplot), maxi = maxi) + geom_segment(data = dataplot, 
                   mapping = aes(x = x, y = y, xend = xend, yend = yend, color = ane, 
                     group = ane), size = 1) + facet_wrap(~hour, ncol = 4, drop = F)
