@@ -29,10 +29,10 @@ shinyServer(function(input, output) {
   
   datasetInput2 <- reactive({
     switch(input$dataset,
-           sample1=wdOlavarria,
-           sample2=wdMtTom,
-           sample3=wd,
-           sample4=wd10)
+           wdOlavarria=wdOlavarria,
+           wdMtTom=wdMtTom,
+           wd=wd,
+           wd10=wd10)
   })
   mindate <- reactive({
     data <- datasetInput2()

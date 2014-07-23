@@ -40,7 +40,7 @@
 #' head(wd)
 #' 
 
-setWd <- function(data, date.var, date.format = c("YYYYMMDD", "YYYY-MM-DD", "YYYY.MM.DD", 
+setWd <- function(data, name = NA, date.var, date.format = c("YYYYMMDD", "YYYY-MM-DD", "YYYY.MM.DD", 
     "DD/MM/YYYY"), time.var, time.format = c("HHMM", "HHMMSS", "HH:MM", "HH:MM:SS", 
     "HH.MM", "HH.MM.SS"), ane.names, ane.height, speed.ave.var, speed.min.var = NA, 
     speed.max.var = NA, speed.sd.var = NA, speed.unit = NA, dir.var, dir.unit = "deg", 
@@ -74,7 +74,7 @@ setWd <- function(data, date.var, date.format = c("YYYYMMDD", "YYYY-MM-DD", "YYY
         cat(paste(nEmptyRecords, " records without date/hour were eliminated. See $cleaning$recordsWithoutDate", 
             sep = ""))
     }
-    result[["cleaning"]][["recordsWithoutDate"]] <- data[emptyRec, ]
+    # result[["cleaning"]][["recordsWithoutDate"]] <- data[emptyRec, ]
     data <- data[!is.na(data[, date.var]) & !is.na(data[, time.var]), ]
     
     # $data result$data <- data.frame(date = data[ ,date.var], time = data[
@@ -116,8 +116,9 @@ setWd <- function(data, date.var, date.format = c("YYYYMMDD", "YYYY-MM-DD", "YYY
         2), ".", pref0(result$time$day, 2), " ", pref0(result$time$hour, 2), ":", 
         pref0(result$time$minute, 2), ":00", sep = ""), "%Y.%m.%d %H:%M:%S", tz = "")
     result[["time"]]$Q <- floor((result$time$month/3) - 0.01) + 1
+
+    result[["interval.minutes"]] <- round(mean(diff(result$time$dt)),0) * ifelse(attr(mean(diff(result$time$dt)),"units")=="mins",1,60)
     
-    result[["interval.minutes"]] <- as.numeric(mean(diff(result$time$dt))) * 60
     cat(paste("Time interval between records: ", result[["interval.minutes"]], 
         " minutes \n", sep = ""))
     cat(paste("First time: ", min(result$time$dt), " \n", sep = ""))

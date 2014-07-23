@@ -41,18 +41,18 @@
 #' 
 
 gen10m <- function(wd, Ns = 60) {
-    
+
     # HECER ESTA CORRECCION wd10$dir$ang_16 <- (wd10$dir$sect_16-1)*22.5
     require(plyr)
     df <- data.frame()
-    for (i in 1:(wd$ane$nane)) {
-        df <- rbind(df, data.frame(date = wd$data$date, time = wd$data$time, year = wd$time$year, 
+    for (i in wd$ane$ane.names) {
+        df <- rbind(df, data.frame(year = wd$time$year, 
             month = wd$time$month, day = wd$time$day, hour = wd$time$hour, minute = wd$time$minute, 
-            dt = wd$time$dt, Q = wd$time$Q, ave = wd$ane[[i]]$ave, min = wd$ane[[i]]$min, 
-            max = wd$ane[[i]]$max, sd = wd$ane[[i]]$sd, ane = names(wd$ane)[i], 
-            min10 = floor(wd$time$minute/10) + 1, count = 1, dir = wd$dir$value))
+            dt = wd$time$dt, Q = wd$time$Q, ave = wd[["ane"]][[i]]$ave, min = wd[["ane"]][[i]]$min, 
+            max = wd[["ane"]][[i]]$max, sd = wd[["ane"]][[i]]$sd, ane = i, 
+            min10 = floor(wd$time$minute/10) + 1, count = 1, dir = wd[["ane"]][[i]]$dir))
     }
-    
+
     df.ave <- aggregate(ave ~ ane + year + month + day + hour + min10, data = df, 
         mean)
     df.dt <- aggregate(dt ~ ane + year + month + day + hour + min10, data = df, 
@@ -85,10 +85,14 @@ gen10m <- function(wd, Ns = 60) {
     ane.names <- unique(df$ane)
     result$time <- df[df$ane == ane.names[1], c("dt", "year", "month", "day", "hour", 
         "minute")]
-    result$ane <- split(df[, c("ave", "min", "max", "sd")], df$ane)
-    result$dir <- data.frame(value = df$dir, sect_12 = dir.sector(df$dir, 12), 
-        ang_12 = dir.ang(df$dir, 12), sect_16 = dir.sector(df$dir, 16), ang_16 = dir.ang(df$dir, 
-            16), rose = dir.rose(df$dir))
+    rose_dir <- c("N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", 
+           "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW")
+    df$sect_12 <- floor(df$dir/(360/12)) + 1
+    df$ang_12 = ((floor(df$dir/(360/12)) + 1) - 1) * 360/12
+    df$sect_16 = floor(df$dir/(360/16)) + 1
+    df$ang_16 = (floor(df$dir/(360/16)) + 1) * (360/16)
+    df$rose = factor(rose_dir[floor(df$dir/(360/16)) + 1], levels = rose_dir)
+    result$ane <- split(df[, c("ave", "min", "max", "sd","dir","sect_12","ang_12","sect_16","ang_16","rose")], df$ane)
     result$info <- wd$info
     class(result) <- "windata"
     

@@ -5,13 +5,13 @@ library(devtools)
 install_github("mbonoli/WindResource")
 ###########################################
 
-
+library(WindResource)
 ###########################################
 #             setWd                       #
 ###########################################
-dataOlavarria <- read.csv("~/Investigacion/Vientos/datos/Olavarria.csv", sep=";")
+dataOlavarria <- read.csv("~/Investigacion/Vientos/BD/Olavarria.csv", sep=";")
 wdOlavarria <- setWd (dataOlavarria, 
-                      interval = 1,
+                      name="Data Olavarría",
                       date.var = "Fecha", 
                       date.format = "YYYYMMDD", 
                       time.var ="Hora", 
@@ -22,7 +22,6 @@ wdOlavarria <- setWd (dataOlavarria,
                       speed.min.var = NA,
                       speed.max.var = NA,
                       speed.sd.var = NA,
-                      speed.var.var = NA,
                       speed.unit = NA,
                       dir.var = "Dir",
                       dir.unit = "deg",
@@ -33,11 +32,11 @@ wdOlavarria <- setWd (dataOlavarria,
 str(wdOlavarria)
 save(wdOlavarria, file="~/Investigacion/Vientos/WindResource/data/wdOlavarria.rda")
 
-MtTom.0032_1999.12.01_2002.12.31 <- read.csv("~/Investigacion/Vientos/datos/MtTom-0032_1999-12-01_2002-12-31.dat")
+MtTom.0032_1999.12.01_2002.12.31 <- read.csv("~/Investigacion/Vientos/BD/MtTom-0032_1999-12-01_2002-12-31.dat")
 MtTom.0032_1999.12.01_2002.12.31$date <- substr(MtTom.0032_1999.12.01_2002.12.31[,1],1,10)
 MtTom.0032_1999.12.01_2002.12.31$time <- substr(MtTom.0032_1999.12.01_2002.12.31[,1],12,17)
 wdMtTom <- setWd (MtTom.0032_1999.12.01_2002.12.31, 
-                  interval = 1,
+                  name = "Data MtTom",
                   date.var = "date", 
                   date.format = "YYYY-MM-DD", 
                   time.var ="time", 
@@ -48,7 +47,6 @@ wdMtTom <- setWd (MtTom.0032_1999.12.01_2002.12.31,
                   speed.min.var = NA,
                   speed.max.var = NA,
                   speed.sd.var = c("AnemSD24aMS","AnemSD24bMS","AnemSD37aMS","AnemSD37bMS"),
-                  speed.var.var = NA,
                   speed.unit = NA,
                   dir.var = c("Vane24aDEG","Vane24aDEG","Vane37aDEG","Vane37aDEG"),
                   dir.unit = "deg",
@@ -65,6 +63,7 @@ data <- read.csv("~/Investigacion/Vientos/BD/INTI/CH1_29072012_f1_V10_V18_Dir.cs
 data$date <- substr(data[,1],1,10)
 data$time <- substr(data[,1],12,17)
 wd <- setWd (data, 
+             name="Data CCo",
              date.var = "date", 
              date.format = "DD/MM/YYYY", 
              time.var ="time", 
@@ -87,8 +86,8 @@ str(wd)
 save(wd, file="~/Investigacion/Vientos/WindResource/data/wd.rda")
 
 data(wd)
-w <- gen10m(wd)
-
+wd10 <- gen10m(wd)
+save(wd10, file="~/Investigacion/Vientos/WindResource/data/wd10.rda")
 
 
 library("WindResource")
