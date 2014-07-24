@@ -44,7 +44,7 @@ plotwindserie <- function(wd, year, month, vars = c("Ave", "Min", "Max", "Temp",
     "Pres", "Dir"), axis = c("Ave", "Min", "Max", "Temp", "Pres", "Dir"), shiny = F) {
     
     if (sum(wd$time$year == year & wd$time$month == month) == 0) 
-        stop("no existe el año y mes")
+        stop("No existe el año y mes seleccionado")
     require(googleVis)
     data <- data.frame(dt = as.POSIXct(NA), val = NA, type = NA)
     

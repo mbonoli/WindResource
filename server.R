@@ -46,7 +46,26 @@ shinyServer(function(input, output) {
     data <- datasetInput2()
     data[["ane"]]$ane.names
   })
-    
+  ane.names.char <- reactive({
+    data <- datasetInput2()
+    as.character(paste(data[["ane"]]$ane.names, sep=", "))
+  })
+  data.length <- reactive({
+    data <- datasetInput2()
+    length(data[["time"]][,1])
+  })
+  time.interval <- reactive({
+    data <- datasetInput2()
+    data[["interval.minutes"]]
+  })
+  ane.names <- reactive({
+    data <- datasetInput2()
+    data[["ane"]]$ane.names
+  })
+  dataset.name <- reactive({
+    data <- datasetInput2()
+    data[["name"]]
+  })
   # Plot Type Selector
   output$UIplottype <- renderUI({
     if(input$SELanalysis=="plots"){
@@ -164,6 +183,7 @@ shinyServer(function(input, output) {
   
   # Dates Selector
   output$UIdates <- renderUI({
+    if (input$SELanalysis!="info"){
           wellPanel(h4("Date Filter"), label="", 
                                    start = mindate(),
                                    end = maxdate(), 
@@ -171,13 +191,25 @@ shinyServer(function(input, output) {
                                    max = maxdate(), 
                                    format = "yyyy-mm-dd", startview = "month", weekstart = 0,
                                    language = "en", separator = " to ")
-          
-      })
+    }
+})
   
   # UI Tabs
   output$UItabs <- renderUI ({
     data <- datasetInput2()
-    if(input$SELanalysis=="plots" | input$SELanalysis=="fit"){
+    if(input$SELanalysis=="info"){
+      tabsetPanel(
+        tabPanel("Dataset Information",
+                 h2(paste("Name: ",dataset.name(),sep="")),
+                 h4(paste("Number of records: ",data.length(),sep="")),
+                 h4(paste("Anemometers: ", paste(ane.names.char(), collapse = ", "))),
+                 h4(paste("Time interval: ",time.interval()," minutes",sep="")),
+                 h4(paste("First time: ",mindate(),sep="")),
+                 h4(paste("Last time: ",maxdate(),sep=""))
+                 )
+        )
+    }
+    else if(input$SELanalysis=="plots" | input$SELanalysis=="fit"){
       if(!is.null(input$SELplottype)){ # Esto no se muy bien porque pero tirar error sino.
         tabs <- list(NULL)
         skip <- 0
@@ -370,6 +402,12 @@ shinyServer(function(input, output) {
     } else return(NULL)
   })
   
+  # Info
+  output$info <- renderPrint({
+    Panel(h4("Hola"),
+    h3("yyyy"))
+  })
+
   # tableTurbine
   output$tableTurbine <- renderPrint({
     if(input$SELanalysis=="pc"){
@@ -400,7 +438,6 @@ shinyServer(function(input, output) {
   
   output$dldat <- downloadHandler(
     filename = function() { paste(input$SELanalysis,
-                                  '-',
                                   input$SELplottype,'.csv', sep='') },
     content = function(file) {
       write.csv(as.data.frame(tableWD(data=data,var="mean", ane="Ane1" ,type=input$SELplottype, by=input$SELplotby)[[1]]),file)

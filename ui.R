@@ -20,8 +20,8 @@ shinyUI(pageWithSidebar(
   sidebarPanel(
     
     selectInput("dataset", "Choose a dataset:", 
-                choices = c("sample1", "sample2", "sample3", "sample4")),
-    selectInput("SELanalysis","Analysis type:",list(
+                choices = c("wdOlavarria", "wdMtTom", "wd", "wd10")),
+    selectInput("SELanalysis","Analysis type:",list("Data Info" = "info",
       "Plots" = "plots", 
       "Turbulence" = "turbulence",
       "Fit" = "fit", 

@@ -80,6 +80,9 @@ setWd <- function(data, name = NA, date.var, date.format = c("YYYYMMDD", "YYYY-M
     # $data result$data <- data.frame(date = data[ ,date.var], time = data[
     # ,time.var])
     
+    # $name
+    result[["name"]] <- name
+    
     # $time
     if (date.format == "YYYYMMDD") {
         result[["time"]] <- data.frame(year = as.numeric(substring(data[, date.var], 
@@ -117,7 +120,7 @@ setWd <- function(data, name = NA, date.var, date.format = c("YYYYMMDD", "YYYY-M
         pref0(result$time$minute, 2), ":00", sep = ""), "%Y.%m.%d %H:%M:%S", tz = "")
     result[["time"]]$Q <- floor((result$time$month/3) - 0.01) + 1
 
-    result[["interval.minutes"]] <- round(mean(diff(result$time$dt)),0) * ifelse(attr(mean(diff(result$time$dt)),"units")=="mins",1,60)
+    result[["interval.minutes"]] <- as.numeric(round(mean(diff(result$time$dt)),0) * ifelse(attr(mean(diff(result$time$dt)),"units")=="mins",1,60))
     
     cat(paste("Time interval between records: ", result[["interval.minutes"]], 
         " minutes \n", sep = ""))

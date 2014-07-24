@@ -11,7 +11,7 @@ library(WindResource)
 ###########################################
 dataOlavarria <- read.csv("~/Investigacion/Vientos/BD/Olavarria.csv", sep=";")
 wdOlavarria <- setWd (dataOlavarria, 
-                      name="Data Olavarría",
+                      name="Datos Olavarría",
                       date.var = "Fecha", 
                       date.format = "YYYYMMDD", 
                       time.var ="Hora", 
