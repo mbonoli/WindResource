@@ -42,6 +42,22 @@ shinyServer(function(input, output) {
     data <- datasetInput2()
     max(data[["time"]]$dt)    
   })
+  year.list <- reactive({
+    data <- datasetInput2()
+    s <- list()
+    for (i in unique(format(wd$time$dt,"%Y"))){
+      s[[i]] <- i
+    }
+    s
+  })
+  month.list <- reactive({
+    data <- datasetInput2()
+    s <- list()
+    for (i in unique(format(wd$time$dt,"%m"))){
+      s[[i]] <- i
+    }
+    s
+  })
   ane.names <- reactive({
     data <- datasetInput2()
     data[["ane"]]$ane.names
@@ -148,21 +164,9 @@ shinyServer(function(input, output) {
                     selectInput("SELane","Anemometer:",
                                 listane),
                     selectInput("SELyear","Year:",
-                                list("2012" = "2012", 
-                                     "2013" = "2013")),
+                                year.list()),
                     selectInput("SELmonth","Month:",
-                                list("01" = "01", 
-                                     "02" = "02",
-                                     "03" = "03",
-                                     "04" = "04",
-                                     "05" = "05",
-                                     "06" = "06",
-                                     "07" = "07",
-                                     "08" = "08",
-                                     "09" = "09",
-                                     "10" = "10",
-                                     "11" = "11",
-                                     "12" = "12")))
+                                month.list()))
         } 
         else if (input$SELplottype=="calendar"){
           listane <- ane.names()
@@ -184,13 +188,15 @@ shinyServer(function(input, output) {
   # Dates Selector
   output$UIdates <- renderUI({
     if (input$SELanalysis!="info"){
-          wellPanel(h4("Date Filter"), label="", 
+          wellPanel(h4("Date Filter"), 
+                    dateRangeInput(label="",
+                                   inputId = "SELdate",
                                    start = mindate(),
                                    end = maxdate(), 
                                    min = mindate(),
                                    max = maxdate(), 
                                    format = "yyyy-mm-dd", startview = "month", weekstart = 0,
-                                   language = "en", separator = " to ")
+                                   language = "en"))
     }
 })
   
@@ -321,9 +327,11 @@ shinyServer(function(input, output) {
       if(input$SELanalysis=="plots"){
         if (input$SELplottype=="ts"){
           data <- datasetInput2()
+          print(as.numeric(input$SELyear))
+          print(as.numeric(input$SELmonth))
           plotwindserie(data,
-                        2012, #as.numeric(input$SELyear),
-                        09,#as.numeric(input$SELmonth),
+                        as.numeric(input$SELyear),
+                        as.numeric(input$SELmonth),
                         vars=c("Ave"),
                         axis=c("Ave"),
                         shiny=T)
