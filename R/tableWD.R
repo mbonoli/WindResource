@@ -32,7 +32,34 @@
 tableWD <- function(datawd, ane = NA, var = c("mean"), type = c("histogram"), by = c("none", 
     "month", "hour"), since = NULL, to = NULL, binwidth = 1) {
     
-    require(reshape2)
+  if (class(datawd) != "windata") 
+    stop("Los datos no correponden a la clase 'windata'.")
+
+  # Checks
+  if (sum(ane %in% datawd$ane$ane.names) != length(ane) & !is.na(ane)[1]) 
+    stop("The anemometer names don't match with de dataset")
+  
+  # Checks Turbulence
+  if (type=="turbulence"){
+    if (is.na(ane)[1])
+      if (wd[["ane"]][["nane"]]!=1) {
+        stop("Debe indicar el nombre del anemometro")
+      } else {
+        ane <- wd[["ane"]][["ane.names"]]
+      }
+    print(ane)
+    if (is.null(wd[["ane"]][[ane]][["sd"]]))
+      stop("No se cuenta con información de desvíos estándar")
+    if (wd[["interval.minutes"]]!=10)
+      stop("No se cuenta con información diezminutal")
+  }
+  
+  # Set default values
+  if (is.na(ane)[1]) 
+    ane <- datawd$ane$ane.names
+  
+  
+  require(reshape2)
     
     rose_dir <- c("N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", 
         "SW", "WSW", "W", "WNW", "NW", "NNW")
@@ -43,8 +70,7 @@ tableWD <- function(datawd, ane = NA, var = c("mean"), type = c("histogram"), by
         "18:00 - 19:59", "20:00 - 21:59", "22:00 - 23:59")
     hour.names <- pref0(0:23, 2)
     
-    if (class(datawd) != "windata") 
-        stop("Los datos no correponden a la clase 'windata'.")
+
     
     # Apply date filter
     if (!is.null(since)) {
@@ -164,8 +190,8 @@ tableWD <- function(datawd, ane = NA, var = c("mean"), type = c("histogram"), by
         
     } else if (type == "turbulence") {
         require(sqldf)
-        
-        df <- data.frame(ave = datawd$ane[[1]]$ave, sd = datawd$ane[[1]]$sd)
+        print(ane)
+        df <- data.frame(ave = wd[["ane"]][[ane]][["ave"]], sd = wd[["ane"]][[ane]][["sd"]])
         df$I <- df$sd/df$ave * 100
         df$bin <- floor(df$ave + 0.5)
         dataplot <- sqldf("select bin widspeed, count(*) count, avg(I) I from df where bin>=1 group by bin")
@@ -180,7 +206,7 @@ tableWD <- function(datawd, ane = NA, var = c("mean"), type = c("histogram"), by
         result <- list()
         for (i in ane.names) {
             
-            param <- fitWd(datawd, ane = i)
+            param <- fitWD(datawd, ane = i)
             
             # Building the table
             result[[i]] <- data.frame(cbind(Parameter1 = c(paste("k=", round(param$K, 

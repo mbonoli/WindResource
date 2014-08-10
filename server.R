@@ -215,7 +215,7 @@ shinyServer(function(input, output) {
                  )
         )
     }
-    else if(input$SELanalysis=="plots" | input$SELanalysis=="fit"){
+    else if(input$SELanalysis=="plots"){
       if(!is.null(input$SELplottype)){ # Esto no se muy bien porque pero tirar error sino.
         tabs <- list(NULL)
         skip <- 0
@@ -254,6 +254,22 @@ shinyServer(function(input, output) {
         
       } else return(NULL)
     } 
+    else if(input$SELanalysis=="fit"){
+        tabs <- list(NULL)
+        skip <- 0
+          for (i in 1:length(ane.names())){
+            tabs[[i+skip]] <- tabPanel(ane.names()[i], 
+                                       tabsetPanel(
+                                         tabPanel("Plot",
+                                                  h1("www1"),
+                                                  plotOutput(paste("plot",ane.names()[i],sep=""))),
+                                         tabPanel("Data", 
+                                                  h1("www"),
+                                                  tableOutput(as.name(paste("table",ane.names()[i],sep="")))) 
+                                       ))
+          }
+          do.call(tabsetPanel, tabs)
+    }
     else if (input$SELanalysis=="pc"){
       tabsetPanel(
         tabPanel("Plot", plotOutput("plotTurbine")),
@@ -303,11 +319,13 @@ shinyServer(function(input, output) {
               plot(plotWD(data=data,var="mean", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth))
             } else {
               plotWD(data=data,var="mean", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth)
-            } 
+            }
           }
           else return(NULL)
-        } else if (input$SELanalysis=="fit") {
-          plotWD(data=data, var="mean", ane=i, type=input$SELanalysis, binwidth=input$binwidth)
+        } else {
+          if (input$SELanalysis=="fit") {
+          plotWD(data=data, ane=i, type=input$SELanalysis, binwidth=input$binwidth)
+        }
         }
       })
     })}

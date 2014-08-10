@@ -6,6 +6,8 @@ install_github("mbonoli/WindResource")
 ###########################################
 
 library(WindResource)
+data(wdOlavarria)
+data(wdMtTom)
 ###########################################
 #             setWd                       #
 ###########################################
@@ -156,13 +158,13 @@ plotWD (data=wd10,var="mean", type="correlation", by="hour")
 plotWD (data=wd10,ane=c("Ane1", "Ane2"),var="mean", type="profile", by="hour")
 
 plotWD (data=wd10, type="turbulence")
+plotWD (data=wdOlavarria, type="turbulence")
 tableWD (data=wd10, type="turbulence")
 
 
 
 library("WindResource")
 
-# wd10$dir$ang_16 <- (wd10$dir$sect_16-1)*22.5
 class(wd10)<-"windata"
 runGUI(wd10)
 
@@ -198,12 +200,16 @@ tableWD (data=wd10,ane=c("Ane1", "Ane2"),var="mean", type="profile", by="hour",s
 
 plotWD (data=wd10, type="turbulence")
 tableWD (data=wd10, type="turbulence")
+plotWD (data=wdOlavarria, type="turbulence")
+tableWD (data=wdOlavarria, type="turbulence")
+plotWD (data=wdMtTom, type="turbulence")
+tableWD (data=wdMtTom, type="turbulence")
 
 
-plotWD (data=wd10, type="fit")
+plotWD (data=wdOlavarria, type="fit")
 tableWD (data=wd10, type="fit")
 
-
+turbulence (wdOlavaria)
 turbulence (wd)
 turbulence (wd10)
 

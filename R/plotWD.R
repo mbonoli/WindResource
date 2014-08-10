@@ -34,13 +34,30 @@ plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"), by = c("no
     
     require(plyr)
     
-    # Set default values
-    if (is.na(ane)[1]) 
-        ane <- datawd$ane$ane.names
+    if (class(datawd) != "windata") 
+      stop("Los datos no correponden a la clase 'windata'.")
     
     # Checks
     if (sum(ane %in% datawd$ane$ane.names) != length(ane) & !is.na(ane)[1]) 
         stop("The anemometer names don't match with de dataset")
+    
+    # Checks Turbulence
+    if (type=="turbulence"){
+      if (is.na(ane))
+        if (wd[["ane"]][["nane"]]!=1) {
+          stop("Debe indicar el nombre del anemometro")
+        } else {
+          ane <- wd[["ane"]][["ane.names"]]
+        }
+      if (is.null(wd[["ane"]][[ane]][["sd"]]))
+        stop("No se cuenta con información de desvíos estándar")
+      if (wd[["interval.minutes"]]!=10)
+        stop("No se cuenta con información diezminutal")
+    }
+    
+    # Set default values
+    if (is.na(ane)[1]) 
+      ane <- datawd$ane$ane.names
     
     
     # Apply date filter
@@ -274,7 +291,8 @@ plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"), by = c("no
         } else stop("Profiles plots requires that the By paremeter takes values 'month' or 'hour'.")
     } else if (type == "turbulence") {
         require(sqldf)
-        df <- data.frame(ave = datawd$ane[[1]]$ave, sd = datawd$ane[[1]]$sd)
+  
+        df <- data.frame(ave = wd[["ane"]][[ane]][["ave"]], sd = wd[["ane"]][[ane]][["sd"]])
         df$I <- df$sd/df$ave * 100
         df$bin <- floor(df$ave + 0.5)
         dataplot <- sqldf("select bin widspeed, count(*) count, avg(I) I from df where bin>=1 group by bin")
@@ -291,7 +309,7 @@ plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"), by = c("no
             size = 12)))
     } else if (type == "fit") {
         for (i in ane.names) {
-            param <- fitWd(datawd, ane = i)
+            param <- fitWD(datawd, ane = i)
             data1 <- c(0, param$data)
             y.wei <- dweibull(data1, shape = param$K, scale = param$A)
             y.ga <- dgamma(data1, shape = param$alpha, scale = param$beta)

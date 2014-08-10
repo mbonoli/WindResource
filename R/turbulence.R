@@ -9,12 +9,24 @@
 #' 
 #' @export
 
-turbulence <- function(wd) {
+turbulence <- function(wd, ane=NA) {
     # browser()
     require(sqldf)
     require(ggplot2)
+
     
-    df <- data.frame(ave = wd$ane[[1]]$ave, sd = wd$ane[[1]]$sd)
+    if (is.na(ane))
+      if (wd[["ane"]][["nane"]]!=1) {
+        stop("Debe indicar el nombre del anemometro")
+      } else {
+        ane <- wd[["ane"]][["ane.names"]]
+      }
+    if (is.null(wd[["ane"]][[ane]][["sd"]]))
+        stop("No se cuenta con información de desvíos estándar")
+    if (wd[["interval.minutes"]]!=10)
+        stop("No se cuenta con información diezminutal")
+    
+    df <- data.frame(ave = wd[["ane"]][[ane]][["ave"]], sd = wd[["ane"]][[ane]][["sd"]])
     df$I <- df$sd/df$ave * 100
     df$bin <- floor(df$ave + 0.5)
     dataplot <- sqldf("select bin widspeed, count(*) count, avg(I) I from df where bin>=1 group by bin")
