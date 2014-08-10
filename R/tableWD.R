@@ -202,14 +202,9 @@ tableWD <- function(datawd, ane = NA, var = c("mean"), type = c("histogram"), by
         result <- list(Iref = data.frame(Iref = mean(df[df$ave >= 14.5 & df$ave <= 
             15.5, "I"], na.rm = T)), data_turbulence = dataplot)
     } else if (type == "fit") {
-        
-        result <- list()
-        for (i in ane.names) {
-            
-            param <- fitWD(datawd, ane = i)
-            
+            param <- fitWD(datawd, ane = ane)
             # Building the table
-            result[[i]] <- data.frame(cbind(Parameter1 = c(paste("k=", round(param$K, 
+            result <- data.frame(cbind(Parameter1 = c(paste("k=", round(param$K, 
                 digits = 4)), paste("alpha=", round(param$alpha, digits = 4)), 
                 paste("m=", round(param$meanlog, digits = 4))), Parameter2 = c(paste("C=", 
                 round(param$A, digits = 4)), paste("beta=", round(param$beta, digits = 4)), 
@@ -217,8 +212,6 @@ tableWD <- function(datawd, ane = NA, var = c("mean"), type = c("histogram"), by
                 floor(param$loglik.ga), floor(param$loglik.ln)), aic = c(floor(param$aic.wei), 
                 floor(param$aic.ga), floor(param$aic.ln))), row.names = c("Weibull", 
                 "Gamma", "Lognormal"))
-            # result <- summary(c(1:10))
-        }
     } else if (type == "boxplot") {
         
         result <- list()

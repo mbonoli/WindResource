@@ -308,8 +308,8 @@ plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"), by = c("no
             5) + theme(axis.title.x = element_text(face = "bold", size = 12), axis.title.y = element_text(face = "bold", 
             size = 12)))
     } else if (type == "fit") {
-        for (i in ane.names) {
-            param <- fitWD(datawd, ane = i)
+
+            param <- fitWD(datawd, ane = ane)
             data1 <- c(0, param$data)
             y.wei <- dweibull(data1, shape = param$K, scale = param$A)
             y.ga <- dgamma(data1, shape = param$alpha, scale = param$beta)
@@ -332,7 +332,7 @@ plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"), by = c("no
             vplayout <- function(x, y) viewport(layout.pos.col = x, layout.pos.row = y)
             for (i in 1:3) {
                 print(ggplot(dr[dr$dist == distr[i], ], aes(x = mean)) + geom_histogram(aes(y = ..density..), 
-                  binwidth = binwidth, colour = "black", fill = "blue") + ggtitle(tittle[i]) + 
+                  binwidth = 1, colour = "black", fill = "blue") + ggtitle(tittle[i]) + 
                   geom_line(aes(y = ajust), colour = "red", size = 1) + annotate("text", 
                   x = max(data1) * 0.8, y = 0.11, label = paste(namep1[i], " = ", 
                     round(para1[i], digits = 4)), size = 3.5) + annotate("text", 
@@ -351,7 +351,6 @@ plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"), by = c("no
                 dparams = params.ga), vp = vplayout(2, 2))
             print(ggplot(dr, aes(sample = mean)) + stat_qq(distribution = qlnorm, 
                 dparams = params.ln), vp = vplayout(3, 2))
-        }
     } else if (type == "boxplot") {
         for (i in ane.names) {
             dfbox <- data.frame(hour = datawd$time$hour, day = datawd$time$day, 

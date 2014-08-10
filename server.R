@@ -107,7 +107,7 @@ shinyServer(function(input, output) {
   # Plot Options Selector
   output$UIplotopt <- renderUI({
     if(input$SELanalysis=="plots"){
-      if(!is.null(input$SELplottype)) {
+      if(!is.null(input$SELplottype)){
         if(input$SELplottype=="rose"){
           wellPanel(div(class="row", 
                         div(class="span5 offset1", 
@@ -183,6 +183,14 @@ shinyServer(function(input, output) {
         else return(NULL)
       } else return(NULL)
     }
+    else if(input$SELanalysis=="fit" | input$SELanalysis=="turbulence"){
+      listane <- ane.names()
+      names(listane) <- ane.names()
+      listane <- as.list(listane)
+      wellPanel(h4("Options",align = "center"),
+                selectInput("SELane","Anemometer:",
+                            listane))
+    }
   })
   
   # Dates Selector
@@ -255,20 +263,9 @@ shinyServer(function(input, output) {
       } else return(NULL)
     } 
     else if(input$SELanalysis=="fit"){
-        tabs <- list(NULL)
-        skip <- 0
-          for (i in 1:length(ane.names())){
-            tabs[[i+skip]] <- tabPanel(ane.names()[i], 
-                                       tabsetPanel(
-                                         tabPanel("Plot",
-                                                  h1("www1"),
-                                                  plotOutput(paste("plot",ane.names()[i],sep=""))),
-                                         tabPanel("Data", 
-                                                  h1("www"),
-                                                  tableOutput(as.name(paste("table",ane.names()[i],sep="")))) 
-                                       ))
-          }
-          do.call(tabsetPanel, tabs)
+      tabsetPanel(
+        tabPanel("Plot", plotOutput("plotFit")),
+        tabPanel("Data", htmlOutput("dataFit")))
     }
     else if (input$SELanalysis=="pc"){
       tabsetPanel(
@@ -322,10 +319,6 @@ shinyServer(function(input, output) {
             }
           }
           else return(NULL)
-        } else {
-          if (input$SELanalysis=="fit") {
-          plotWD(data=data, ane=i, type=input$SELanalysis, binwidth=input$binwidth)
-        }
         }
       })
     })}
@@ -382,10 +375,6 @@ shinyServer(function(input, output) {
             as.data.frame(tableWD(data=data,var="mean", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth)[[i]])
             #         }
           } else return(NULL)
-        } else if (input$SELanalysis=="fit"){
-          #         if (i %in% input$SELane){
-          as.data.frame(tableWD(data=data, var=input$SELplotvar, ane=i, type=input$SELanalysis)[[i]])
-          #         }
         }  
       })
     })}
@@ -413,10 +402,9 @@ shinyServer(function(input, output) {
   
   # tableTurbulence
   output$tableTurbulence <- renderPrint({
-    #     summary(c(1:10))
     data <- datasetInput2()
     if(input$SELanalysis=="turbulence"){
-      tableWD(data=data, type="turbulence")
+      tableWD(data=data, type="turbulence", ane=input$SELane)
     } else return(NULL)
   })
   
@@ -424,14 +412,8 @@ shinyServer(function(input, output) {
   output$plotTurbulence <- renderPlot({
     if (input$SELanalysis=="turbulence"){
       data <- datasetInput2()
-      plotWD(data=data, type="turbulence")
+      plotWD(data=data, type="turbulence", ane=input$SELane)
     } else return(NULL)
-  })
-  
-  # Info
-  output$info <- renderPrint({
-    Panel(h4("Hola"),
-    h3("yyyy"))
   })
 
   # tableTurbine
@@ -450,6 +432,22 @@ shinyServer(function(input, output) {
     } 
   })
   
+# plotFit
+output$plotFit <- renderPlot({
+  if (input$SELanalysis=="fit"){
+    data <- datasetInput2()
+    plotWD(data=data, ane=input$SELane, type=input$SELanalysis, binwidth=input$binwidth)
+  } 
+})
+
+# tableFit
+output$dataFit <- renderTable({
+  if (input$SELanalysis=="fit"){
+    data <- datasetInput2()
+    as.data.frame(tableWD(data=data, var=input$SELplotvar, ane=input$SELane, type=input$SELanalysis))
+  } 
+})
+
   output$dlCurPlot <- downloadHandler(
     filename = function() { paste(input$SELanalysis,
                                   '-',

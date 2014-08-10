@@ -1,0 +1,50 @@
+---
+title: "PlotWd"
+---
+
+Esta función permite describir en forma gráfica las caracterísicas del viento en intensidad y dirección. Los gráficos que se pueden obtener a partir de esta fución son: *histogramas*, *rosas de vientos*, *ajustes  a diferentes distribuciones*, *series de tiempos*, *turbulencia*, *correlaciones entre diferentes anemómetros*. 
+
+Los parámetros que uitiliza la función son:
+
+- **data**     objeto de clase Windata,
+- **ane**      distiguen el anemómetro a ser analizado. Por default analiza todos los anemómetros.
+- **var**      variable que se quiere estudiar. Por default se utiliza la media de la velocidad del viento. 
+- **type**     indica que tipo de gráfico se requiere. Los posibles gráficos son los expresados anteriormente.
+- **by**       permite hacer comparaciones para distintos intervalos de tiempos.Las opciones de intervalos son *hour*, *day* y *month*.
+- **since**    esta opción permite indicar desde que fecha se requiere el análisis.
+- **to**       esta opción permite indicar hasta que fecha se requier el análisis
+- **bindwith** parámetro para indicar el ancho del bin. 
+
+
+Las variables admitidas para el gráfico rosa de viento son *velocidad media*, *mímima* o *máxima*, y *frecuencia*. Para los otros tipos de gráficos la única variable admitida es velocidad media.    
+El gráfico fit compara los diferentes ajustes meidante las ditribuciones  *Weibull*, *Gamma* y *Lognormal*.    
+El parámetro **by** es utilizado en lo tipos de gráficos *histogramas*, *rosas de vientos* y *perfiles*.   
+**Bindwith** es utilizado solamente en los gráficos *histograma* y *fit*
+
+**A continuación se presentan diferentes ejemplos de posibles gráficos de la función:**
+
+```{r, cache.comments=TRUE}
+library("WindResource")
+data(wdOlavarria)
+```
+
+```{r, plotWD, fig.with=6, fig.height=4, fig.align='center'}
+plotWD (data=wdOlavarria, var="mean", type="histogram", by="month")
+```
+
+Gráfico 1. Comparación de la velocidad media del viento de cada mes mediante histogramas.
+
+
+```{r, fig.with=6, fig.height=4, fig.align='center'}
+plotWD (data=wdOlavarria, var="mean", type="rose", by="month")
+```
+
+Gráfico 2. Rosa de vientos para las medias de las velocidades de dos anemómetros ubicados a diferentes alturas, y segmentados cada dos horas.
+
+
+```{r, fig.with=6, fig.height=4, fig.align='center'}
+plotWD (data=wdOlavarria, type="fit")
+```
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
