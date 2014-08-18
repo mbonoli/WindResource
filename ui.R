@@ -1,4 +1,4 @@
-#' @title Complete numbersxcc
+#' @title Complete numbers
 #' 
 #' @description
 #' Function to Complete numbers
