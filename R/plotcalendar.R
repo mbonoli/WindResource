@@ -52,7 +52,7 @@ plotcalendar <- function(wd, var = c("ave", "min", "max"), ane = "Ane1", shiny =
             width = 590, height = 320), chartid = "Calendar")
     } else {
         plotdata <- gvisCalendar(data = dataplot, datevar = "date", numvar = "value", 
-            options = list(title = "Calendar heat map of MSFT adjsuted close", 
+            options = list(title = "Calendar map Anemometer: Anem37aMS", 
                 calendar = "{cellSize:10,\n                                 yearLabel:{fontSize:20, color:'#444444'},\n                                 focusedCellColor:{stroke:'red'}}", 
                 width = 590, height = 320), chartid = "Calendar")
         

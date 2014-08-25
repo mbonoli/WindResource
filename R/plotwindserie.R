@@ -51,19 +51,19 @@ plotwindserie <- function(wd, year, month, vars = c("Ave", "Min", "Max", "Temp",
     colorlines <- "["
     # 'blue', 'lightblue', 'lightblue', 'red']'
     if ("Ave" %in% vars) {
-        data <- rbind(data, data.frame(dt = wd$time$dt, val = wd[["ane"]]$Ane1$ave, 
+        data <- rbind(data, data.frame(dt = wd$time$dt, val = wd[["ane"]]$Anem24aMS$ave, 
             type = "Ave")[wd$time$year == year & wd$time$month == month, ])
         colorlines <- paste(colorlines, ifelse(nchar(colorlines) == 1, "", ","), 
             " 'blue'", sep = "")
     }
     if ("Min" %in% vars) {
-        data <- rbind(data, data.frame(dt = wd$time$dt, val = wd[["ane"]]$Ane1$min, 
+        data <- rbind(data, data.frame(dt = wd$time$dt, val = wd[["ane"]]$Anem24aMS$min, 
             type = "Min")[wd$time$year == year & wd$time$month == month, ])
         colorlines <- paste(colorlines, ifelse(nchar(colorlines) == 1, "", ","), 
             " 'lightgray'", sep = "")
     }
     if ("Max" %in% vars) {
-        data <- rbind(data, data.frame(dt = wd$time$dt, val = wd[["ane"]]$Ane1$max, 
+        data <- rbind(data, data.frame(dt = wd$time$dt, val = wd[["ane"]]$Anem24aMS$max, 
             type = "Max")[wd$time$year == year & wd$time$month == month, ])
         colorlines <- paste(colorlines, ifelse(nchar(colorlines) == 1, "", ","), 
             " 'lightgray'", sep = "")

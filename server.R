@@ -29,8 +29,8 @@ shinyServer(function(input, output) {
   
   datasetInput2 <- reactive({
     switch(input$dataset,
-           wdOlavarria=wdOlavarria,
            wdMtTom=wdMtTom,
+           wdOlavarria=wdOlavarria,
            wd=wd,
            wd10=wd10)
   })
@@ -59,7 +59,12 @@ shinyServer(function(input, output) {
     s
   })
   ane.names <- reactive({
-    data <- datasetInput2()
+    #data <- datasetInput2()
+    switch(input$dataset,
+           wdMtTom=wdMtTom,
+           wdOlavarria=wdOlavarria,
+           wd=wd,
+           wd10=wd10)
     data[["ane"]]$ane.names
   })
   ane.names.char <- reactive({
@@ -124,7 +129,7 @@ shinyServer(function(input, output) {
         else if(input$SELplottype=="histogram"){
           wellPanel(h4("Plot Options",align = "center"),
                     div(class="row", 
-                            div(class="span3", 
+                        div(class="span3", 
                             radioButtons("SELplotby","By:",
                                          list("None" = "none", 
                                               "Hour" = "hour", 
@@ -196,17 +201,17 @@ shinyServer(function(input, output) {
   # Dates Selector
   output$UIdates <- renderUI({
     if (input$SELanalysis!="info"){
-          wellPanel(h4("Date Filter"), 
-                    dateRangeInput(label="",
-                                   inputId = "SELdate",
-                                   start = mindate(),
-                                   end = maxdate(), 
-                                   min = mindate(),
-                                   max = maxdate(), 
-                                   format = "yyyy-mm-dd", startview = "month", weekstart = 0,
-                                   language = "en"))
+      wellPanel(h4("Date Filter"), 
+                dateRangeInput(label="",
+                               inputId = "SELdate",
+                               start = mindate(),
+                               end = maxdate(), 
+                               min = mindate(),
+                               max = maxdate(), 
+                               format = "yyyy-mm-dd", startview = "month", weekstart = 0,
+                               language = "en"))
     }
-})
+  })
   
   # UI Tabs
   output$UItabs <- renderUI ({
@@ -220,20 +225,20 @@ shinyServer(function(input, output) {
                  h4(paste("Time interval: ",time.interval()," minutes",sep="")),
                  h4(paste("First time: ",mindate(),sep="")),
                  h4(paste("Last time: ",maxdate(),sep=""))
-                 )
         )
+      )
     }
     else if(input$SELanalysis=="plots"){
       if(!is.null(input$SELplottype)){ # Esto no se muy bien porque pero tirar error sino.
         tabs <- list(NULL)
         skip <- 0
         if (input$SELplottype=="ts"){
-            tabsetPanel(
-              tabPanel("Plot", htmlOutput("plotTs")),
-              tabPanel("Data", verbatimTextOutput(("dataTs"))
-              )
-            )  
-          }
+          tabsetPanel(
+            tabPanel("Plot", htmlOutput("plotTs")),
+            tabPanel("Data", verbatimTextOutput(("dataTs"))
+            )
+          )  
+        }
         else if (input$SELplottype=="calendar"){
           tabsetPanel(
             tabPanel("Plot", htmlOutput("plotCalendar")),
@@ -251,6 +256,7 @@ shinyServer(function(input, output) {
                                        tabsetPanel(
                                          tabPanel("Plot",
                                                   h1("www1"),
+                                                  h1(paste("plot",ane.names()[i],sep="")),
                                                   plotOutput(paste("plot",ane.names()[i],sep=""))),
                                          tabPanel("Data", 
                                                   h1("www"),
@@ -283,7 +289,7 @@ shinyServer(function(input, output) {
     } 
     else return(NULL)
   })
-
+  
   output$downloadData <- downloadHandler(
     filename = function() { 'data.csv' },
     content = function(file) {
@@ -292,21 +298,9 @@ shinyServer(function(input, output) {
     }
   )
   
-  output$captionP1 <- renderText({
-    result <- NULL
-    if (input$Ane1==T) result<-"Ane1"    
-    else if (input$Ane2==T) result<-"Ane2"
-    result
-  })
-  output$captionP2 <- renderText({
-    result <- NULL
-    if (input$Ane2==T & input$Ane1==T  & input$SELplottype!="rose") result<-"Ane2"
-    result
-  })
-  
-  for (x in isolate(ane.names())){
-    data <- isolate(datasetInput2())
+  observe({for (x in ane.names()){
     local({
+      data <- isolate(datasetInput2())
       i <- x
       output[[paste("plot",i,sep="")]] <- renderPlot({
         if(input$SELanalysis=="plots"){
@@ -316,55 +310,61 @@ shinyServer(function(input, output) {
               plot(plotWD(data=data,var="mean", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth))
             } else {
               plotWD(data=data,var="mean", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth)
+              #plotWD(data=data,var="mean", ane="Anem24aMS" ,type="histogram", by="none")
             }
           }
           else return(NULL)
         }
       })
     })}
-
+  })
+  
   # Plot Generation All Ane
+  # Esto solo se debería ejecutar para los gráficos que tienen mas de un anemómetro
   output$plotAll <- renderPlot({
-    data <- datasetInput2()
-    if (input$SELplottype == 'rose' & input$SELplotby != 'none'){
-      print(plotWD(data=data,var="mean", ane=ane.names() ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth))
-    } else {
-      plotWD(data=data,var="mean", ane=ane.names() ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth)
+    if (input$SELplottype == 'rose'){
+      data <- datasetInput2()
+      if (input$SELplottype == 'rose' & input$SELplotby != 'none'){
+        print(plotWD(data=data,var="mean", ane=ane.names() ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth))
+      } else {
+        plotWD(data=data,var="mean", ane=ane.names() ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth)
+      }
     }
+    else NULL
   })
   
   # Plot Serie
   output$plotTs <- renderGvis({
-      if(input$SELanalysis=="plots"){
-        if (input$SELplottype=="ts"){
-          data <- datasetInput2()
-          print(as.numeric(input$SELyear))
-          print(as.numeric(input$SELmonth))
-          plotwindserie(data,
-                        as.numeric(input$SELyear),
-                        as.numeric(input$SELmonth),
-                        vars=c("Ave"),
-                        axis=c("Ave"),
-                        shiny=T)
-        } else return(NULL)
-      }  else return(NULL)
-    })
+    if(input$SELanalysis=="plots"){
+      if (input$SELplottype=="ts"){
+        data <- datasetInput2()
+        print(as.numeric(input$SELyear))
+        print(as.numeric(input$SELmonth))
+        plotwindserie(data,
+                      as.numeric(input$SELyear),
+                      as.numeric(input$SELmonth),
+                      vars=c("Ave"),
+                      axis=c("Ave"),
+                      shiny=T)
+      } else return(NULL)
+    }  else return(NULL)
+  })
   
   # Plot Calendar
   output$plotCalendar <- renderGvis({
-      if(input$SELanalysis=="plots"){
-        if (input$SELplottype=="calendar"){
-          data <- datasetInput2()
-          plotcalendar (data, 
-                        var="ave", 
-                        ane="Ane1",
-                        shiny=T)
-        } else return(NULL)
-      }  else return(NULL)
-    })
+    if(input$SELanalysis=="plots"){
+      if (input$SELplottype=="calendar"){
+        data <- datasetInput2()
+        plotcalendar (data, 
+                      var="ave", 
+                      ane="Ane1",
+                      shiny=T)
+      } else return(NULL)
+    }  else return(NULL)
+  })
   
   # Table Generation
-  for (x in isolate(ane.names())){
+  observe({for (x in isolate(ane.names())){
     data <- isolate(datasetInput2())
     local({
       i <- x
@@ -378,7 +378,7 @@ shinyServer(function(input, output) {
         }  
       })
     })}
-
+  })
   
   # Plot Generation All Ane
   output$tableAll <- renderTable({
@@ -415,7 +415,7 @@ shinyServer(function(input, output) {
       plotWD(data=data, type="turbulence", ane=input$SELane)
     } else return(NULL)
   })
-
+  
   # tableTurbine
   output$tableTurbine <- renderPrint({
     if(input$SELanalysis=="pc"){
@@ -432,22 +432,22 @@ shinyServer(function(input, output) {
     } 
   })
   
-# plotFit
-output$plotFit <- renderPlot({
-  if (input$SELanalysis=="fit"){
-    data <- datasetInput2()
-    plotWD(data=data, ane=input$SELane, type=input$SELanalysis, binwidth=input$binwidth)
-  } 
-})
-
-# tableFit
-output$dataFit <- renderTable({
-  if (input$SELanalysis=="fit"){
-    data <- datasetInput2()
-    as.data.frame(tableWD(data=data, var=input$SELplotvar, ane=input$SELane, type=input$SELanalysis))
-  } 
-})
-
+  # plotFit
+  output$plotFit <- renderPlot({
+    if (input$SELanalysis=="fit"){
+      data <- datasetInput2()
+      plotWD(data=data, ane=input$SELane, type=input$SELanalysis, binwidth=input$binwidth)
+    } 
+  })
+  
+  # tableFit
+  output$dataFit <- renderTable({
+    if (input$SELanalysis=="fit"){
+      data <- datasetInput2()
+      as.data.frame(tableWD(data=data, var=input$SELplotvar, ane=input$SELane, type=input$SELanalysis))
+    } 
+  })
+  
   output$dlCurPlot <- downloadHandler(
     filename = function() { paste(input$SELanalysis,
                                   '-',
