@@ -10,7 +10,7 @@ plotwtg(data, Model)
 
 \item{ane}{an optional vector specifying a subset of anenemometers to plot}
 
-\item{var}{currently only method = "qr" is supported}
+\item{var}{currently only method = 'qr' is supported}
 
 \item{type}{the type of graphic to plot. Actually soported: 'histogram', 'rose',
 'correlogram', 'profiles' and 'boxplot'. See also 'Details'.}
@@ -24,7 +24,7 @@ The string format is 'YYYY-MM-DD'.}
 The string format is 'YYYY-MM-DD'.}
 }
 \value{
-Object of class "windata" (see details)
+Object of class 'windata' (see details)
 }
 \description{
 Shape a dataframe in a object which will be use by the diferents functions in the package......

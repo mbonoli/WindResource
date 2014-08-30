@@ -8,7 +8,7 @@ tableFitDist(data, ane = NA)
 \arguments{
 \item{data}{object of class windata}
 
-\item{ane}{a vector with the anemometers'name to study. By default "ane" takes the first anemometer}
+\item{ane}{a vector with the anemometers'name to study. By default 'ane' takes the first anemometer}
 }
 \value{
 Returns a table with the parameters listed before.

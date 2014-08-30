@@ -34,7 +34,6 @@ plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"), by = c("no
   
   require(plyr)
   
-  if (!exist(bindwidth)) bindwidth <- 1
   if (class(datawd) != "windata") 
     stop("Los datos no correponden a la clase 'windata'.")
   
@@ -113,6 +112,7 @@ plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"), by = c("no
     }
   } 
   else if (type == "rose") {
+    
     dfall <- data.frame()
     
     if (var == "mean") {
@@ -273,8 +273,7 @@ plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"), by = c("no
                                                                                        group = ane), size = 1) + facet_wrap(~hour, ncol = 4, drop = F)
       }
       
-    }        
-  } 
+}}
   else if (type == "correlation") {
     df <- data.frame(x = datawd$ane[[1]]$ave, y = datawd$ane[[2]]$ave)
     df <- df[complete.cases(df), ]

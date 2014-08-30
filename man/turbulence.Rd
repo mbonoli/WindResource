@@ -3,7 +3,7 @@
 \alias{turbulence}
 \title{Extracting paramenters}
 \usage{
-turbulence(wd)
+turbulence(wd, ane = NA)
 }
 \arguments{
 \item{plot}{a list of parameters.}

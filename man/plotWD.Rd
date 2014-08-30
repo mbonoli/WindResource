@@ -4,14 +4,14 @@
 \title{Plots for winddata objects}
 \usage{
 plotWD(datawd, ane = NA, var = NA, type = c("histogram"), by = c("none",
-  "month", "hour"), since = NULL, to = NULL, binwidth = 1)
+  "month", "hour"), since = NULL, to = NULL, ...)
 }
 \arguments{
 \item{data}{an object of class winddata}
 
 \item{ane}{an optional vector specifying a subset of anenemometers to plot}
 
-\item{var}{currently only method = "qr" is supported}
+\item{var}{currently only method = 'qr' is supported}
 
 \item{type}{the type of graphic to plot. Actually soported: 'histogram', 'rose',
 'correlogram', 'profiles' and 'boxplot'. See also 'Details'.}
@@ -25,7 +25,7 @@ The string format is 'YYYY-MM-DD'.}
 The string format is 'YYYY-MM-DD'.}
 }
 \value{
-Object of class "windata" (see details)
+Object of class 'windata' (see details)
 }
 \description{
 Shape a dataframe in a object which will be use by the diferents functions in the package......

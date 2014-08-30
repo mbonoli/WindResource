@@ -3,12 +3,13 @@
 \alias{setWd}
 \title{Conversion of dataframe in class windata object}
 \usage{
-setWd(data, date.var, date.format = c("YYYYMMDD", "YYYY-MM-DD", "YYYY.MM.DD",
-  "DD/MM/YYYY"), time.var, time.format = c("HHMM", "HHMMSS", "HH:MM",
-  "HH:MM:SS", "HH.MM", "HH.MM.SS"), ane.names, ane.height, speed.ave.var,
-  speed.min.var = NA, speed.max.var = NA, speed.sd.var = NA,
-  speed.unit = NA, dir.var, dir.unit = "deg", temp.var = NA,
-  temp.unit = "C", pres.var = NA, pres.unit = "bar", NA.values = NA)
+setWd(data, name = NA, date.var, date.format = c("YYYYMMDD", "YYYY-MM-DD",
+  "YYYY.MM.DD", "DD/MM/YYYY"), time.var, time.format = c("HHMM", "HHMMSS",
+  "HH:MM", "HH:MM:SS", "HH.MM", "HH.MM.SS"), ane.names, ane.height,
+  speed.ave.var, speed.min.var = NA, speed.max.var = NA,
+  speed.sd.var = NA, speed.unit = NA, dir.var, dir.unit = "deg",
+  temp.var = NA, temp.unit = "C", pres.var = NA, pres.unit = "bar",
+  NA.values = NA)
 }
 \arguments{
 \item{data}{a dataframe to be converted}
@@ -18,12 +19,12 @@ setWd(data, date.var, date.format = c("YYYYMMDD", "YYYY-MM-DD", "YYYY.MM.DD",
 \item{date.var}{the name of the variable that contains the dates of measurements}
 
 \item{date.format}{the admit formats are:
-- "YYYYMMDD","YYYY-MM-DD","YYYY.MM.DD" or "DD/MM/YYYY"}
+- 'YYYYMMDD','YYYY-MM-DD','YYYY.MM.DD' or 'DD/MM/YYYY'}
 
 \item{time.var}{the name of the variable that contains the times of measurements}
 
 \item{time.format}{the admit formats are:
-- "HHMM","HHMMSS","HH:MM","HH:MM:SS","HH.MM" or "HH.MM.SS"}
+- 'HHMM','HHMMSS','HH:MM','HH:MM:SS','HH.MM' or 'HH.MM.SS'}
 
 \item{ane.names}{the names to indicate the differents anemometers in the list.}
 
@@ -39,22 +40,22 @@ setWd(data, date.var, date.format = c("YYYYMMDD", "YYYY-MM-DD", "YYYY.MM.DD",
 
 \item{speed.var.var}{the name/s of the variable/s that contains the variance of speeds measures.}
 
-\item{speed.unit}{unit wind speed. At the moment, the unit that can be use is "m/s".}
+\item{speed.unit}{unit wind speed. At the moment, the unit that can be use is 'm/s'.}
 
 \item{dir.var}{the name/s of the variable/s that contains the wind's direction measures}
 
-\item{dir.unit}{unit wind's directions. At the moment, the unit that can be used is "deg".}
+\item{dir.unit}{unit wind's directions. At the moment, the unit that can be used is 'deg'.}
 
 \item{temp.var}{the name/s of the variable/s that contains the wind's temperature measures}
 
-\item{temp.unit}{unit wind's temperatures. At the moment, the unit that can be used is "deg".}
+\item{temp.unit}{unit wind's temperatures. At the moment, the unit that can be used is 'deg'.}
 
 \item{pres.var}{he name/s of the variable/s that contains the wind's atmospheric pressures measures.}
 
-\item{pres.unit}{unit wind's atmospheric pressures. At the moment, the unit that can be used is "deg".}
+\item{pres.unit}{unit wind's atmospheric pressures. At the moment, the unit that can be used is 'deg'.}
 }
 \value{
-Object of class "windata" (see details).
+Object of class 'windata' (see details).
 }
 \description{
 Shape a dataframe in a class 'windata' object

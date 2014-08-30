@@ -14,12 +14,12 @@ plotwindserie(wd, year, month, vars = c("Ave", "Min", "Max", "Temp", "Pres",
 \item{date.var}{the name of the variable that contains the dates of measurements}
 
 \item{date.format}{the admit formats are:
-- "YYYYMMDD","YYYY-MM-DD","YYYY.MM.DD" or "DD/MM/YYYY"}
+- 'YYYYMMDD','YYYY-MM-DD','YYYY.MM.DD' or 'DD/MM/YYYY'}
 
 \item{time.var}{the name of the variable that contains the times of measurements}
 
 \item{time.format}{the admit formats are:
-- "HHMM","HHMMSS","HH:MM","HH:MM:SS","HH.MM" or "HH.MM.SS"}
+- 'HHMM','HHMMSS','HH:MM','HH:MM:SS','HH.MM' or 'HH.MM.SS'}
 
 \item{ane.names}{the names to indicate the differents anemometers in the list.}
 
@@ -35,22 +35,22 @@ plotwindserie(wd, year, month, vars = c("Ave", "Min", "Max", "Temp", "Pres",
 
 \item{speed.var.var}{the name/s of the variable/s that contains the variance of speeds measures.}
 
-\item{speed.unit}{unit wind speed. At the moment, the unit that can be use is "m/s".}
+\item{speed.unit}{unit wind speed. At the moment, the unit that can be use is 'm/s'.}
 
 \item{dir.var}{the name/s of the variable/s that contains the wind's direction measures}
 
-\item{dir.unit}{unit wind's directions. At the moment, the unit that can be used is "deg".}
+\item{dir.unit}{unit wind's directions. At the moment, the unit that can be used is 'deg'.}
 
 \item{temp.var}{the name/s of the variable/s that contains the wind's temperature measures}
 
-\item{temp.unit}{unit wind's temperatures. At the moment, the unit that can be used is "deg".}
+\item{temp.unit}{unit wind's temperatures. At the moment, the unit that can be used is 'deg'.}
 
 \item{pres.var}{he name/s of the variable/s that contains the wind's atmospheric pressures measures.}
 
-\item{pres.unit}{unit wind's atmospheric pressures. At the moment, the unit that can be used is "deg".}
+\item{pres.unit}{unit wind's atmospheric pressures. At the moment, the unit that can be used is 'deg'.}
 }
 \value{
-Object of class "windata" (see details).
+Object of class 'windata' (see details).
 }
 \description{
 Shape a dataframe in a class 'windata'
