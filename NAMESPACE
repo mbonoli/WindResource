@@ -3,7 +3,6 @@
 export(add.cart.coord)
 export(fitWD)
 export(gen10m)
-export(plotDistWd)
 export(plotWD)
 export(plotcalendar)
 export(plotwindserie)

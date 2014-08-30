@@ -57,7 +57,7 @@ MtTom <- read.csv("MtTom-0032_1999-12-01_2002-12-31.dat")
 ```
 
 ```{r, echo=FALSE}
-MtTom <- read.csv("~/Investigacion/Vientos/BD/MtTom-0032_1999-12-01_2002-12-31.dat")
+#MtTom <- read.csv("~/Investigacion/Vientos/BD/MtTom-0032_1999-12-01_2002-12-31.dat")
 ```
 
 Podemos observar la estructura predicha, pidiendo a R que nos muestre los 3 primeros registros de la base de datos importada:
