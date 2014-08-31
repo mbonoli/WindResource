@@ -29,9 +29,8 @@
 #' 
 
 
-plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"), by = c("none", 
-                                                                             "month", "hour"), since = NULL, to = NULL, ...) {
-  
+plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"), 
+                   by = c("none", "month", "hour"), since = NULL, to = NULL, ...) {
   require(plyr)
   
   if (class(datawd) != "windata") 
@@ -100,13 +99,13 @@ plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"), by = c("no
     else if (by == "month") {
       ds <- data.frame(mean = datawd$ane[[ane]]$ave, month = factor(month.names[datawd$time$month], 
                                                                     levels = month.names))
-      print(ggplot(ds, aes(x = mean)) + geom_histogram(binwidth = binwidth, 
+      print(ggplot(ds, aes(x = mean)) + geom_histogram(...,
                                                        colour = "black", fill = "blue") + facet_wrap(~month, ncol = 3, 
                                                                                                      drop = F))
     } else if (by == "hour") {
       ds <- data.frame(mean = datawd$ane[[ane]]$ave, hour = factor(hour.names2[floor(datawd$time$hour/2) + 
                                                                                  1], levels = hour.names2))
-      print(ggplot(ds, aes(x = mean)) + geom_histogram(binwidth = binwidth, 
+      print(ggplot(ds, aes(x = mean)) + geom_histogram(...,
                                                        colour = "black", fill = "blue") + facet_wrap(~hour, ncol = 3, 
                                                                                                      drop = F))
     }
@@ -272,8 +271,8 @@ plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"), by = c("no
                                                                          mapping = aes(x = x, y = y, xend = xend, yend = yend, color = ane, 
                                                                                        group = ane), size = 1) + facet_wrap(~hour, ncol = 4, drop = F)
       }
-      
-}}
+    }
+  }
   else if (type == "correlation") {
     df <- data.frame(x = datawd$ane[[1]]$ave, y = datawd$ane[[2]]$ave)
     df <- df[complete.cases(df), ]

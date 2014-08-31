@@ -248,18 +248,18 @@ shinyServer(function(input, output) {
         }
         else {
           if (input$SELplottype=="rose" | input$SELplottype=="profile"){ 
-            tabs[[1]] <- tabPanel("All", h1("www"), plotOutput("plotAll"))
+            tabs[[1]] <- tabPanel("All", plotOutput("plotAll"))
             skip <- 1
           }
           for (i in 1:length(ane.names())){
             tabs[[i+skip]] <- tabPanel(ane.names()[i], 
                                        tabsetPanel(
                                          tabPanel("Plot",
-                                                  h1("www1"),
-                                                  h1(paste("plot",ane.names()[i],sep="")),
+#                                                   h1("www1"),
+#                                                   h1(paste("plot",ane.names()[i],sep="")),
                                                   plotOutput(paste("plot",ane.names()[i],sep=""))),
                                          tabPanel("Data", 
-                                                  h1("www"),
+#                                                   h1("www"),
                                                   tableOutput(as.name(paste("table",ane.names()[i],sep="")))) 
                                        ))
           }
@@ -307,10 +307,9 @@ shinyServer(function(input, output) {
           if (input$SELplottype=="histogram" | input$SELplottype=="profile" | 
                 input$SELplottype=="boxplot" | input$SELplottype=="rose"){
             if (input$SELplottype == 'rose' & input$SELplotby != 'none'){
-              plot(plotWD(data=data,var="mean", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth))
+              plot(plotWD(data=data,var="mean", ane=i ,type=input$SELplottype, by=input$SELplotby, binwidth=input$binwidth))
             } else {
               plotWD(data=data,var="mean", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth)
-              #plotWD(data=data,var="mean", ane="Anem24aMS" ,type="histogram", by="none")
             }
           }
           else return(NULL)
@@ -362,19 +361,18 @@ shinyServer(function(input, output) {
       } else return(NULL)
     }  else return(NULL)
   })
-  
+      
   # Table Generation
-  observe({for (x in isolate(ane.names())){
-    data <- isolate(datasetInput2())
+  observe({for (x in ane.names()){
     local({
+      data <- isolate(datasetInput2())
       i <- x
       output[[paste("table",i,sep="")]] <- renderTable({
         if(input$SELanalysis=="plots"){
           if (input$SELplottype=="histogram" | input$SELplottype=="rose" | input$SELplottype=="profile" | input$SELplottype=="boxplot"){
-            #         if (i %in% input$SELane){
-            as.data.frame(tableWD(data=data,var="mean", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth)[[i]])
-            #         }
-          } else return(NULL)
+            as.data.frame(tableWD(data=data,var="mean", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth))
+            } 
+          else return(NULL)
         }  
       })
     })}

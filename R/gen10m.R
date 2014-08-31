@@ -76,11 +76,11 @@ gen10m <- function(wd, Ns = 60) {
   
   rose_dir <- c("N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", 
                 "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW")
+  d10$dir[which(d10$dir >= 360)] <- d10$dir[which(d10$dir >= 360)] - 360
   d10$sect_12 <- floor(d10$dir/(360/12)) + 1
-  d10$ang_12 = ((floor(d10$dir/(360/12)) + 1) - 1) * 360/12
+  d10$ang_12 = (floor(d10$dir/(360/12)) + 1) * (360/12)
   d10$sect_16 = floor(d10$dir/(360/16)) + 1
-  #df$ang_16 = (floor(df$dir/(360/16)) + 1) * (360/16)
-  d10$ang_16 <- (d10$sect_16-1)*22.5
+  d10$ang_16 <- (floor(d10$dir/(360/16)) + 1) * (360/16)
   d10$rose = factor(rose_dir[floor(d10$dir/(360/16)) + 1], levels = rose_dir)
   
   result <- list()

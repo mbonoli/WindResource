@@ -29,8 +29,8 @@
 #' 
 
 
-tableWD <- function(datawd, ane = NA, var = c("mean"), type = c("histogram"), by = c("none", 
-                                                                                     "month", "hour"), since = NULL, to = NULL, binwidth = 1) {
+tableWD <- function(datawd, ane = NA, var = c("mean"), type = c("histogram"), 
+                    by = c("none", "month", "hour"), since = NULL, to = NULL, binwidth = 1) {
   
   if (class(datawd) != "windata") 
     stop("Los datos no correponden a la clase 'windata'.")
@@ -59,15 +59,16 @@ tableWD <- function(datawd, ane = NA, var = c("mean"), type = c("histogram"), by
     if (type!="rose") {
       stop("The 'ane' parameter is mandatory.")
     } else {
-      ane.names <- datawd[["ane"]][["ane.names"]]
+      ane <- datawd[["ane"]][["ane.names"]]
     }
   }
-  else if (length(ane)>1) {
-    if (type!="rose") {
-      stop("The 'ane' parameter can't contain more than one value.")
-    }
-  }
-  
+
+  # Control anemometros browser()
+  if (is.na(ane[1])) {
+    ane.names <- names(datawd$ane)
+  } else {
+    ane.names <- ane
+  } 
   
   require(reshape2)
   
@@ -95,115 +96,73 @@ tableWD <- function(datawd, ane = NA, var = c("mean"), type = c("histogram"), by
     }
   }
   
-  # Control anemometros browser()
-  if (is.na(ane[1])) {
-    ane.names <- names(datawd$ane)
-  } else {
-    ane.names <- ane
-  }
+
   
   if (type == "histogram") {
     if (by == "none") {
-      result <- list()
-      for (i in ane.names) {
-        dp <- data.frame(mean = datawd$ane[[i]]$ave)
+        dp <- data.frame(mean = datawd$ane[[ane]]$ave)
         histo <- hist(dp$mean, breaks = seq(0, max(as.numeric(dp$mean), 
                                                    na.rm = T) + 1, by = binwidth), plot = F)
-        result[[i]] <- data.frame(Lower = histo$breaks[-length(histo$breaks)], 
-                                  Upper = histo$breaks[-1], Freq = histo$counts)
-      }
+        result <- data.frame(Lower = histo$breaks[-length(histo$breaks)], 
+                             Upper = histo$breaks[-1], Freq = histo$counts)
     } else if (by == "month") {
-      result <- list()
-      for (i in ane.names) {
-        dp <- data.frame(mean = datawd$ane[[i]]$ave, month = month.names3[datawd$time$month])
+        dp <- data.frame(mean = datawd$ane[[ane]]$ave, month = month.names3[datawd$time$month])
         histo <- hist(dp$mean, breaks = seq(0, max(as.numeric(dp$mean), 
                                                    na.rm = T) + 1, by = binwidth), plot = F)
         breaks <- histo$breaks
-        result[[i]] <- data.frame(Lower = histo$breaks[-length(histo$breaks)], 
+        result <- data.frame(Lower = histo$breaks[-length(histo$breaks)], 
                                   Upper = histo$breaks[-1])
         for (m in month.names3) {
           dpm <- subset(dp, month == m)
           histo <- hist(dpm$mean, breaks = breaks, plot = F)
-          result[[i]][m] <- histo$counts
+          result[m] <- histo$counts
         }
-      }
     } else if (by == "hour") {
-      result <- list()
-      for (i in ane.names) {
-        dp <- data.frame(mean = datawd$ane[[i]]$ave, hour = factor(hour.names2[floor(datawd$time$hour/2) + 
+        dp <- data.frame(mean = datawd$ane[[ane]]$ave, hour = factor(hour.names2[floor(datawd$time$hour/2) + 
                                                                                  1], levels = hour.names2))
         histo <- hist(dp$mean, breaks = seq(0, max(as.numeric(dp$mean), 
                                                    na.rm = T) + 1, by = binwidth), plot = F)
         breaks <- histo$breaks
-        result[[i]] <- data.frame(Lower = histo$breaks[-length(histo$breaks)], 
+        result <- data.frame(Lower = histo$breaks[-length(histo$breaks)], 
                                   Upper = histo$breaks[-1])
         for (h in hour.names2) {
           dpm <- subset(dp, hour == h)
           histo <- hist(dpm$mean, breaks = breaks, plot = F)
-          result[[i]][h] <- histo$counts
+          result[h] <- histo$counts
         }
       }
     }
-  } 
   else if (type == "rose") {
-    
     dfall <- data.frame()
-    
-    if (var == "mean") {
-      j = 1
-    } else if (var == "min") {
-      j = 2
-    } else if (var == "max") {
-      j = 3
-    } else {
-      j = 4
-    }
-    
+    j <- switch(var, mean = "ave", min = "min", max = "max", frec = "frec")
     for (i in ane) {
       dfall <- rbind(dfall, data.frame(speed.start = datawd$ane[[i]][, j], 
                                        rose = as.factor(datawd$ane[[i]][, "rose"]), 
                                        ang.start = datawd$ane[[i]][, "ang_16"], 
-                                       ane = i, month = factor(month.names3[datawd$time$month], 
-                                                               levels = month.names3), hour = factor(hour.names2[floor(datawd$time$hour/2) + 1])))
-      
-      
-      
+                                       ane = i, 
+                                       month = factor(month.names3[datawd$time$month], levels = month.names3), 
+                                       hour = factor(hour.names2[floor(datawd$time$hour/2) + 1]),
+                                       freq = 1))
     }
-    
     dfs <- list()
     result <- list()
-    #selcol <- ifelse(var == "mean", "ave", var)
-    
     if (var == "frec") {
-      
       df <- data.frame()
       t <- list()
-      
-      if (by == "none") {
-        
-        for (i in ane) {
-          
+      if (by == "none") { 
+        for (i in ane) {    
           result[[i]] <- data.frame(table(rose=dfall$rose))
-          #, ane = i, ang.start = c(90, 67.5, 92.5, 0, 45, 22.5, 337.5, 315, 180, 135, 157.5, 202.5, 225, 270, 292.5, 247.5))
-          result[[i]]["Freq"] <- result[[i]]["Freq"]/sum(result[[i]]["Freq"])
-          #df <- rbind(df, t[[j]])                                                 
-          
+           result[[i]]["Freq"] <- result[[i]]["Freq"]/sum(result[[i]]["Freq"])
         }
-        
       } else if (by == "month") {
-        
         for (i in ane) {
-          
           result[[i]] <- data.frame(table(rose = dfall$rose, month = dfall$month), 
                                     ane = i, ang.start = c(90, 67.5, 92.5, 0, 45, 22.5, 337.5, 315, 
                                                            180, 135, 157.5, 202.5, 225, 270, 292.5, 247.5))
           result[[i]]["Freq"] <- t[[i]]["Freq"]/sum(t[[i]]["Freq"])
           df <- rbind(df, t[[i]])
-          
         } 
-        
       } else if (by == "hour") {
-        
         for (i in ane) {
           # browser()
           result[[i]] <- data.frame(table(rose = dfall$rose, hour = dfall$hour), 
@@ -211,16 +170,15 @@ tableWD <- function(datawd, ane = NA, var = c("mean"), type = c("histogram"), by
                                                            180, 135, 157.5, 202.5, 225, 270, 292.5, 247.5))
           result[[i]]["Freq"] <- t[[i]]["Freq"]/sum(t[[i]]["Freq"])
           df <- rbind(df, t[[i]])
-          
         }
       }
-      
     } else {
       
       for (i in ane.names) {
-        dfs[[i]] = data.frame(ave = datawd$ane[[i]][, j], rose = datawd$ane[[i]]$rose, 
-                              month = datawd$time$month, hour = factor(hour.names2[floor(datawd$time$hour/2) + 1]))
-        
+        dfs[[i]] = data.frame(ave = datawd$ane[[i]][, j], 
+                              rose = datawd$ane[[i]]$rose, 
+                              month = datawd$time$month, 
+                              hour = factor(hour.names2[floor(datawd$time$hour/2) + 1]))
       }
       
       for (i in ane.names) {
@@ -269,8 +227,6 @@ tableWD <- function(datawd, ane = NA, var = c("mean"), type = c("histogram"), by
         stop(paste("invalid plot type '", type, "'.", sep = ""))
       }
     }
-    
-    
   } 
   else if (type == "turbulence") {
     require(sqldf)

@@ -158,7 +158,7 @@ setWd <- function(data, name = NA, date.var, date.format = c("YYYYMMDD", "YYYY-M
                 "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW")
             result$ane[[i]]$dir = data[, dir.var[which(ane.names == i)]]
             result$ane[[i]]$sect_12 = floor(dir/(360/12)) + 1
-            result$ane[[i]]$ang_12 = ((floor(dir/(360/12)) + 1) - 1) * 360/12
+            result$ane[[i]]$ang_12 = (floor(dir/(360/12)) + 1) * (360/12)
             result$ane[[i]]$sect_16 = floor(dir/(360/16)) + 1
             result$ane[[i]]$ang_16 = (floor(dir/(360/16)) + 1) * (360/16)
             result$ane[[i]]$rose = factor(rose_dir[floor(dir/(360/16)) + 1], levels = rose_dir)
