@@ -27,12 +27,16 @@ polar.theme <- function(plot, maxi) {
         geom_text(data = radialaxis, mapping = aes(x = xend, y = yend, label = text, 
             size = 8)) + theme(axis.text.y = element_blank(), axis.text.x = element_blank(), 
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
-        axis.ticks = element_blank())
+        axis.ticks = element_blank()) +geom_text(data = radialaxis, mapping = aes(x = xend, y = yend, label = text, size = 8)) + 
+      geom_text(x = 0, y = (maxi/5)*1.12, label = paste(round(maxi/5, 2), "m/s", sep=" "), size=3.5) +
+      geom_text(x = 0, y = (maxi*2/5)*1.1, label = paste(round(maxi*2/5, 2), "m/s", sep=" "), size=3.5) +
+      geom_text(x = 0, y = (maxi*3/5)*1.07, label = paste(round(maxi*3/5, 2), "m/s", sep=" "), size=3.5) +   
+      geom_text(x = 0, y = (maxi*4/5)*1.05, label = paste(round(maxi*4/5, 2), "m/s", sep=" "), size=3.5) +
+      geom_text(x = 0, y = maxi*1.03, label = paste(round(maxi, 2), "m/s", sep=" "), size=3)
     
     result
     
 }
-
 
 # text(x=((maxi/5)*sin((1:16)*360/16/180*pi)),
 # y=((maxi/5)*cos((1:16)*360/16/180*pi)), label='a')
