@@ -9,9 +9,9 @@
 #' #' @export
 #' @export
 add.cart.coord <- function(dataplot) {
-    dataplot$y <- dataplot$speed.start * cos(dataplot$ang.start/180 * pi)
-    dataplot$x <- dataplot$speed.start * sin(dataplot$ang.start/180 * pi)
-    dataplot$yend <- dataplot$speed.end * cos(dataplot$ang.end/180 * pi)
-    dataplot$xend <- dataplot$speed.end * sin(dataplot$ang.end/180 * pi)
+    dataplot$y <- dataplot$value.start * cos(dataplot$ang.start/180 * pi)
+    dataplot$x <- dataplot$value.start * sin(dataplot$ang.start/180 * pi)
+    dataplot$yend <- dataplot$value.end * cos(dataplot$ang.end/180 * pi)
+    dataplot$xend <- dataplot$value.end * sin(dataplot$ang.end/180 * pi)
     dataplot
 } 

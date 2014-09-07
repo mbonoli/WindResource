@@ -23,6 +23,7 @@ data(wdOlavarria)
 data(wdMtTom)
 data(wd)
 data(wd10)
+data(wtgData)
 
 
 shinyServer(function(input, output) {
@@ -116,12 +117,13 @@ shinyServer(function(input, output) {
         if(input$SELplottype=="rose"){
           wellPanel(div(class="row", 
                         div(class="span5 offset1", 
-                            radioButtons("SELplotvar","Var:",
-                                         list("Ave" = "ave", 
+                            radioButtons("SELplotvarRose","Var:",
+                                         list("Ave" = "mean", 
                                               "Min" = "min", 
-                                              "Max" = "max"))),
+                                              "Max" = "max",
+                                              "Freq" = "freq"))),
                         div(class="span3", 
-                            radioButtons("SELplotby","By:",
+                            radioButtons("SELplotbyRose","By:",
                                          list("None" = "none", 
                                               "Hour" = "hour", 
                                               "Month" = "month")))))
@@ -130,7 +132,7 @@ shinyServer(function(input, output) {
           wellPanel(h4("Plot Options",align = "center"),
                     div(class="row", 
                         div(class="span3", 
-                            radioButtons("SELplotby","By:",
+                            radioButtons("SELplotbyHist","By:",
                                          list("None" = "none", 
                                               "Hour" = "hour", 
                                               "Month" = "month")))),
@@ -144,12 +146,12 @@ shinyServer(function(input, output) {
         else if(input$SELplottype=="profile"){
           wellPanel(h4("Plot Options",align = "center"),
                     div(class="row", div(class="span5 offset1", 
-                                         radioButtons("SELplotvar","Var:",
+                                         radioButtons("SELplotvarProf","Var:",
                                                       list("Ave" = "ave", 
                                                            "Min" = "min", 
                                                            "Max" = "max"))),
                         div(class="span3", 
-                            radioButtons("SELplotby","By:",
+                            radioButtons("SELplotbyProf","By:",
                                          list("Hour" = "hour", 
                                               "Month" = "month")))))
         } 
@@ -157,7 +159,7 @@ shinyServer(function(input, output) {
           wellPanel(h4("Plot Options",align = "center"),
                     div(class="row",
                         div(class="span3", 
-                            radioButtons("SELplotby","By:",
+                            radioButtons("SELplotbyBox","By:",
                                          list("Hour" = "hour", 
                                               "Month" = "month")))))
         } 
@@ -166,11 +168,11 @@ shinyServer(function(input, output) {
           names(listane) <- ane.names()
           listane <- as.list(listane)
           wellPanel(h4("Plot Options",align = "center"),
-                    selectInput("SELane","Anemometer:",
+                    selectInput("SELaneTS","Anemometer:",
                                 listane),
-                    selectInput("SELyear","Year:",
+                    selectInput("SELyearTS","Year:",selected = format(wd$time$dt[1],"%Y"),
                                 year.list()),
-                    selectInput("SELmonth","Month:",
+                    selectInput("SELmonthTS","Month:",selected = format(wd$time$dt[1],"%m"),
                                 month.list()))
         } 
         else if (input$SELplottype=="calendar"){
@@ -255,11 +257,8 @@ shinyServer(function(input, output) {
             tabs[[i+skip]] <- tabPanel(ane.names()[i], 
                                        tabsetPanel(
                                          tabPanel("Plot",
-#                                                   h1("www1"),
-#                                                   h1(paste("plot",ane.names()[i],sep="")),
                                                   plotOutput(paste("plot",ane.names()[i],sep=""))),
                                          tabPanel("Data", 
-#                                                   h1("www"),
                                                   tableOutput(as.name(paste("table",ane.names()[i],sep="")))) 
                                        ))
           }
@@ -306,10 +305,26 @@ shinyServer(function(input, output) {
         if(input$SELanalysis=="plots"){
           if (input$SELplottype=="histogram" | input$SELplottype=="profile" | 
                 input$SELplottype=="boxplot" | input$SELplottype=="rose"){
-            if (input$SELplottype == 'rose' & input$SELplotby != 'none'){
-              plot(plotWD(data=data,var="mean", ane=i ,type=input$SELplottype, by=input$SELplotby, binwidth=input$binwidth))
+            if (input$SELplottype == 'rose') {
+              if (input$SELplotbyRose != 'none') {
+                plotWD(data=data,
+                       var=input$SELplotvarRose,
+                       ane=i ,type=input$SELplottype, 
+                       by=input$SELplotbyRose, binwidth=input$binwidth)
+              }
             } else {
-              plotWD(data=data,var="mean", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth)
+              plotWD(data=data,
+                     var=switch(input$SELplottype,
+                                rose=input$SELplotvarRose,
+                                profile=input$SELplotvarProf,
+                                histogram="mean"),
+                     ane=i, type=input$SELplottype, 
+                     by=switch(input$SELplottype,
+                               rose=input$SELplotbyRose,
+                               profile=input$SELplotbyProf,
+                               boxplot=input$SELplotbyBox,
+                               histogram=input$SELplotbyHist),
+                     binwidth=input$binwidth)
             }
           }
           else return(NULL)
@@ -319,17 +334,19 @@ shinyServer(function(input, output) {
   })
   
   # Plot Generation All Ane
-  # Esto solo se debería ejecutar para los gráficos que tienen mas de un anemómetro
   output$plotAll <- renderPlot({
-    if (input$SELplottype == 'rose'){
-      data <- datasetInput2()
-      if (input$SELplottype == 'rose' & input$SELplotby != 'none'){
-        print(plotWD(data=data,var="mean", ane=ane.names() ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth))
-      } else {
-        plotWD(data=data,var="mean", ane=ane.names() ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth)
-      }
-    }
-    else NULL
+    data <- datasetInput2()
+    # Aqui solo deberíamos estar en rosas y profiles
+    plotWD(data=data,
+           var=switch(input$SELplottype,
+                      rose=input$SELplotvarRose,
+                      profile=input$SELplotvarProf),
+           ane=ane.names(),
+           type=input$SELplottype, 
+           by=switch(input$SELplottype,
+                     rose=input$SELplotbyRose,
+                     profile=input$SELplotbyProf),
+           binwidth=input$binwidth)      
   })
   
   # Plot Serie
@@ -337,13 +354,12 @@ shinyServer(function(input, output) {
     if(input$SELanalysis=="plots"){
       if (input$SELplottype=="ts"){
         data <- datasetInput2()
-        print(as.numeric(input$SELyear))
-        print(as.numeric(input$SELmonth))
         plotwindserie(data,
-                      as.numeric(input$SELyear),
-                      as.numeric(input$SELmonth),
-                      vars=c("Ave"),
-                      axis=c("Ave"),
+                      year=as.numeric(input$SELyearTS),
+                      month=as.numeric(input$SELmonthTS),
+                      ane=input$SELaneTS,
+                      var=c("ave"),
+                      axis=c("ave"),
                       shiny=T)
       } else return(NULL)
     }  else return(NULL)
@@ -369,34 +385,59 @@ shinyServer(function(input, output) {
       i <- x
       output[[paste("table",i,sep="")]] <- renderTable({
         if(input$SELanalysis=="plots"){
-          if (input$SELplottype=="histogram" | input$SELplottype=="rose" | input$SELplottype=="profile" | input$SELplottype=="boxplot"){
-            as.data.frame(tableWD(data=data,var="mean", ane=i ,type=input$SELplottype, by=input$SELplotby,binwidth=input$binwidth))
-            } 
+          if (input$SELplottype=="histogram" | input$SELplottype=="profile" | 
+                input$SELplottype=="boxplot" | input$SELplottype=="rose"){
+            if (input$SELplottype == 'rose') {
+              if (input$SELplotbyRose != 'none') {
+                as.data.frame(
+                  tableWD(data=data,
+                          var=input$SELplotvarRose,
+                          ane=i ,type=input$SELplottype, 
+                          by=input$SELplotbyRose, binwidth=input$binwidth)
+                )
+              }
+            } else {
+              as.data.frame(
+                tableWD(data=data,
+                        var=switch(input$SELplottype,
+                                   rose=input$SELplotvarRose,
+                                   profile=input$SELplotvarProf,
+                                   histogram="mean"),
+                        ane=i ,type=input$SELplottype, 
+                        by=switch(input$SELplottype,
+                                  rose=input$SELplotbyRose,
+                                  profile=input$SELplotbyProf,
+                                  boxplot=input$SELplotbyBox,
+                                  histogram=input$SELplotbyHist),
+                        binwidth=input$binwidth)
+              )
+            }
+          }
           else return(NULL)
-        }  
+        }
       })
     })}
   })
   
-  # Plot Generation All Ane
-  output$tableAll <- renderTable({
-    data <- datasetInput2()
-    if (input$SELplottype=="rose"){
+# Plot Generation All Ane
+output$tableAll <- renderTable({
+  data <- datasetInput2()
+  if (input$SELplottype=="profile" | input$SELplottype=="rose"){
+    as.data.frame(
       tableWD(data=data,
-              var="mean", 
+              var=switch(input$SELplottype,
+                         rose=input$SELplotvarRose,
+                         profile=input$SELplotvarProf),
               ane=ane.names(),
               type=input$SELplottype, 
-              by=input$SELplotby) 
-    } 
-    else if (input$SELplottype=="profile"){
-      tableWD(data=data,
-              var="mean", 
-              ane=ane.names(),
-              type=input$SELplottype, 
-              by=input$SELplotby) 
-    }
-    else return(NULL)
-  })
+              by=switch(input$SELplottype,
+                        rose=input$SELplotbyRose,
+                        profile=input$SELplotbyProf),
+              binwidth=input$binwidth)
+    )
+  }
+  else return(NULL)
+})
   
   # tableTurbulence
   output$tableTurbulence <- renderPrint({
@@ -442,6 +483,7 @@ shinyServer(function(input, output) {
   output$dataFit <- renderTable({
     if (input$SELanalysis=="fit"){
       data <- datasetInput2()
+# Revisar DED
       as.data.frame(tableWD(data=data, var=input$SELplotvar, ane=input$SELane, type=input$SELanalysis))
     } 
   })

@@ -34,80 +34,76 @@
 #' @export
 #' @examples
 #' # simple example using the windspeed data set
-#' data(wd)
+#' data(data)
 #'  
 #' # let's examine windspeed to see the variables' names
-#' head(wd)
+#' head(data)
 #' 
 
-plotwindserie <- function(wd, year, month, vars = c("Ave", "Min", "Max", "Temp", 
-    "Pres", "Dir"), axis = c("Ave", "Min", "Max", "Temp", "Pres", "Dir"), shiny = F) {
-    
-    if (sum(wd$time$year == year & wd$time$month == month) == 0) 
-        stop("No existe el año y mes seleccionado")
-    require(googleVis)
-    data <- data.frame(dt = as.POSIXct(NA), val = NA, type = NA)
-    
-    colorlines <- "["
-    # 'blue', 'lightblue', 'lightblue', 'red']'
-    if ("Ave" %in% vars) {
-        data <- rbind(data, data.frame(dt = wd$time$dt, val = wd[["ane"]]$Anem24aMS$ave, 
-            type = "Ave")[wd$time$year == year & wd$time$month == month, ])
-        colorlines <- paste(colorlines, ifelse(nchar(colorlines) == 1, "", ","), 
-            " 'blue'", sep = "")
-    }
-    if ("Min" %in% vars) {
-        data <- rbind(data, data.frame(dt = wd$time$dt, val = wd[["ane"]]$Anem24aMS$min, 
-            type = "Min")[wd$time$year == year & wd$time$month == month, ])
-        colorlines <- paste(colorlines, ifelse(nchar(colorlines) == 1, "", ","), 
-            " 'lightgray'", sep = "")
-    }
-    if ("Max" %in% vars) {
-        data <- rbind(data, data.frame(dt = wd$time$dt, val = wd[["ane"]]$Anem24aMS$max, 
-            type = "Max")[wd$time$year == year & wd$time$month == month, ])
-        colorlines <- paste(colorlines, ifelse(nchar(colorlines) == 1, "", ","), 
-            " 'lightgray'", sep = "")
-    }
-    if ("Temp" %in% vars) {
-        data <- rbind(data, data.frame(dt = wd$time$dt, val = wd$par$temp$value, 
-            type = "Temp")[wd$time$year == year & wd$time$month == month, ])
-        colorlines <- paste(colorlines, ifelse(nchar(colorlines) == 1, "", ","), 
-            " 'green'", sep = "")
-    }
-    if ("Pres" %in% vars) {
-        data <- rbind(data, data.frame(dt = wd$time$dt, val = wd$par$pres$value, 
-            type = "Pres")[wd$time$year == year & wd$time$month == month, ])
-        colorlines <- paste(colorlines, ifelse(nchar(colorlines) == 1, "", ","), 
-            " 'lightgreen'", sep = "")
-    }
-    # if ('Dir' %in% vars) { data<-
-    # rbind(data,data.frame(dt=wd$time$dt,val=wd$dir$value,type='Dir')[wd$time$year==year
-    # & wd$time$month==month,])
-    # colorlines<-paste(colorlines,ifelse(nchar(colorlines)==1,'',','),'
-    # 'black'',sep='') }
-    colorlines <- paste(colorlines, "]")
-    
-    # Borro registros sin datos
-    data <- data[!is.na(data$dt), ]
-    # data<-data[!is.na(data$val),]
-    
-    # esto es para que las escalas de las 3 velocidades sea la misma. Se modifica
-    # el primer registro de la serie
-    max <- max(data[, "val"], na.rm = TRUE)
-    data[data$type == "Min", ][1, 2] <- max
-    data[data$type == "Ave", ][1, 2] <- max
-    
-    if (length(axis) == 1) {
-        scalecol <- paste("[", which(vars == axis[1]) - 1, "]", sep = "")
-    } else {
-        scalecol <- paste("[", which(vars == axis[1]) - 1, ",", which(vars == axis[2]) - 
-            1, "]", sep = "")
-    }
-    if (shiny == T) {
-        gvisAnnotatedTimeLine(data, datevar = "dt", numvar = "val", idvar = "type")
-    } else {
-        dataplot <- gvisAnnotatedTimeLine(data, datevar = "dt", numvar = "val", 
-            idvar = "type")
-        plot(dataplot)
-    }
+plotwindserie <- function(wdata, year, month, ane, 
+                          var = c("Ave", "Min", "Max", "Temp", "Pres", "Dir"), 
+                          axis = c("Ave", "Min", "Max", "Temp", "Pres", "Dir"), shiny = F) {
+  
+  if (sum(wdata$time$year == year & wdata$time$month == month) == 0) 
+    stop("No existe el año y mes seleccionado")
+  library(googleVis)
+  data <- data.frame(dt = as.POSIXct(NA), val = NA, type = NA)
+  
+  colorlines <- "["
+  # 'blue', 'lightblue', 'lightblue', 'red']'
+  if ("ave" %in% var) {
+    data <- rbind(data, data.frame(dt = wdata$time$dt, 
+                                   val = wdata[["ane"]][[ane]]$ave, 
+                                   type = "ave")[wdata$time$year == year & wdata$time$month == month, ])
+    colorlines <- paste(colorlines, ifelse(nchar(colorlines) == 1, "", ","), 
+                        " 'blue'", sep = "")
+  }
+  if ("min" %in% var) {
+    data <- rbind(data, data.frame(dt = wdata$time$dt, val =  wdata[["ane"]][[ane]]$min, 
+                                   type = "min")[wdata$time$year == year & wdata$time$month == month, ])
+    colorlines <- paste(colorlines, ifelse(nchar(colorlines) == 1, "", ","), 
+                        " 'lightgray'", sep = "")
+  }
+  if ("max" %in% var) {
+    data <- rbind(data, data.frame(dt = wdata$time$dt, val =  wdata[["ane"]][[ane]]$max, 
+                                   type = "max")[wdata$time$year == year & wdata$time$month == month, ])
+    colorlines <- paste(colorlines, ifelse(nchar(colorlines) == 1, "", ","), 
+                        " 'lightgray'", sep = "")
+  }
+  if ("temp" %in% var) {
+    data <- rbind(data, data.frame(dt = wdata$time$dt, val = wdata$par$temp$value, 
+                                   type = "temp")[wdata$time$year == year & wdata$time$month == month, ])
+    colorlines <- paste(colorlines, ifelse(nchar(colorlines) == 1, "", ","), 
+                        " 'green'", sep = "")
+  }
+  if ("pres" %in% var) {
+    data <- rbind(data, data.frame(dt = wdata$time$dt, val = wdata$par$pres$value, 
+                                   type = "pres")[wdata$time$year == year & wdata$time$month == month, ])
+    colorlines <- paste(colorlines, ifelse(nchar(colorlines) == 1, "", ","), 
+                        " 'lightgreen'", sep = "")
+  }
+  colorlines <- paste(colorlines, "]")
+  
+  # Borro registros sin datos
+  data <- data[!is.na(data$dt), ]
+  
+  # esto es para que las escalas de las 3 velocidades sea la misma. Se modifica
+  # el primer registro de la serie
+  max <- max(data[, "val"], na.rm = TRUE)
+  data[data$type == "min", ][1, 2] <- max
+  data[data$type == "ave", ][1, 2] <- max
+  
+  if (length(axis) == 1) {
+    scalecol <- paste("[", which(var == axis[1]) - 1, "]", sep = "")
+  } else {
+    scalecol <- paste("[", which(var == axis[1]) - 1, ",", which(var == axis[2]) - 
+                        1, "]", sep = "")
+  }
+  if (shiny == T) {
+    gvisAnnotatedTimeLine(data, datevar = "dt", numvar = "val", idvar = "type")
+  } else {
+    dataplot <- gvisAnnotatedTimeLine(data, datevar = "dt", numvar = "val", 
+                                      idvar = "type")
+    plot(dataplot)
+  }
 } 
