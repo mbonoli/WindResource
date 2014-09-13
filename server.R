@@ -282,7 +282,7 @@ shinyServer(function(input, output) {
     else if(input$SELanalysis=="turbulence"){
       tabsetPanel(
         tabPanel("Plot", plotOutput("plotTurbulence")),
-        tabPanel("Data", verbatimTextOutput(("tableTurbulence"))
+        tabPanel("Data", verbatimTextOutput("tableTurbulence")
         )
       )
     } 

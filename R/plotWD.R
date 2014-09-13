@@ -1,4 +1,4 @@
-#' @title Plots for winddata objects
+#' @title Plots for Winddata objects
 #' 
 #' @description
 #' Shape a dataframe in a object which will be use by the diferents functions in the package......
@@ -6,11 +6,11 @@
 #' @details
 #' The object windata is a list with the parameters that were mencionated before.
 #' 
-#' @param data an object of class winddata 
-#' @param ane an optional vector specifying a subset of anenemometers to plot
-#' @param var currently only method = 'qr' is supported
-#' @param type the type of graphic to plot. Actually soported: 'histogram', 'rose', 
-#'        'correlogram', 'profiles' and 'boxplot'. See also 'Details'.
+#' @param datawd an object of class winddata.
+#' @param ane a vector of character strings containing anemometers names to plot. 
+#' @param var a vector of character strings containing the variables to plot.
+#' @param type type of plot: 'histogram', 'rose', 
+#'        'profiles' and 'boxplot'. See also Details.
 #' @param by an optional string stating if the plot is divided in panels by 'month' or 'hour'. 
 #' @param since an optional string indicating initial date to be taken into account to make the plot.
 #'        The string format is 'YYYY-MM-DD'.
@@ -30,7 +30,7 @@
 
 
 plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"), 
-                   by = c("none", "month", "hour"), since = NULL, to = NULL, ...) {
+                   by = c("none", "month", "hour"), since = NULL, to = NULL) {
   
   if (class(datawd) != "windata") 
     stop("Los datos no correponden a la clase 'windata'.")
@@ -48,9 +48,9 @@ plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"),
         ane <- datawd[["ane"]][["ane.names"]]
       }
     if (is.null(datawd[["ane"]][[ane]][["sd"]]))
-      stop("No se cuenta con información de desvíos estándar")
+      stop("No se cuenta con informacion de desvios estandar")
     if (datawd[["interval.minutes"]]!=10)
-      stop("No se cuenta con información diezminutal")
+      stop("No se cuenta con informacion diezminutal")
   }
   
   # ane
