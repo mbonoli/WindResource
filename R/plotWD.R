@@ -91,30 +91,31 @@ plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"),
     stop("Los datos no correponden a la clase 'windata'.")
   
   if (type == "histogram") {
+    
+    #t <- paste("Wind Speed Distribution", "-", ane, sep = " ")
+    t <- switch(by, none = paste("Wind Speed Distribution", "-", ane, sep = " "), month = paste("Wind Speed Distribution", "-", ane, "-", "By:", by, sep = " "), hour = paste("Wind Speed Distribution", "-", ane, "-", "By:", by, sep = " "))
+    
     if (by == "none") {
       dp <- data.frame(mean = datawd$ane[[ane]]$ave)
-      print(ggplot(dp, aes(x = mean)) + geom_histogram(colour = "black", fill = "blue",...))
+      print(ggplot(dp, aes(x = mean)) + geom_histogram(colour = "black", fill = "blue",...) + labs(title = t, x = paste("Mean Speed", "(m/s)", sep = " "), y = "Frequency"))
     }
     else if (by == "month") {
       ds <- data.frame(mean = datawd$ane[[ane]]$ave, month = factor(month.names[datawd$time$month], 
                                                                     levels = month.names))
       print(ggplot(ds, aes(x = mean)) + geom_histogram(...,
                                                        colour = "black", fill = "blue") + facet_wrap(~month, ncol = 3, 
-                                                                                                     drop = F))
+                                                                                                     drop = F) + labs(title = t, x = paste("Mean Speed", "(m/s)", sep = " "), y = "Frequency"))
     } else if (by == "hour") {
       ds <- data.frame(mean = datawd$ane[[ane]]$ave, hour = factor(hour.names2[floor(datawd$time$hour/2) + 
                                                                                  1], levels = hour.names2))
-      print(ggplot(ds, aes(x = mean)) + geom_histogram(...,
+      print(ggplot(ds, aes(x = mean)) + geom_histogram(..., 
                                                        colour = "black", fill = "blue") + facet_wrap(~hour, ncol = 3, 
-                                                                                                     drop = F))
+                                                                                                     drop = F) + labs(title = t, x = paste("Mean Speed", "(m/s)", sep = " "), y = "Frequency"))
     }
   } 
   else if (type == "rose") {
-    
     dfall <- data.frame()
-    #print(var)
-    j <- switch(var, mean=1, min=2, max=3)
-    
+    j <- switch(var, mean="ave", min="min", max="max")
     for (i in ane) {
       dfall <- rbind(dfall, data.frame(value.start = datawd$ane[[i]][, j], 
                                        rose = as.factor(datawd$ane[[i]][, "rose"]), 
@@ -153,7 +154,13 @@ plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"),
     dataplot <- add.cart.coord(dataplot)
     maxi <- max(dataplot$value.start)
 
-    plotobj <- polar.theme(ggplot(data = dataplot), maxi = maxi) + geom_segment(data = dataplot, mapping = aes(x = x, y = y, xend = xend, yend = yend, color = ane, group = ane), size = 1)
+    By <-  switch(by, none = "", hour = paste("-", "By", by, sep = " "), month = paste("-", "By", by, sep = " "))     
+    
+    tit <- switch(var, min  = paste("Wind Minimun Speed Rose", "(m/s)", By, sep = " "), 
+                       mean = paste("Wind Mean Speed Rose", "(m/s)",  By, sep = " "), 
+                       max  = paste("Wind Maximum Speed Rose", "(m/s)", By, sep = " "),
+                       freq = paste("Wind Frequency Speed Rose", By, sep = " "))
+    plotobj <- polar.theme(ggplot(data = dataplot), maxi = maxi, by = by) + geom_segment(data = dataplot, mapping = aes(x = x, y = y, xend = xend, yend = yend, color = ane, group = ane), size = 1,na.rm=T) + labs(title = tit, x = "", y = "")
     switch(by,
            month={plotobj <- plotobj + facet_wrap(~month, ncol = 4, drop = F)},
            hour={plotobj <- plotobj + facet_wrap(~hour, ncol = 4, drop = F)})
@@ -193,35 +200,46 @@ plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"),
     } else stop(paste("Profiles plots requires that the By parameter takes values 'month' or 'hour'.", by) )
   }
   else if (type == "boxplot") {
+    
+    if (!is.null(by)){
+      
+    
+      tit <- switch(by, none = "Wind Mean Speed Boxplot", hour = "Wind Mean Speed Boxplot - Hour", day = "Wind Mean Speed Boxplot - Day", month = "Wind Mean Speed Boxplot - Month" )
+    
     dfbox <- data.frame(hour = datawd$time$hour, day = datawd$time$day, 
                         month = datawd$time$month, ave = datawd$ane[[ane]]$ave)
     if (by == "hour") {
-      print(ggplot(dfbox, aes(factor(hour), ave)) + geom_boxplot())
+      print(ggplot(dfbox, aes(factor(hour), ave)) + geom_boxplot(na.rm = T) + labs(title = tit, x = "Hour", y = "Mean"))
     } else if (by == "day") {
-      print(ggplot(dfbox, aes(factor(day), ave)) + geom_boxplot())
+      print(ggplot(dfbox, aes(factor(day), ave)) + geom_boxplot(na.rm = T) + labs(title = tit, x = "Day", y = "Mean"))
     } else if (by == "month") {
-      print(ggplot(dfbox, aes(factor(month), ave)) + geom_boxplot())
+      print(ggplot(dfbox, aes(factor(month), ave)) + geom_boxplot(na.rm = T) + labs(title = tit, x = "Month", y = "Mean"))
+    }
     }
   } 
   else if (type == "turbulence") {
-    df <- data.frame(ave = wd[["ane"]][[ane]][["ave"]], sd = wd[["ane"]][[ane]][["sd"]])
+    df <- data.frame(ave = datawd[["ane"]][[ane]][["ave"]], sd = datawd[["ane"]][[ane]][["sd"]])
     df$I <- df$sd/df$ave * 100
     df$bin <- floor(df$ave + 0.5)
     df$count <- 1
     DT <- data.table(df[df$bin>=1,])
     dataplot <- DT[,list(count=sum(count),I=mean(I)),by=c("bin" )]
     setnames(dataplot,"bin","windspeed")
-    dataplot <- dataplot[order(windspeed)]   
+    dataplot <- dataplot[order(windspeed)][1:17,]
     ref.point <- data.frame(x = c(15, 15, 15), y = c(16, 14, 12), ref = c("A - High Turbulence characteristics", 
-                                                                          "B - Medium Turbulence characteristics", "C - Low Turbulence characteristics"))
+                                                                          "B - Medium Turbulence characteristics", 
+                                                                          "C - Low Turbulence characteristics"))
     
-    c <- ggplot(dataplot, aes(x = windspeed, y = I))
-    print(c + geom_line(size = 1) + coord_cartesian(xlim = c(0, 17), ylim = c(0, 
-                                                                              35)) + xlab("Vhub [m/s]") + ylab("Turbulence Intensity [%]") + geom_point(data = ref.point, 
-                                                                                                                                                        mapping = aes(x = x, y = y, group = ref, color = ref), size = 5) + 
-            scale_x_continuous(breaks = 1:16) + scale_y_continuous(breaks = (1:7) * 
-                                                                     5) + theme(axis.title.x = element_text(face = "bold", size = 12), axis.title.y = element_text(face = "bold", 
-                                                                                                                                                                   size = 12)))
+    tit <- "Wind Mean Speed Turbulence"
+    
+    c <- ggplot(dataplot, aes(x = windspeed, y = I),na.rm = T)
+    print(c + geom_line(size = 1, na.rm=T) + 
+            coord_cartesian(xlim = c(0, 17), ylim = c(0, 35)) + 
+            xlab("Vhub [m/s]") + ylab("Turbulence Intensity [%]") + 
+            geom_point(data = ref.point, mapping = aes(x = x, y = y, group = ref, color = ref, na.rm=T), size = 5) + 
+            scale_x_continuous(breaks = 1:16) + 
+            scale_y_continuous(breaks = (1:7) * 5) + 
+            theme(axis.title.x = element_text(face = "bold", size = 12), axis.title.y = element_text(face = "bold", size = 12))+labs(title = tit))                                                                                                                                                                
   } 
   else if (type == "fit") {
     param <- fitWD(datawd, ane = ane)
@@ -247,14 +265,11 @@ plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"),
     vplayout <- function(x, y) viewport(layout.pos.col = x, layout.pos.row = y)
     for (i in 1:3) {
       print(ggplot(dr[dr$dist == distr[i], ], aes(x = mean)) + geom_histogram(aes(y = ..density..), 
-                                                                              binwidth = 1, colour = "black", fill = "blue") + ggtitle(tittle[i]) + 
-              geom_line(aes(y = ajust), colour = "red", size = 1) + annotate("text", 
-                                                                             x = max(data1) * 0.8, y = 0.11, label = paste(namep1[i], " = ", 
-                                                                                                                           round(para1[i], digits = 4)), size = 3.5) + annotate("text", 
-                                                                                                                                                                                x = max(data1) * 0.8, y = 0.09, label = paste(namep2[i], " = ", 
-                                                                                                                                                                                                                              round(para2[i], digits = 4)), size = 3.5) + annotate("text", 
-                                                                                                                                                                                                                                                                                   x = max(data1) * 0.8, y = 0.07, label = paste("Loglik =", round(lo[i], 
-                                                                                                                                                                                                                                                                                                                                                   digits = 4)), size = 3.5), vp = vplayout(rep(1:3)[i], 1))
+            binwidth = 1, colour = "black", fill = "blue") + ggtitle(tittle[i]) + 
+            geom_line(aes(y = ajust), colour = "red", size = 1) + annotate("text", 
+            x = max(data1) * 0.8, y = 0.11, label = paste(namep1[i], " = ", round(para1[i], digits = 2)), size = 3.5) + annotate("text", 
+            x = max(data1) * 0.8, y = 0.09, label = paste(namep2[i], " = ", round(para2[i], digits = 2)), size = 3.5) + annotate("text", 
+            x = max(data1) * 0.8, y = 0.07, label = paste("Loglik =", round(lo[i])), size = 3.5), vp = vplayout(rep(1:3)[i], 1))
       
     }
     params.wei <- list(shape = param$K, scale = param$A)

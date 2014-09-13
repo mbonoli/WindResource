@@ -8,7 +8,6 @@
 #' 
 #' @param data object of class wd.
 #' @param ane a vector with the anemometers'name to study. By default 'ane' takes the first anemometer.
-#' @param dist character string 'name' naming a distribution to be used (see details).
 #' @return 
 #' A list with the following components:
 #' -aic: Akaike Index Coefficient.
