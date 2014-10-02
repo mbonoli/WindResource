@@ -12,11 +12,8 @@ Depends:
     ggplot2,
     fitdistrplus,
     googleVis,
-<<<<<<< HEAD
     shiny,
     data.table,
-    grid
-=======
+    grid,
     shiny
->>>>>>> 42da17201a43e8a265a914e25dd86475b717fe3d
 Packaged: 2013-09-25 20:31:50 UTC; Diego

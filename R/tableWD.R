@@ -196,11 +196,8 @@ tableWD <- function(datawd, ane = NA, var = c("mean"), type = c("histogram"),
                                  "Max.", "Nas", "DS")
   } 
   else if (type == "turbulence") {
-<<<<<<< HEAD
     df <- data.frame(ave = datawd[["ane"]][[ane]][["ave"]], sd = datawd[["ane"]][[ane]][["sd"]])
-=======
     df <- data.frame(ave = wd[["ane"]][[ane]][["ave"]], sd = wd[["ane"]][[ane]][["sd"]])
->>>>>>> 42da17201a43e8a265a914e25dd86475b717fe3d
     df$I <- df$sd/df$ave * 100
     df$bin <- floor(df$ave + 0.5)
     df$count <- 1
