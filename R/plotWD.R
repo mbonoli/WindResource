@@ -30,7 +30,7 @@
 
 
 plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"), 
-                   by = c("none", "month", "hour"), since = NULL, to = NULL) {
+                   by = c("none", "month", "hour"), since = NULL, to = NULL, binwidth=1) {
   
   if (class(datawd) != "windata") 
     stop("Los datos no correponden a la clase 'windata'.")
@@ -97,7 +97,7 @@ plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"),
     
     if (by == "none") {
       dp <- data.frame(mean = datawd$ane[[ane]]$ave)
-      print(ggplot(dp, aes(x = mean)) + geom_histogram(colour = "black", fill = "blue",...) + labs(title = t, x = paste("Mean Speed", "(m/s)", sep = " "), y = "Frequency"))
+      print(ggplot(dp, aes(x = mean)) + geom_histogram(colour = "black", fill = "blue",binwidth=binwidth) + labs(title = t, x = paste("Mean Speed", "(m/s)", sep = " "), y = "Frequency"))
     }
     else if (by == "month") {
       ds <- data.frame(mean = datawd$ane[[ane]]$ave, month = factor(month.names[datawd$time$month], 

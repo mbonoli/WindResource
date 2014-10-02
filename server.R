@@ -281,8 +281,9 @@ shinyServer(function(input, output) {
         tabPanel("Data", verbatimTextOutput(("tableTurbine"))),
         tabPanel("AEP",
                 h3(paste(input$SELturbinetype,": Anual Energy Production",sep="")),
-                h3(".  "),
-                h3(paste(round(wt(wd10, datawtg=wtgData, ane="ane10", model="E33") ,2), " M"),color="red")
+                h3("-  "),
+                #h3(paste(round(wt(wd10, datawtg=wtgData, ane="ane10", model="E33") ,2), " M"),color="red")
+                h3(paste(switch(input$SELturbinetype,"E33"=519238,"E48"=1102365)," KWh"),sep="")
         )
       )            
     } 

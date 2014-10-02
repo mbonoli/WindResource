@@ -14,4 +14,6 @@ export(setWD)
 export(tableFitDist)
 export(tableWD)
 export(tablewtg)
+export(wt)
 import(fitdistrplus)
+
