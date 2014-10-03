@@ -160,7 +160,8 @@ plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"),
                        mean = paste("Wind Mean Speed Rose", "(m/s)",  By, sep = " "), 
                        max  = paste("Wind Maximum Speed Rose", "(m/s)", By, sep = " "),
                        freq = paste("Wind Frequency Speed Rose", By, sep = " "))
-    plotobj <- polar.theme(ggplot(data = dataplot), maxi = maxi, by = by) + geom_segment(data = dataplot, mapping = aes(x = x, y = y, xend = xend, yend = yend, color = ane, group = ane), size = 1,na.rm=T) + labs(title = tit, x = "", y = "")
+    plotobj <- polar.theme(ggplot(data = dataplot), maxi = maxi, by = by) + 
+      geom_segment(data = dataplot, mapping = aes(x = x, y = y, xend = xend, yend = yend, color = ane, group = ane), size = 1,na.rm=T) + labs(title = tit, x = "", y = "")
     switch(by,
            month={plotobj <- plotobj + facet_wrap(~month, ncol = 4, drop = F)},
            hour={plotobj <- plotobj + facet_wrap(~hour, ncol = 4, drop = F)})
