@@ -4,7 +4,7 @@
 \title{Plots for Winddata objects}
 \usage{
 plotWD(datawd, ane = NA, var = NA, type = c("histogram"), by = c("none",
-  "month", "hour"), since = NULL, to = NULL)
+  "month", "hour"), since = NULL, to = NULL, binwidth = 1)
 }
 \arguments{
 \item{datawd}{an object of class winddata.}

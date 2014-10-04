@@ -434,7 +434,8 @@ output$tableAll <- renderTable({
   output$tableTurbulence <- renderPrint({
     data <- datasetInput2()
     if(input$SELanalysis=="turbulence"){
-      tableWD(data=data, type="turbulence", ane=input$SELane)
+      plotWD
+      #tableWD(data=data, type="turbulence", ane=input$SELane)
     } else return(NULL)
   })
   
