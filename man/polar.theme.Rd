@@ -3,7 +3,7 @@
 \alias{polar.theme}
 \title{Extracting paramenters}
 \usage{
-polar.theme(plot, maxi, by)
+polar.theme(plot, maxi, by = "none")
 }
 \arguments{
 \item{plot}{a list of parameters.}
