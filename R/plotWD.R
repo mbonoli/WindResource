@@ -28,7 +28,6 @@
 #' str(wd)
 #' 
 
-
 plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"), 
                    by = "none", since = NULL, to = NULL, binwidth=1) {
   
@@ -158,14 +157,15 @@ plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"),
     dataplot <- add.cart.coord(dataplot)
     maxi <- max(dataplot$value.start)
 
-    By <-  switch(by, none = "", hour = paste("-", "By", by, sep = " "), month = paste("-", "By", by, sep = " "))     
+    by_txt <-  switch(by, none = "", hour = paste("-", "By", by, sep = " "), month = paste("-", "By", by, sep = " "))     
     
-    tit <- switch(var, min  = paste("Rose: Wind Speed minimun (m/s)", By, sep = " "), 
-                       mean = paste("Rose: Wind Speed average (m/s)",  By, sep = " "), 
-                       max  = paste("Rose: Wind Speed maximum (m/s)", By, sep = " "),
-                       freq = paste("Rose: Wind Speed Frequency", By, sep = " "))
+    tit <- switch(var, min  = paste("Rose: Wind Speed minimun (m/s)", by_txt, sep = " "), 
+                       mean = paste("Rose: Wind Speed average (m/s)",  by_txt, sep = " "), 
+                       max  = paste("Rose: Wind Speed maximum (m/s)", by_txt, sep = " "),
+                       freq = paste("Rose: Wind Speed Frequency", by_txt, sep = " "))
     plotobj <- polar.theme(ggplot(data = dataplot), maxi = maxi, by = by) + 
-      geom_segment(data = dataplot, mapping = aes(x = x, y = y, xend = xend, yend = yend, color = ane, group = ane), size = 1,na.rm=T) + labs(title = tit, x = "", y = "")
+      geom_segment(data = dataplot, mapping = aes(x = x, y = y, xend = xend, yend = yend, color = ane, group = ane), size = 1,na.rm=T) + 
+      labs(title = tit, x = "", y = "")
     switch(by,
            month={plotobj <- plotobj + facet_wrap(~month, ncol = 4, drop = F)},
            hour={plotobj <- plotobj + facet_wrap(~hour, ncol = 4, drop = F)})

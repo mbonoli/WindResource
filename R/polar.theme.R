@@ -11,7 +11,7 @@
 #' 
 #' @export
 
-polar.theme <- function(plot, maxi, by) {
+polar.theme <- function(plot, maxi, by="none") {
     
     radialaxis <- data.frame(x = 0, y = 0, xend = maxi * sin((1:16) * 360/16/180 * 
         pi), yend = maxi * cos((1:16) * 360/16/180 * pi), text = c("NNE", "NE", 
