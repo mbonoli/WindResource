@@ -1,6 +1,7 @@
 #################
 ## Eclipse
 #################
+*.Rhistory
 *.pydevproject
 .project
 .metadata
