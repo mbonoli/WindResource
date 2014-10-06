@@ -7,6 +7,7 @@
 #' The object windata is a list with the parameters that were mencionated before.
 #'   
 #' @param data a dataframe to be converted
+#' @param interval interval of time betwen two registers. Actually, it's only acepted intervals of 1 minut.
 #' @param date.var the name of the variable that contains the dates of measurements
 #' @param date.format the admit formats are:
 #'        - 'YYYYMMDD','YYYY-MM-DD','YYYY.MM.DD' or 'DD/MM/YYYY'       
@@ -19,6 +20,7 @@
 #' @param speed.min.var the name/s of the variable/s that contains the min speeds measures.
 #' @param speed.max.var the name/s of the variable/s that contains the max speeds measures.
 #' @param speed.sd.var the name/s of the variable/s that contains the desvest standar of speeds measures.
+#' @param speed.var.var the name/s of the variable/s that contains the variance of speeds measures.
 #' @param speed.unit unit wind speed. At the moment, the unit that can be use is 'm/s'.  
 #' @param dir.var the name/s of the variable/s that contains the wind's direction measures
 #' @param dir.unit unit wind's directions. At the moment, the unit that can be used is 'deg'.
@@ -26,10 +28,7 @@
 #' @param temp.unit unit wind's temperatures. At the moment, the unit that can be used is 'deg'.
 #' @param pres.var he name/s of the variable/s that contains the wind's atmospheric pressures measures.
 #' @param pres.unit unit wind's atmospheric pressures. At the moment, the unit that can be used is 'deg'.
-#' @param name unit wind's atmospheric pressures. At the moment, the unit that can be used is 'deg'.
-#' @param NA.values unit wind's atmospheric pressures. At the moment, the unit that can be used is 'deg'.
 #' @return Object of class 'windata' (see details).
-#' 
 #' 
 #' @author Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
 #' @export
@@ -41,7 +40,7 @@
 #' head(wd)
 #' 
 
-setWD <- function(data, name = NA, date.var, date.format = c("YYYYMMDD", "YYYY-MM-DD", "YYYY.MM.DD", 
+setWd <- function(data, name = NA, date.var, date.format = c("YYYYMMDD", "YYYY-MM-DD", "YYYY.MM.DD", 
     "DD/MM/YYYY"), time.var, time.format = c("HHMM", "HHMMSS", "HH:MM", "HH:MM:SS", 
     "HH.MM", "HH.MM.SS"), ane.names, ane.height, speed.ave.var, speed.min.var = NA, 
     speed.max.var = NA, speed.sd.var = NA, speed.unit = NA, dir.var, dir.unit = "deg", 

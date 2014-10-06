@@ -46,7 +46,7 @@ shinyServer(function(input, output) {
   year.list <- reactive({
     data <- datasetInput2()
     s <- list()
-    for (i in unique(format(data$time$dt,"%Y"))){
+    for (i in unique(format(wd$time$dt,"%Y"))){
       s[[i]] <- i
     }
     s
@@ -54,13 +54,18 @@ shinyServer(function(input, output) {
   month.list <- reactive({
     data <- datasetInput2()
     s <- list()
-    for (i in unique(format(data$time$dt,"%m"))){
+    for (i in unique(format(wd$time$dt,"%m"))){
       s[[i]] <- i
     }
     s
   })
   ane.names <- reactive({
-    data <- datasetInput2()
+    #data <- datasetInput2()
+    switch(input$dataset,
+           wdMtTom=wdMtTom,
+           wdOlavarria=wdOlavarria,
+           wd=wd,
+           wd10=wd10)
     data[["ane"]]$ane.names
   })
   ane.names.char <- reactive({
@@ -83,14 +88,6 @@ shinyServer(function(input, output) {
     data <- datasetInput2()
     data[["name"]]
   })
-  var.options <- reactive({
-    data <- datasetInput2()
-    result <- list("Ave" = "mean")
-    if (!is.null(wd$ane[[ane.names()[1]]]["min"][1])) result <- c(result, list("Min" = "min"))
-    if (!is.null(wd$ane[[ane.names()[1]]]["max"][1])) result <- c(result, list("Max" = "max"))
-    result <- c(result, list("Freq" = "freq"))
-    result
-  })
   # Plot Type Selector
   output$UIplottype <- renderUI({
     if(input$SELanalysis=="plots"){
@@ -103,7 +100,7 @@ shinyServer(function(input, output) {
                        "Calendar" = "calendar"))
     } else return(NULL)
   })
-
+  
   # Plot WTG Selector
   output$UIwtg <- renderUI({
     if(input$SELanalysis=="pc"){
@@ -112,21 +109,22 @@ shinyServer(function(input, output) {
                        "E48" = "E48"))
     } else return(NULL)
   })
-
+  
   # Plot Options Selector
-  observe({
-    output$UIplotopt <- renderUI({
+  output$UIplotopt <- renderUI({
     if(input$SELanalysis=="plots"){
       if(!is.null(input$SELplottype)){
         if(input$SELplottype=="rose"){
           wellPanel(div(class="row", 
                         div(class="span5 offset1", 
                             radioButtons("SELplotvarRose","Var:",
-                                         var.options())
-                            ),
+                                         list("Ave" = "mean", 
+                                              "Min" = "min", 
+                                              "Max" = "max",
+                                              "Freq" = "freq"))),
                         div(class="span3", 
-                            radioButtons("SELplotbyRose",label="By:",selected="none",
-                                         choices=list("None" = "none", 
+                            radioButtons("SELplotbyRose","By:",
+                                         list("None" = "none", 
                                               "Hour" = "hour", 
                                               "Month" = "month")))))
         }
@@ -200,9 +198,8 @@ shinyServer(function(input, output) {
                 selectInput("SELane","Anemometer:",
                             listane))
     }
-  })}
-  )
-
+  })
+  
   # Dates Selector
   output$UIdates <- renderUI({
     if (input$SELanalysis!="info"){
@@ -278,19 +275,14 @@ shinyServer(function(input, output) {
     else if (input$SELanalysis=="pc"){
       tabsetPanel(
         tabPanel("Plot", plotOutput("plotTurbine")),
-        tabPanel("Data", verbatimTextOutput(("tableTurbine"))),
-        tabPanel("AEP",
-                h3(paste(input$SELturbinetype,": Anual Energy Production",sep="")),
-                h3("-  "),
-                #h3(paste(round(wt(wd10, datawtg=wtgData, ane="ane10", model="E33") ,2), " M"),color="red")
-                h3(paste(switch(input$SELturbinetype,"E33"=519238,"E48"=1102365)," KWh"),sep="")
+        tabPanel("Data", verbatimTextOutput(("tableTurbine"))
         )
       )            
     } 
     else if(input$SELanalysis=="turbulence"){
       tabsetPanel(
         tabPanel("Plot", plotOutput("plotTurbulence")),
-        tabPanel("Data", verbatimTextOutput("tableTurbulence")
+        tabPanel("Data", verbatimTextOutput(("tableTurbulence"))
         )
       )
     } 
@@ -313,8 +305,14 @@ shinyServer(function(input, output) {
         if(input$SELanalysis=="plots"){
           if (input$SELplottype=="histogram" | input$SELplottype=="profile" | 
                 input$SELplottype=="boxplot" | input$SELplottype=="rose"){
-            if (!(input$SELplottype=="rose" & is.null(input$SELplotvarRose))){
-            # Este if es porque sino la primera vez que entra ni bien se cambia el combo tira error
+            if (input$SELplottype == 'rose') {
+              if (input$SELplotbyRose != 'none') {
+                plotWD(data=data,
+                       var=input$SELplotvarRose,
+                       ane=i ,type=input$SELplottype, 
+                       by=input$SELplotbyRose, binwidth=input$binwidth)
+              }
+            } else {
               plotWD(data=data,
                      var=switch(input$SELplottype,
                                 rose=input$SELplotvarRose,
@@ -326,7 +324,8 @@ shinyServer(function(input, output) {
                                profile=input$SELplotbyProf,
                                boxplot=input$SELplotbyBox,
                                histogram=input$SELplotbyHist),
-                     binwidth=input$binwidth)}
+                     binwidth=input$binwidth)
+            }
           }
           else return(NULL)
         }
@@ -338,17 +337,16 @@ shinyServer(function(input, output) {
   output$plotAll <- renderPlot({
     data <- datasetInput2()
     # Aqui solo deberíamos estar en rosas y profiles
-    if (!is.null(input$SELplottype)){
     plotWD(data=data,
            var=switch(input$SELplottype,
-                      input$SELplotvarRose,
+                      rose=input$SELplotvarRose,
                       profile=input$SELplotvarProf),
            ane=ane.names(),
            type=input$SELplottype, 
            by=switch(input$SELplottype,
                      rose=input$SELplotbyRose,
                      profile=input$SELplotbyProf),
-           binwidth=input$binwidth) }     
+           binwidth=input$binwidth)      
   })
   
   # Plot Serie
@@ -389,6 +387,16 @@ shinyServer(function(input, output) {
         if(input$SELanalysis=="plots"){
           if (input$SELplottype=="histogram" | input$SELplottype=="profile" | 
                 input$SELplottype=="boxplot" | input$SELplottype=="rose"){
+            if (input$SELplottype == 'rose') {
+              if (input$SELplotbyRose != 'none') {
+                as.data.frame(
+                  tableWD(data=data,
+                          var=input$SELplotvarRose,
+                          ane=i ,type=input$SELplottype, 
+                          by=input$SELplotbyRose, binwidth=input$binwidth)
+                )
+              }
+            } else {
               as.data.frame(
                 tableWD(data=data,
                         var=switch(input$SELplottype,
@@ -401,7 +409,9 @@ shinyServer(function(input, output) {
                                   profile=input$SELplotbyProf,
                                   boxplot=input$SELplotbyBox,
                                   histogram=input$SELplotbyHist),
-                        binwidth=input$binwidth))
+                        binwidth=input$binwidth)
+              )
+            }
           }
           else return(NULL)
         }
@@ -412,7 +422,6 @@ shinyServer(function(input, output) {
 # Plot Generation All Ane
 output$tableAll <- renderTable({
   data <- datasetInput2()
-  print(4)
   if (input$SELplottype=="profile" | input$SELplottype=="rose"){
     as.data.frame(
       tableWD(data=data,
@@ -434,18 +443,10 @@ output$tableAll <- renderTable({
   output$tableTurbulence <- renderPrint({
     data <- datasetInput2()
     if(input$SELanalysis=="turbulence"){
-      plotWD
-      #tableWD(data=data, type="turbulence", ane=input$SELane)
+      tableWD(data=data, type="turbulence", ane=input$SELane)
     } else return(NULL)
   })
   
-# powerCP
-output$powerCP <- renderPrint({
-  data <- datasetInput2()
-  if(input$SELanalysis=="power"){
-    tableWD(data=data, type="turbulence", ane=input$SELane)
-  } else return(NULL)
-})
   # plotTurbulence
   output$plotTurbulence <- renderPlot({
     if (input$SELanalysis=="turbulence"){

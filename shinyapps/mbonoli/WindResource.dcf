@@ -1,4 +1,8 @@
 name: WindResource
 account: mbonoli
+<<<<<<< HEAD
 bundleId: 60382
+=======
+bundleId: 47262
+>>>>>>> f66071de49e2956f306270bc4590141274344e01
 url: http://mbonoli.shinyapps.io/WindResource

@@ -4,16 +4,12 @@ Title: Package for studying wind resource
 Version: 0.1
 Date: 2013-08-27
 Author: Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
-Maintainer: Mariano Bonoli <mbonoli@fi.edu.ar>
+Maintainer: Mariano Bonoli <mbonoli@fiuba.edu.ar>
 Description: Functions to describe the wind resource
 License: GPL-2 | GPL-3
 Depends:
     fitdistrplus,
-    ggplot2,
-    fitdistrplus,
-    googleVis,
-    shiny,
-    data.table,
     grid,
-    shiny
+    ggplot2,
+    googleVis
 Packaged: 2013-09-25 20:31:50 UTC; Diego
