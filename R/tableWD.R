@@ -6,7 +6,8 @@
 #' @details
 #' The object windata is a list with the parameters that were mencionated before.
 #'   
-#' @param data an object of class winddata 
+#' @param datawd an object of class winddata 
+#' @param binwidth an object of class winddata 
 #' @param ane an optional vector specifying a subset of anenemometers to plot
 #' @param var currently only method = 'qr' is supported
 #' @param type the type of graphic to plot. Actually soported: 'histogram', 'rose', 
@@ -58,9 +59,9 @@ tableWD <- function(datawd, ane = NA, var = c("mean"), type = c("histogram"),
       }
     print(ane)
     if (is.null(datawd[["ane"]][[ane]][["sd"]]))
-      stop("No se cuenta con información de desvíos estándar")
+      stop("No se cuenta con informacion de desvios estandar")
     if (datawd[["interval.minutes"]]!=10)
-      stop("No se cuenta con información diezminutal")
+      stop("No se cuenta con informacion diezminutal")
   }
   
   # ane
@@ -78,8 +79,6 @@ tableWD <- function(datawd, ane = NA, var = c("mean"), type = c("histogram"),
   } else {
     ane.names <- ane
   } 
-  
-  require(reshape2)
   
   # Apply date filter
   if (!is.null(since)) {
@@ -130,6 +129,7 @@ tableWD <- function(datawd, ane = NA, var = c("mean"), type = c("histogram"),
     }
   else if (type == "rose") {
     dfall <- data.frame()
+    print(var)
     j <- switch(var, mean=1, min=2, max=3)
     
     for (i in ane) {
@@ -196,7 +196,7 @@ tableWD <- function(datawd, ane = NA, var = c("mean"), type = c("histogram"),
                                  "Max.", "Nas", "DS")
   } 
   else if (type == "turbulence") {
-    library(data.table)
+    df <- data.frame(ave = datawd[["ane"]][[ane]][["ave"]], sd = datawd[["ane"]][[ane]][["sd"]])
     df <- data.frame(ave = wd[["ane"]][[ane]][["ave"]], sd = wd[["ane"]][[ane]][["sd"]])
     df$I <- df$sd/df$ave * 100
     df$bin <- floor(df$ave + 0.5)
