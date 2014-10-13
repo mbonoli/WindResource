@@ -1,13 +1,16 @@
-#' @title Extracting paramenters
+#' @title circle coordinates
 #' 
 #' @description
-#' Function to extract a parameter value from a list
+#' Generate the 
 #' 
-#' @param center a list of parameters.
-#' @param radio the parameter value that will be extracted.
-#' @param npoints the parameter value that will be extracted.
-#' @return The parameter value that was extracted.
-#' @author Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
+#' @param center vector with the coordinates of the circle center.
+#' @param radio circle radius.
+#' @param npoints number of points.
+#' @return Data.frame with the circle coordinates.
+#' @author Mariano Bonoli Escobar, Diego Edwards, Valeria Gogni, Ruben Bufanio
+#' @export
+#' @keywords internal
+#' 
 
 circleFun <- function(center = c(0, 0), radio = 1, npoints = 100) {
     r = radio

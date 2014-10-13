@@ -14,6 +14,9 @@
 #' @return Object of class 'windata' (see details).
 #' 
 #' @author Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
+#' 
+#' @importFrom googleVis gvisCalendar
+#' 
 #' @export
 #' @examples
 #' # simple example using the windspeed data set

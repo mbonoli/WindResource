@@ -1,4 +1,4 @@
-#' @title Conversion of dataframe in class windata
+#' @title Conversion of dataframe in class \code{windata}
 #' 
 #' @description
 #' Shape a dataframe in a class 'windata'
@@ -18,6 +18,9 @@
 #' @return Object of class 'windata' (see details).
 #' 
 #' @author Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
+#' 
+#' @importFrom googleVis gvisAnnotatedTimeLine
+#' 
 #' @export
 #' @examples
 #' # simple example using the windspeed data set
@@ -29,8 +32,8 @@
 
 plotwindserie <- function(wdata, year, month, ane, 
                           var = c("Ave", "Min", "Max", "Temp", "Pres", "Dir"), 
-                          axis = c("Ave", "Min", "Max", "Temp", "Pres", "Dir"), shiny = F) {
-  
+                          axis = c("Ave", "Min", "Max", "Temp", "Pres", "Dir"), 
+                          shiny = F) {
   if (sum(wdata$time$year == year & wdata$time$month == month) == 0) 
     stop("No existe el anio y mes seleccionado")
 

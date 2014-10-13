@@ -1,13 +1,14 @@
-#' @title Extracting paramenters
+#' @title Add cartesian coordinates to a dataset
 #' 
 #' @description
-#' Function to extract a parameter value from a list
+#' Add cartesian coordinates to a dataset
 #' 
-#' @param dataplot a list of parameters.
-#' @return The parameter value that was extracted.
-#' @author Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
-#' #' @export
+#' @param Dataframe with value.start, value.end, ang.start and ang.end fields
+#' @return The same data.frame entered as parameters, with the following additional fields: x, y, xend and yend
+#' @author Mariano Bonoli Escobar, Diego Edwards, Valeria Gogni, Ruben Bufanio
 #' @export
+#' @keywords internal
+#' 
 add.cart.coord <- function(dataplot) {
     dataplot$y <- dataplot$value.start * cos(dataplot$ang.start/180 * pi)
     dataplot$x <- dataplot$value.start * sin(dataplot$ang.start/180 * pi)

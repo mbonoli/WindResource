@@ -22,6 +22,7 @@
 #' 
 #' @author Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
 #' @export
+#' @importFrom fitdistrplus fitdist
 #' @examples
 #' # simple example using the wd class
 #' # list_para <- fitWd(Wd, ane=1, dist='weibull')
@@ -43,9 +44,9 @@ fitWD <- function(data, ane) {
         dat <- dat
     }
     
-    wd.wei <- fitdist(dat, dist = "weibull")
-    wd.gam <- fitdist(dat, dist = "gamma")
-    wd.ln <- fitdist(dat, dist = "lnorm")
+    wd.wei <- fitdist(dat, distr = "weibull")
+    wd.gam <- fitdist(dat, distr = "gamma")
+    wd.ln <- fitdist(dat, distr = "lnorm")
     
     
     result <- list()

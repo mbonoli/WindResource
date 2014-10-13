@@ -1,8 +1,11 @@
-#' This is data to be included in my package
+#' wd10
+#' 
+#' @description
+#' Sample data with 10 minutes interval
 #'
-#' @name wd10
 #' @docType data
-#' @author My Name \email{blahblah@@roxygen.org}
-#' @references \url{data_blah.com}
+#' @name wd10
+#' @author Mariano Bonoli Escobar, Diego Edwards, Valeria Gogni, Ruben Bufanio
 #' @keywords data
+#' 
 NULL 

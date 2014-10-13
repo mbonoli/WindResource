@@ -8,8 +8,10 @@ Maintainer: Mariano Bonoli <mbonoli@fiuba.edu.ar>
 Description: Functions to describe the wind resource
 License: GPL-2 | GPL-3
 Depends:
+    grid
+Imports:
     fitdistrplus,
-    grid,
     ggplot2,
+    data.table,
     googleVis
 Packaged: 2013-09-25 20:31:50 UTC; Diego

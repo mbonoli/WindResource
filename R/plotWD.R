@@ -1,32 +1,58 @@
-#' @title Plots for Winddata objects
+#' @title Plots for \code{Windata} objects
 #' 
 #' @description
-#' Shape a dataframe in a object which will be use by the diferents functions in the package......
+#' The function allows to describe graphically the main features of the current wind speed and direction.
+#' This function generates histograms, correlations, wind roses, profile graphs and boxplots. It also allows to evaluate the fit of the data to probability distributions.
 #' 
-#' @details
-#' The object windata is a list with the parameters that were mencionated before.
+#' @param datawd an object of class \code{windata}.
+#' @param ane a vector of character strings with anemometers names to plot.
+#' @param var a vector of character strings the the variables to plot: \code{ave}, \code{min}, \code{max}, \code{freq}.
+#' @param type type of plot: \code{histogram}, \code{rose}, \code{profiles} and \code{boxplot}. See also Details.
+#' @param by an optional string stating if the plot is divided in panels by \code{month} or \code{hour}. 
+#' @param since an optional string with initial date to be taken into account to make the plot. The string format is 'YYYY-MM-DD'.
+#' @param to an optional string indicating final date to be taken into account to make the plot. The string format is 'YYYY-MM-DD'.
+#' @param binwidth an optional bindwidth interval used in histogram plots.
 #' 
-#' @param datawd an object of class winddata.
-#' @param ane a vector of character strings containing anemometers names to plot. 
-#' @param var a vector of character strings containing the variables to plot.
-#' @param type type of plot: 'histogram', 'rose', 
-#'        'profiles' and 'boxplot'. See also Details.
-#' @param by an optional string stating if the plot is divided in panels by 'month' or 'hour'. 
-#' @param since an optional string indicating initial date to be taken into account to make the plot.
-#'        The string format is 'YYYY-MM-DD'.
-#' @param to an optional string indicating final date to be taken into account to make the plot.
-#'        The string format is 'YYYY-MM-DD'.
-#' @return Object of class 'windata' (see details)
+#' @author Mariano Bonoli Escobar, Diego Edwards, Valeria Gogni, Ruben Bufanio
 #' 
-#' @author Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
+#' @import ggplot2 
+#' 
+#' @importFrom data.table data.table
+#' 
 #' @export
 #' @examples
-#' # simple example using the windspeed data set
-#' data(wd)
-#'  
-#' # let's examine windspeed to see the variables' names
-#' str(wd)
+#' data("wdMtTom", package = "WindResource")
+#' data("wd10", package = "WindResource")
 #' 
+#' ## Getting anemometer names
+#' wdMtTom$ane$ane.names
+#' wd10$ane$ane.names
+#' 
+#' ## Histogram
+#' plotWD(data=wdMtTom, ane="Anem24bMS", type="histogram", by="none")
+#' plotWD(data=wdMtTom, ane="Anem24bMS", type="histogram", by="none", binwidth=.5)
+#' plotWD(data=wdMtTom, ane="Anem24bMS", type="histogram", by="hour")
+#' 
+#' ## Rose
+#' plotWD (data=wdMtTom, ane=c("Anem24bMS", "Anem37aMS"), var="mean", type="rose", by="none")
+#' plotWD (data=wdMtTom, ane=c("Anem37aMS"), var="mean", type="rose", by="month")
+#' 
+#' ## Boxplot
+#' plotWD (data=wdMtTom, ane="Anem24bMS", type="boxplot", by="hour")
+#' plotWD (data=wdMtTom, ane="Anem24bMS", type="boxplot", by="month")
+#' 
+#' ## Profile
+#' plotWD (data=wdMtTom, ane=c("Anem24aMS","Anem24bMS", "Anem37aMS" ,"Anem37bMS"), var="ave", type="profile", by="hour")
+#' plotWD (data=wdMtTom,  ane=c("Anem24aMS","Anem24bMS", "Anem37aMS" ,"Anem37bMS"),  var="ave", type="profile", by="month")
+#' 
+#' ## Turbulence Analysis
+#' plotWD (data=wd10, ane="ane10", type="turbulence")
+#' 
+#' ## Fit
+#' plotWD (data=wdMtTom, ane="Anem37aMS", type="fit")
+#' 
+#' @seealso \code{\link{tableWD}}, \code{\link{plotwindserie}}, \code{\link{plotcalendar}}
+
 
 plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"), 
                    by = "none", since = NULL, to = NULL, binwidth=1) {

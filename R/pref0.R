@@ -1,13 +1,15 @@
-#' @title Complete numbers
+#' @title Complete zeros prefix
 #' 
 #' @description
-#' Function to Complete numbers
+#' Complete zeros prefix
 #' 
-#' @param data a list of paramenters.
-#' @param charnum number of digits.
-#' @return parameter's value extracted.
-#' @author Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
+#' @param data a number to complete.
+#' @param charnum length of target number.
+#' @return character number and zeros prefix
+#' @author Mariano Bonoli Escobar, Diego Edwards, Valeria Gogni, Ruben Bufanio
 #' @export
+#' @keywords internal
+#' 
 
 # Auxiliary function
 pref0 <- function(data, charnum) {

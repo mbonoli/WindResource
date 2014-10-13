@@ -1,32 +1,57 @@
-#' @title Plots for winddata objects
+#' @title Summary Tables for \code{Windata} objects
 #' 
 #' @description
-#' Shape a dataframe in a object which will be use by the diferents functions in the package......
+#' This function returns the values plotted with \code{plotWD} function.
 #' 
-#' @details
-#' The object windata is a list with the parameters that were mencionated before.
-#'   
-#' @param datawd an object of class winddata 
-#' @param binwidth an object of class winddata 
-#' @param ane an optional vector specifying a subset of anenemometers to plot
-#' @param var currently only method = 'qr' is supported
-#' @param type the type of graphic to plot. Actually soported: 'histogram', 'rose', 
-#'        'correlogram', 'profiles' and 'boxplot'. See also 'Details'.
-#' @param by an optional string stating if the plot is divided in panels by 'month' or 'hour'. 
-#' @param since an optional string indicating initial date to be taken into account to make the plot.
-#'        The string format is 'YYYY-MM-DD'.
-#' @param to an optional string indicating final date to be taken into account to make the plot.
-#'        The string format is 'YYYY-MM-DD'.
-#' @return Object of class 'windata' (see details)
+#' @param datawd an object of class \code{windata}.
+#' @param ane a vector of character strings with anemometers names to plot.
+#' @param var a vector of character strings the the variables to plot: \code{ave}, \code{min}, \code{max}, \code{freq}.
+#' @param type type of plot: \code{histogram}, \code{rose}, \code{profiles} and \code{boxplot}. See also Details.
+#' @param by an optional string stating if the plot is divided in panels by \code{month} or \code{hour}. 
+#' @param since an optional string with initial date to be taken into account to make the plot. The string format is 'YYYY-MM-DD'.
+#' @param to an optional string indicating final date to be taken into account to make the plot. The string format is 'YYYY-MM-DD'.
+#' @param binwidth an optional bindwidth interval used in histogram plots.
 #' 
-#' @author Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
+#' @author Mariano Bonoli Escobar, Diego Edwards, Valeria Gogni, Ruben Bufanio
+#' 
+#' @importFrom data.table data.table
+#' @importFrom data.table setnames
+#' 
 #' @export
+#' 
 #' @examples
-#' # simple example using the windspeed data set
-#' data(wd)
-#'  
-#' # let's examine windspeed to see the variables' names
-#' head(wd)
+#' data("wdMtTom", package = "WindResource")
+#' data("wd10", package = "WindResource")
+#' 
+#' ## Getting anemometer names
+#' wdMtTom$ane$ane.names
+#' wd10$ane$ane.names
+#' 
+#' ## Histogram
+#' tableWD(data=wdMtTom, ane="Anem24bMS", type="histogram", by="none")
+#' tableWD(data=wdMtTom, ane="Anem24bMS", type="histogram", by="none", binwidth=.5)
+#' tableWD(data=wdMtTom, ane="Anem24bMS", type="histogram", by="hour")
+#' 
+#' ## Rose
+#' tableWD (data=wdMtTom, ane=c("Anem24bMS", "Anem37aMS"), var="mean", type="rose", by="none")
+#' tableWD (data=wdMtTom, ane=c("Anem37aMS"), var="mean", type="rose", by="month")
+#' 
+#' ## Boxplot
+#' tableWD (data=wdMtTom, ane="Anem24bMS", type="boxplot", by="hour")
+#' tableWD (data=wdMtTom, ane="Anem24bMS", type="boxplot", by="month")
+#' 
+#' ## Profile
+#' tableWD (data=wdMtTom, ane="Anem24aMS", var="ave", type="profile", by="hour")
+#' tableWD (data=wdMtTom,  ane="Anem24aMS",  var="ave", type="profile", by="month")
+#' 
+#' ## Turbulence Analysis
+#' tableWD (data=wd10, ane="ane10", type="turbulence")
+#' 
+#' ## Fit
+#' tableWD (data=wdMtTom, ane="Anem37aMS", type="fit")
+#' 
+#' @seealso \code{\link{plotWD}}
+
 #' 
 
 
@@ -129,7 +154,6 @@ tableWD <- function(datawd, ane = NA, var = c("mean"), type = c("histogram"),
     }
   else if (type == "rose") {
     dfall <- data.frame()
-    print(var)
     j <- switch(var, mean=1, min=2, max=3)
     
     for (i in ane) {
@@ -197,14 +221,13 @@ tableWD <- function(datawd, ane = NA, var = c("mean"), type = c("histogram"),
   } 
   else if (type == "turbulence") {
     df <- data.frame(ave = datawd[["ane"]][[ane]][["ave"]], sd = datawd[["ane"]][[ane]][["sd"]])
-    df <- data.frame(ave = wd[["ane"]][[ane]][["ave"]], sd = wd[["ane"]][[ane]][["sd"]])
     df$I <- df$sd/df$ave * 100
     df$bin <- floor(df$ave + 0.5)
     df$count <- 1
     DT <- data.table(df[df$bin>=1,])
     dataplot <- DT[,list(count=sum(count),I=mean(I)),by=c("bin" )]
     setnames(dataplot,"bin","windspeed")
-    dataplot <- dataplot[order(windspeed)]    
+    dataplot <- dataplot[order(dataplot$windspeed)]    
     ref.point <- data.frame(x = c(15, 15, 15), y = c(16, 14, 12), ref = c("A - High Turbulence characteristics", 
                                                                           "B - Medium Turbulence characteristics", "C - Low Turbulence characteristics"))
     

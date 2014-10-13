@@ -2,15 +2,15 @@
 \docType{data}
 \name{wdMtTom}
 \alias{wdMtTom}
-\title{This is data to be included in my package}
+\title{wdMtTom}
 \description{
-This is data to be included in my package
+Sample data with 10 hour interval
 }
 \author{
-My Name \email{blahblah@roxygen.org}
+Mariano Bonoli Escobar, Diego Edwards, Valeria Gogni, Ruben Bufanio
 }
 \references{
-\url{data_blah.com}
+\url{http://www.umass.edu/windenergy/publications/resource/Mt_Tom_Holyoke}
 }
 \keyword{data}
 

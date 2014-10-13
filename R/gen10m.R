@@ -1,4 +1,4 @@
-#' @title Conversion of dataframe in class windata
+#' @title Conversion of dataframe in class \code{windata}
 #' 
 #' @description
 #' Shape a dataframe in a class 'windata'
@@ -10,6 +10,9 @@
 #' @param Ns interval of time betwen two registers. Actually, it's only acepted intervals of 1 minut.
 #' 
 #' @author Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
+#' 
+#' @importFrom data.table setkeyv
+#' 
 #' @export
 #' @examples
 #' # simple example using the windspeed data set
