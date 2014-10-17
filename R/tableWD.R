@@ -55,8 +55,8 @@
 #' 
 
 
-tableWD <- function(datawd, ane = NA, var = c("mean"), type = c("histogram"), 
-                    by = c("none", "month", "hour"), since = NULL, to = NULL, binwidth = 1) {
+tableWD <- function(datawd, ane = NA, var = c("mean"), type = "histogram", 
+                    by = "none", since = NULL, to = NULL, binwidth = 1) {
   
   rose_dir <- c("N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", 
                 "SW", "WSW", "W", "WNW", "NW", "NNW")
@@ -68,7 +68,7 @@ tableWD <- function(datawd, ane = NA, var = c("mean"), type = c("histogram"),
   hour.names <- pref0(0:23, 2)
   
   if (class(datawd) != "windata") 
-    stop("Los datos no correponden a la clase 'windata'.")
+    stop("datawd is not windata class objetc")
   
   # Checks
   if (sum(ane %in% datawd$ane$ane.names) != length(ane) & !is.na(ane)[1]) 

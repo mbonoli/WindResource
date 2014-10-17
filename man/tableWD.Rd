@@ -3,9 +3,8 @@
 \alias{tableWD}
 \title{Summary Tables for \code{Windata} objects}
 \usage{
-tableWD(datawd, ane = NA, var = c("mean"), type = c("histogram"),
-  by = c("none", "month", "hour"), since = NULL, to = NULL,
-  binwidth = 1)
+tableWD(datawd, ane = NA, var = c("mean"), type = "histogram",
+  by = "none", since = NULL, to = NULL, binwidth = 1)
 }
 \arguments{
 \item{datawd}{an object of class \code{windata}.}

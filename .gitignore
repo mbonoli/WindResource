@@ -173,3 +173,5 @@ pip-log.txt
 .Rproj.user
 .Rhistory
 .RData
+*.Rhistory
+.Rhistory

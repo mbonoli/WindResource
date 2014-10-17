@@ -58,7 +58,7 @@ plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"),
                    by = "none", since = NULL, to = NULL, binwidth=1) {
   
   if (class(datawd) != "windata") 
-    stop("Los datos no correponden a la clase 'windata'.")
+    stop("datawd is not windata class object.")
   
   # Checks
   if (sum(ane %in% datawd$ane$ane.names) != length(ane) & !is.na(ane)[1]) 

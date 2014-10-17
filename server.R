@@ -6,11 +6,14 @@
 #' @param data a list of paramenters.
 #' @param charnum number of digits.
 #' @return parameter's value extracted.
+#' 
+#' @importFrom googleVis renderGvis
+#' 
 #' @author Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
 #' @export
 
 library("WindResource")
-
+library(googleVis)
 # data(wtgData)
 # wd10$dir$ang_16 <- (wd10$dir$sect_16-1)*22.5
 # class(wd10)<-"windata"

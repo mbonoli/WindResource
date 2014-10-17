@@ -1,26 +1,24 @@
-#' @title Plots for winddata objects
+#' @title Power curves
 #' 
 #' @description
-#' Shape a dataframe in a object which will be use by the diferents functions in the package......
+#' Plot the power curve of differentes wind turbines.
 #' 
 #' @details
-#' The object windata is a list with the parameters that were mencionated before.
-#'   
-#' @param data an object of class winddata 
-#' @param Model an optional vector specifying a subset of anenemometers to plot
-#' @return Object of class 'windata' (see details)
+#' The wind turbines are specificated in \code{wtgData}.  
 #' 
-#' @author Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
+#' @param datawtg object of class \code{wtgData}. 
+#' @param model one value of character strings with the model wind turbine name. (see details)
+#' 
+#' @author Mariano Bonoli Escobar, Diego Edwards, Valeria Gogni, Ruben Bufanio
 #' @export
 #' @examples
-#' # simple example using the windspeed data set
-#' data(wd)
-#'  
-#' # let's examine windspeed to see the variables' names
-#' head(wd)
+#' data("wtgData", package = "WindResource")  
+#'   
+#' ## Power curve of wind turbine 'E33'.
+#' plotwtg(wtgData, model = "E33")
 
-plotwtg <- function(data, Model) {
-    dataplot <- data.frame(data[[Model]])
-    names(dataplot) <- c("Branch", "Model", "Speed", "Power", "CP")
-    ggplot(dataplot, aes(Speed, Power)) + geom_line()
+plotwtg <- function(datawtg, model) {
+  dataplot <- data.frame(datawtg[[model]])
+  names(dataplot) <- c("Branch", "Model", "Speed", "Power", "CP")
+  ggplot(dataplot, aes(Speed, Power)) + geom_line()
 } 
