@@ -188,21 +188,22 @@ tableWD <- function(datawd, ane = NA, var = c("mean"), type = "histogram",
     result <- df
   }
   else if (type == "profile") {
-      dfs = data.frame(ave = datawd$ane[[ane]]$ave, 
-                            month = factor(month.names[datawd$time$month], levels = month.names), 
-                            hour = factor(hour.names[datawd$time$hour + 1], levels = hour.names))
-    # browser()
-      if (by == "month") {
-        result <- aggregate(ave ~ month, data = dfs, switch(var, ave=mean,min=min,max=max))
-        # Esto es por si faltan meses
-        result <- merge(expand.grid(month = month.names), result, all.x=T)
-      } else if (by == "hour") {
-        result <- aggregate(ave ~ hour, data = dfs, switch(var, ave=mean,min=min,max=max))
-        # Esto es por si faltan horarios
-        result <- merge(expand.grid(hour = hour.names), result, all.x=T)
-      } else {
-        stop(paste("invalid plot type '", type, "'.", sep = ""))
-      }
+    for (i in ane) {
+      print(str(datawd$ane[[i]]))
+      df <- rbind(df, data.frame(ave = datawd$ane[[i]]$ave, 
+                                 ane = i, 
+                                 month = factor(month.names[datawd$time$month], levels = month.names),
+                                 hour = factor(hour.names[datawd$time$hour + 1], levels = hour.names)))
+    }
+    if (by == "month") {
+      dataplot <- aggregate(ave ~ ane + month, data = df, switch(var, mean=mean,min=min,max=max))     
+      # Esto es por si faltan meses
+      result <- merge(expand.grid(ane = ane, month = month.names), dataplot, all.x=T)
+    } else if (by == "hour") {
+      dataplot <- aggregate(ave ~ ane + hour, data = df, switch(var, mean=mean,min=min,max=max))
+      # Esto es por si faltan horarios
+      result <- merge(expand.grid(ane = ane, hour = hour.names), dataplot, all.x=T)
+    } else stop(paste("Profiles tables requires that the By parameter takes values 'month' or 'hour'.", by) )
   }
   else if (type == "boxplot") {
     result <- list()

@@ -54,7 +54,7 @@ power.density <- function(datawd, ane, dist) {
   }
   pw <- data.frame(pw)
   row.names(pw) <- ane
-  colnames(pw) <- switch(dist, np = "Density(no parametric) (kw/m2)", paste("Density", "(", dist, ")", " (kw/m2)", sep = ""))
+  colnames(pw) <- switch(dist, np = "Density(nonparametric) (kw/m2)", paste("Density", "(", dist, ")", " (kw/m2)", sep = ""))
   return(pw)
 } 
     

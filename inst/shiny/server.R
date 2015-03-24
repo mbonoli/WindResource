@@ -377,7 +377,7 @@ shinyServer(function(input, output) {
         data <- datasetInput2()
         plotcalendar (data, 
                       var="ave", 
-                      ane="Ane1",
+                      ane=input$SELane,
                       shiny=T)
       } else return(NULL)
     }  else return(NULL)

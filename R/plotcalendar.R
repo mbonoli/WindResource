@@ -33,15 +33,17 @@ plotcalendar <- function(wd, var = c("ave", "min", "max"), ane = "Ane1", shiny =
     dataplot <- data.frame(date = as.Date(names(df)), value = as.numeric(df))
     dataplot <- dataplot[complete.cases(dataplot), ]
     if (shiny == T) {
-        gvisCalendar(data = dataplot, datevar = "date", numvar = "value", options = list(title = "Calendar heat map of MSFT adjsuted close", 
-            calendar = "{cellSize:10,\n                                 yearLabel:{fontSize:20, color:'#444444'},\n                                 focusedCellColor:{stroke:'red'}}", 
-            width = 590, height = 320), chartid = "Calendar")
+        gvisCalendar(data = dataplot, datevar = "date", numvar = "value", 
+                     options = list(title = "Calendar heat map of MSFT adjsuted close", 
+                                    calendar = "{cellSize:10,\n                                 yearLabel:{fontSize:20, color:'#444444'},\n                                 focusedCellColor:{stroke:'red'}}", 
+                                    width = 590, height = 320), 
+                     chartid = "Calendar")
     } else {
-        plotdata <- gvisCalendar(data = dataplot, datevar = "date", numvar = "value", 
-            options = list(title = "Calendar map Anemometer: Anem37aMS", 
-                calendar = "{cellSize:10,\n                                 yearLabel:{fontSize:20, color:'#444444'},\n                                 focusedCellColor:{stroke:'red'}}", 
-                width = 590, height = 320), chartid = "Calendar")
-        
+        plotdata <- gvisCalendar(data = dataplot, datevar = "date", numvar = "value",
+                                 options = list(title = "Calendar map Anemometer: Anem37aMS", 
+                                                calendar = "{cellSize:10,\n                                 yearLabel:{fontSize:20, color:'#444444'},\n                                 focusedCellColor:{stroke:'red'}}", 
+                                                width = "100", height = "100"), 
+                                 chartid = "Calendar")
         plot(plotdata)
     }
 } 

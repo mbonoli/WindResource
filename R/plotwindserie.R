@@ -34,6 +34,7 @@ plotwindserie <- function(wdata, year, month, ane,
                           var = c("Ave", "Min", "Max", "Temp", "Pres", "Dir"), 
                           axis = c("Ave", "Min", "Max", "Temp", "Pres", "Dir"), 
                           shiny = F) {
+  
   if (sum(wdata$time$year == year & wdata$time$month == month) == 0) 
     stop("No existe el anio y mes seleccionado")
 
@@ -90,10 +91,12 @@ plotwindserie <- function(wdata, year, month, ane,
                         1, "]", sep = "")
   }
   if (shiny == T) {
-    gvisAnnotatedTimeLine(data, datevar = "dt", numvar = "val", idvar = "type")
+    gvisAnnotatedTimeLine(data, datevar = "dt", numvar = "val", idvar = "type",
+                          options=list(width="100"))
   } else {
     dataplot <- gvisAnnotatedTimeLine(data, datevar = "dt", numvar = "val", 
-                                      idvar = "type")
+                                      idvar = "type",
+                                      options=list(width="100",higth="100"))
     plot(dataplot)
   }
 } 
