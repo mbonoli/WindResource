@@ -32,18 +32,27 @@ data(wtgData)
 shinyServer(function(input, output) {
   
   datasetInput2 <- reactive({
-    switch(input$dataset,
-           wdMtTom=wdMtTom,
-           wdOlavarria=wdOlavarria,
-           wd=wd,
-           wd10=wd10)
+    inFile <- input$file1
+    if (!is.null(inFile)){
+      load(input$file1$datapath)
+    }
+    if (is.null(input$dataset)) return(NULL)
+    if (input$dataset=="wdMtTom") return(wdMtTom)
+    if (input$dataset=="wdOlavarria") return(wdOlavarria)
+    if (input$dataset=="wd") return(wd)
+    if (input$dataset=="wd10") return(wd10)
+    if (input$dataset=="filedata") 
+      return(get(strsplit(input$file1$name,"[.]")[[1]][1]))
   })
+
   mindate <- reactive({
     data <- datasetInput2()
+    if (is.null(data)) return()
     min(data[["time"]]$dt)
   })
   maxdate <- reactive({
     data <- datasetInput2()
+    if (is.null(data)) return()
     max(data[["time"]]$dt)    
   })
   year.list <- reactive({
@@ -94,6 +103,7 @@ shinyServer(function(input, output) {
     result <- c(result, list("Freq" = "freq"))
     result
   })
+
   # Plot Type Selector
   output$UIplottype <- renderUI({
     if(input$SELanalysis=="plots"){
@@ -106,7 +116,27 @@ shinyServer(function(input, output) {
                        "Calendar" = "calendar"))
     } else return(NULL)
   })
-
+  
+  # Dataset Selector
+  output$UIdataset <- renderUI({
+    inFile <- input$file1
+    if (is.null(inFile)) {
+      selectInput("dataset", "Choose a dataset:", 
+                  list("wdMtTom (demo)" = "wdMtTom", 
+                       "wdOlavarria (demo)" = "wdOlavarria",
+                       "wd (demo)" = "wd",
+                       "wd10 (demo)" = "wd10"))
+    } else {
+      filelist <- list("wdMtTom (demo)" = "wdMtTom", 
+                       "wdOlavarria (demo)" = "wdOlavarria",
+                       "wd (demo)" = "wd",
+                       "wd10 (demo)" = "wd10",
+                       "filedata" ="filedata")
+      names(filelist)[5] <- strsplit(input$file1$name,"[.]")[[1]][1]
+      selectInput("dataset", "Choose a dataset:", filelist)
+    }
+  })
+  
   # Plot WTG Selector
   output$UIwtg <- renderUI({
     if(input$SELanalysis=="pc"){
@@ -115,97 +145,97 @@ shinyServer(function(input, output) {
                        "E48" = "E48"))
     } else return(NULL)
   })
-
+  
   # Plot Options Selector
   observe({
     output$UIplotopt <- renderUI({
-    if(input$SELanalysis=="plots"){
-      if(!is.null(input$SELplottype)){
-        if(input$SELplottype=="rose"){
-          wellPanel(div(class="row", 
-                        div(class="span5 offset1", 
-                            radioButtons("SELplotvarRose","Var:",
-                                         var.options())
-                            ),
-                        div(class="span3", 
-                            radioButtons("SELplotbyRose",label="By:",selected="none",
-                                         choices=list("None" = "none", 
-                                              "Hour" = "hour", 
-                                              "Month" = "month")))))
-        }
-        else if(input$SELplottype=="histogram"){
-          wellPanel(h4("Plot Options",align = "center"),
-                    div(class="row", 
-                        div(class="span3", 
-                            radioButtons("SELplotbyHist","By:",
-                                         list("None" = "none", 
-                                              "Hour" = "hour", 
-                                              "Month" = "month")))),
-                    sliderInput("binwidth", 
-                                "bin:", 
-                                min = .1,
-                                max = 2, 
-                                step = .1,
-                                value = 1))
-        } 
-        else if(input$SELplottype=="profile"){
-          wellPanel(h4("Plot Options",align = "center"),
-                    div(class="row", div(class="span5 offset1", 
-                                         radioButtons("SELplotvarProf","Var:",
-                                                      list("Ave" = "ave", 
-                                                           "Min" = "min", 
-                                                           "Max" = "max"))),
-                        div(class="span3", 
-                            radioButtons("SELplotbyProf","By:",
-                                         list("Hour" = "hour", 
-                                              "Month" = "month")))))
-        } 
-        else if (input$SELplottype=="boxplot"){
-          wellPanel(h4("Plot Options",align = "center"),
-                    div(class="row",
-                        div(class="span3", 
-                            radioButtons("SELplotbyBox","By:",
-                                         list("Hour" = "hour", 
-                                              "Month" = "month")))))
-        } 
-        else if (input$SELplottype=="ts"){
-          listane <- ane.names()
-          names(listane) <- ane.names()
-          listane <- as.list(listane)
-          wellPanel(h4("Plot Options",align = "center"),
-                    selectInput("SELaneTS","Anemometer:",
-                                listane),
-                    selectInput("SELyearTS","Year:",selected = format(wd$time$dt[1],"%Y"),
-                                year.list()),
-                    selectInput("SELmonthTS","Month:",selected = format(wd$time$dt[1],"%m"),
-                                month.list()))
-        } 
-        else if (input$SELplottype=="calendar"){
-          listane <- ane.names()
-          names(listane) <- ane.names()
-          listane <- as.list(listane)
-          wellPanel(h4("Plot Options",align = "center"),
-                    selectInput("SELane","Anemometer:",
-                                listane),
-                    radioButtons("SELplotvar","Var:",
-                                 list("Ave" = "ave", 
-                                      "Min" = "min", 
-                                      "Max" = "max")))
-        }
-        else return(NULL)
-      } else return(NULL)
-    }
-    else if(input$SELanalysis=="fit" | input$SELanalysis=="turbulence"){
-      listane <- ane.names()
-      names(listane) <- ane.names()
-      listane <- as.list(listane)
-      wellPanel(h4("Options",align = "center"),
-                selectInput("SELane","Anemometer:",
-                            listane))
-    }
-  })}
+      if(input$SELanalysis=="plots"){
+        if(!is.null(input$SELplottype)){
+          if(input$SELplottype=="rose"){
+            wellPanel(div(class="row", 
+                          div(class="span5 offset1", 
+                              radioButtons("SELplotvarRose","Var:",
+                                           var.options())
+                          ),
+                          div(class="span3", 
+                              radioButtons("SELplotbyRose",label="By:",selected="none",
+                                           choices=list("None" = "none", 
+                                                        "Hour" = "hour", 
+                                                        "Month" = "month")))))
+          }
+          else if(input$SELplottype=="histogram"){
+            wellPanel(h4("Plot Options",align = "center"),
+                      div(class="row", 
+                          div(class="span3", 
+                              radioButtons("SELplotbyHist","By:",
+                                           list("None" = "none", 
+                                                "Hour" = "hour", 
+                                                "Month" = "month")))),
+                      sliderInput("binwidth", 
+                                  "bin:", 
+                                  min = .1,
+                                  max = 2, 
+                                  step = .1,
+                                  value = 1))
+          } 
+          else if(input$SELplottype=="profile"){
+            wellPanel(h4("Plot Options",align = "center"),
+                      div(class="row", div(class="span5 offset1", 
+                                           radioButtons("SELplotvarProf","Var:",
+                                                        list("Ave" = "ave", 
+                                                             "Min" = "min", 
+                                                             "Max" = "max"))),
+                          div(class="span3", 
+                              radioButtons("SELplotbyProf","By:",
+                                           list("Hour" = "hour", 
+                                                "Month" = "month")))))
+          } 
+          else if (input$SELplottype=="boxplot"){
+            wellPanel(h4("Plot Options",align = "center"),
+                      div(class="row",
+                          div(class="span3", 
+                              radioButtons("SELplotbyBox","By:",
+                                           list("Hour" = "hour", 
+                                                "Month" = "month")))))
+          } 
+          else if (input$SELplottype=="ts"){
+            listane <- ane.names()
+            names(listane) <- ane.names()
+            listane <- as.list(listane)
+            wellPanel(h4("Plot Options",align = "center"),
+                      selectInput("SELaneTS","Anemometer:",
+                                  listane),
+                      selectInput("SELyearTS","Year:",selected = format(wd$time$dt[1],"%Y"),
+                                  year.list()),
+                      selectInput("SELmonthTS","Month:",selected = format(wd$time$dt[1],"%m"),
+                                  month.list()))
+          } 
+          else if (input$SELplottype=="calendar"){
+            listane <- ane.names()
+            names(listane) <- ane.names()
+            listane <- as.list(listane)
+            wellPanel(h4("Plot Options",align = "center"),
+                      selectInput("SELane","Anemometer:",
+                                  listane),
+                      radioButtons("SELplotvar","Var:",
+                                   list("Ave" = "ave", 
+                                        "Min" = "min", 
+                                        "Max" = "max")))
+          }
+          else return(NULL)
+        } else return(NULL)
+      }
+      else if(input$SELanalysis=="fit" | input$SELanalysis=="turbulence"){
+        listane <- ane.names()
+        names(listane) <- ane.names()
+        listane <- as.list(listane)
+        wellPanel(h4("Options",align = "center"),
+                  selectInput("SELane","Anemometer:",
+                              listane))
+      }
+    })}
   )
-
+  
   # Dates Selector
   output$UIdates <- renderUI({
     if (input$SELanalysis!="info"){
@@ -243,7 +273,7 @@ shinyServer(function(input, output) {
         if (input$SELplottype=="ts"){
           tabsetPanel(
             tabPanel("Plot", htmlOutput("plotTs")),
-            tabPanel("Data", verbatimTextOutput(("dataTs"))
+            tabPanel("Data", verbatimTextOutput("dataTs")
             )
           )  
         }
@@ -283,10 +313,10 @@ shinyServer(function(input, output) {
         tabPanel("Plot", plotOutput("plotTurbine")),
         tabPanel("Data", verbatimTextOutput(("tableTurbine"))),
         tabPanel("AEP",
-                h3(paste(input$SELturbinetype,": Anual Energy Production",sep="")),
-                h3("-  "),
-                #h3(paste(round(wt(wd10, datawtg=wtgData, ane="ane10", model="E33") ,2), " M"),color="red")
-                h3(paste(switch(input$SELturbinetype,"E33"=519238,"E48"=1102365)," KWh"),sep="")
+                 h3(paste(input$SELturbinetype,": Anual Energy Production",sep="")),
+                 h3("-  "),
+                 #h3(paste(round(wt(wd10, datawtg=wtgData, ane="ane10", model="E33") ,2), " M"),color="red")
+                 h3(paste(switch(input$SELturbinetype,"E33"=519238,"E48"=1102365)," KWh"),sep="")
         )
       )            
     } 
@@ -317,7 +347,7 @@ shinyServer(function(input, output) {
           if (input$SELplottype=="histogram" | input$SELplottype=="profile" | 
                 input$SELplottype=="boxplot" | input$SELplottype=="rose"){
             if (!(input$SELplottype=="rose" & is.null(input$SELplotvarRose))){
-            # Este if es porque sino la primera vez que entra ni bien se cambia el combo tira error
+              # Este if es porque sino la primera vez que entra ni bien se cambia el combo tira error
               plotWD(data=data,
                      var=switch(input$SELplottype,
                                 rose=input$SELplotvarRose,
@@ -342,16 +372,16 @@ shinyServer(function(input, output) {
     data <- datasetInput2()
     # Aqui solo deberíamos estar en rosas y profiles
     if (!is.null(input$SELplottype)){
-    plotWD(data=data,
-           var=switch(input$SELplottype,
-                      input$SELplotvarRose,
-                      profile=input$SELplotvarProf),
-           ane=ane.names(),
-           type=input$SELplottype, 
-           by=switch(input$SELplottype,
-                     rose=input$SELplotbyRose,
-                     profile=input$SELplotbyProf),
-           binwidth=input$binwidth) }     
+      plotWD(data=data,
+             var=switch(input$SELplottype,
+                        input$SELplotvarRose,
+                        profile=input$SELplotvarProf),
+             ane=ane.names(),
+             type=input$SELplottype, 
+             by=switch(input$SELplottype,
+                       rose=input$SELplotbyRose,
+                       profile=input$SELplotbyProf),
+             binwidth=input$binwidth) }     
   })
   
   # Plot Serie
@@ -382,7 +412,7 @@ shinyServer(function(input, output) {
       } else return(NULL)
     }  else return(NULL)
   })
-      
+  
   # Table Generation
   observe({for (x in ane.names()){
     local({
@@ -392,19 +422,19 @@ shinyServer(function(input, output) {
         if(input$SELanalysis=="plots"){
           if (input$SELplottype=="histogram" | input$SELplottype=="profile" | 
                 input$SELplottype=="boxplot" | input$SELplottype=="rose"){
-              as.data.frame(
-                tableWD(data=data,
-                        var=switch(input$SELplottype,
-                                   rose=input$SELplotvarRose,
-                                   profile=input$SELplotvarProf,
-                                   histogram="mean"),
-                        ane=i ,type=input$SELplottype, 
-                        by=switch(input$SELplottype,
-                                  rose=input$SELplotbyRose,
-                                  profile=input$SELplotbyProf,
-                                  boxplot=input$SELplotbyBox,
-                                  histogram=input$SELplotbyHist),
-                        binwidth=input$binwidth))
+            as.data.frame(
+              tableWD(data=data,
+                      var=switch(input$SELplottype,
+                                 rose=input$SELplotvarRose,
+                                 profile=input$SELplotvarProf,
+                                 histogram="mean"),
+                      ane=i ,type=input$SELplottype, 
+                      by=switch(input$SELplottype,
+                                rose=input$SELplotbyRose,
+                                profile=input$SELplotbyProf,
+                                boxplot=input$SELplotbyBox,
+                                histogram=input$SELplotbyHist),
+                      binwidth=input$binwidth))
           }
           else return(NULL)
         }
@@ -412,26 +442,26 @@ shinyServer(function(input, output) {
     })}
   })
   
-# Plot Generation All Ane
-output$tableAll <- renderTable({
-  data <- datasetInput2()
-  print(4)
-  if (input$SELplottype=="profile" | input$SELplottype=="rose"){
-    as.data.frame(
-      tableWD(data=data,
-              var=switch(input$SELplottype,
-                         rose=input$SELplotvarRose,
-                         profile=input$SELplotvarProf),
-              ane=ane.names(),
-              type=input$SELplottype, 
-              by=switch(input$SELplottype,
-                        rose=input$SELplotbyRose,
-                        profile=input$SELplotbyProf),
-              binwidth=input$binwidth)
-    )
-  }
-  else return(NULL)
-})
+  # Plot Generation All Ane
+  output$tableAll <- renderTable({
+    data <- datasetInput2()
+    print(4)
+    if (input$SELplottype=="profile" | input$SELplottype=="rose"){
+      as.data.frame(
+        tableWD(data=data,
+                var=switch(input$SELplottype,
+                           rose=input$SELplotvarRose,
+                           profile=input$SELplotvarProf),
+                ane=ane.names(),
+                type=input$SELplottype, 
+                by=switch(input$SELplottype,
+                          rose=input$SELplotbyRose,
+                          profile=input$SELplotbyProf),
+                binwidth=input$binwidth)
+      )
+    }
+    else return(NULL)
+  })
   
   # tableTurbulence
   output$tableTurbulence <- renderPrint({
@@ -442,13 +472,6 @@ output$tableAll <- renderTable({
     } else return(NULL)
   })
   
-# powerCP
-output$powerCP <- renderPrint({
-  data <- datasetInput2()
-  if(input$SELanalysis=="power"){
-    tableWD(data=data, type="turbulence", ane=input$SELane)
-  } else return(NULL)
-})
   # plotTurbulence
   output$plotTurbulence <- renderPlot({
     if (input$SELanalysis=="turbulence"){
@@ -461,7 +484,7 @@ output$powerCP <- renderPrint({
   output$tableTurbine <- renderPrint({
     if(input$SELanalysis=="pc"){
       data <- datasetInput2()
-      tablewtg(data=wtgData, Model=input$SELturbinetype)
+      tablewtg(data=wtgData, model=input$SELturbinetype)
     } else return(NULL)
   })
   
@@ -469,7 +492,7 @@ output$powerCP <- renderPrint({
   output$plotTurbine <- renderPlot({
     if (input$SELanalysis=="pc"){
       data <- datasetInput2()
-      plotwtg(data=wtgData, Model=input$SELturbinetype)
+      plotwtg(data=wtgData, model=input$SELturbinetype)
     } 
   })
   
@@ -485,7 +508,7 @@ output$powerCP <- renderPrint({
   output$dataFit <- renderTable({
     if (input$SELanalysis=="fit"){
       data <- datasetInput2()
-# Revisar DED
+      # Revisar DED
       as.data.frame(tableWD(data=data, var=input$SELplotvar, ane=input$SELane, type=input$SELanalysis))
     } 
   })
@@ -497,17 +520,42 @@ output$powerCP <- renderPrint({
     content = function(file){
       pdf(file = file, width=11, height=8.5)
       data <- datasetInput2()
-      plotWD(data=data,var="mean", ane="Ane1" ,type=input$SELplottype, by=input$SELplotby)
+      plotWD(data=datasetInput2(),
+              var=switch(input$SELplottype,
+                         rose=input$SELplotvarRose,
+                         profile=input$SELplotvarProf,
+                         histogram="mean"),
+              ane=ane.names()[1],
+              type=input$SELplottype, 
+              by=switch(input$SELplottype,
+                        rose=input$SELplotbyRose,
+                        profile=input$SELplotbyProf,
+                        boxplot=input$SELplotbyBox,
+                        histogram=input$SELplotbyHist),
+              binwidth=input$binwidth)
       dev.off()
     }
   )
   
   output$dldat <- downloadHandler(
-    filename = function() { paste(input$SELanalysis,
-                                  input$SELplottype,'.csv', sep='') },
+    filename = function() {paste('data-', Sys.Date(),'.txt', sep='') },
     content = function(file) {
-      write.csv(as.data.frame(tableWD(data=data,var="mean", ane="Ane1" ,type=input$SELplottype, by=input$SELplotby)[[1]]),file)
-    }
+      write.table(as.data.frame(tableWD(data=datasetInput2(),
+                                      var=switch(input$SELplottype,
+                                                 rose=input$SELplotvarRose,
+                                                 profile=input$SELplotvarProf,
+                                                 histogram="mean"),
+                                      ane=ane.names()[1],
+                                      type=input$SELplottype, 
+                                      by=switch(input$SELplottype,
+                                                rose=input$SELplotbyRose,
+                                                profile=input$SELplotbyProf,
+                                                boxplot=input$SELplotbyBox,
+                                                histogram=input$SELplotbyHist),
+                                      binwidth=input$binwidth)),
+                  file=file, sep="\t", row.names=T)
+    },
+    contentType="text/csv"
   )
   
   

@@ -26,7 +26,8 @@
 #' head(wd)
 #' 
 
-plotcalendar <- function(wd, var = c("ave", "min", "max"), ane = "Ane1", shiny = F) {
+plotcalendar <- function(wd, var = c("ave", "min", "max"), 
+                         ane = "Ane1", shiny = F) {
     dates <- as.factor(as.Date(wd$time$dt))
     val <- wd$ane[[ane]][var][[1]]
     df <- tapply(val, dates, mean, na.rm = T)
@@ -36,7 +37,7 @@ plotcalendar <- function(wd, var = c("ave", "min", "max"), ane = "Ane1", shiny =
         gvisCalendar(data = dataplot, datevar = "date", numvar = "value", 
                      options = list(title = "Calendar heat map of MSFT adjsuted close", 
                                     calendar = "{cellSize:10,\n                                 yearLabel:{fontSize:20, color:'#444444'},\n                                 focusedCellColor:{stroke:'red'}}", 
-                                    width = 590, height = 320), 
+                                    width = "100%"), 
                      chartid = "Calendar")
     } else {
         plotdata <- gvisCalendar(data = dataplot, datevar = "date", numvar = "value",

@@ -92,7 +92,7 @@ plotwindserie <- function(wdata, year, month, ane,
   }
   if (shiny == T) {
     gvisAnnotatedTimeLine(data, datevar = "dt", numvar = "val", idvar = "type",
-                          options=list(width="100"))
+                          options=list(width="100%"))
   } else {
     dataplot <- gvisAnnotatedTimeLine(data, datevar = "dt", numvar = "val", 
                                       idvar = "type",

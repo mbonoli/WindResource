@@ -18,9 +18,16 @@ shinyUI(pageWithSidebar(
   # Sidebar with controls to select the variable to plot against mpg
   # and to specify whether outliers should be included
   sidebarPanel(
-    
-    selectInput("dataset", "Choose a dataset:", 
-                choices = c( "wdMtTom", "wdOlavarria", "wd", "wd10")),
+    uiOutput("UIdataset"),
+    fileInput('file1', 'Choose file to upload',
+              accept = c(
+                '.RData',
+                '.rda'
+              )
+    ),
+    tags$hr(),
+#     selectInput("dataset", "Choose a dataset:", 
+#                 choices = c( "wdMtTom", "wdOlavarria", "wd", "wd10")),
     selectInput("SELanalysis","Analysis type:",list("Data Info" = "info",
       "Plots" = "plots", 
       "Turbulence" = "turbulence",

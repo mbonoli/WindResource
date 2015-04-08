@@ -1,0 +1,263 @@
+---
+title: <center>Análisis Estadístico</center>
+author: <center>"Mariano Bonoli, Valeria Gogni, Diego Edwards"</center>
+date: <center>08/04/2015<center>
+output:
+  html_document:
+    fig_caption: yes
+    force_captions: yes
+    highlight: pygments
+    number_sections: yes
+    theme: cerulean
+  pdf_document:
+    fig_caption: yes
+    keep_tex: yes
+    number_sections: yes
+csl: mee.csl
+---
+
+# Resumen
+En este trabajo se presenta el paquete WindResource para el software estadístico libre R. Se trata de la primera versión de del software actualmente en desarrollo en el marco del proyecto UTN 1894.  
+Este paquete incluye funciones para el estudio del recurso eólico. Mediante estas funciones es posible realizar un análisis descriptivo exhaustivo de las características del viento. Estos análisis son imprescindibles a la hora de evaluar el potencial de un determinado sitio donde se pretenda instalar aerogeneradores con fines energéticos.  
+El software permite análisis de frecuencias de velocidad y dirección, ajustar distribuciones, y obtener proyecciones de la energía anual generada.  
+Para simplificar la operación del paquete, se ha integrado al mismo una interfaz web utilizando el paquete Shiny.  
+Se describen en este trabajo las principales características funcionales de esta primera versión del software.  
+
+# Introduccion
+
+La medición del recurso eólico es uno de los pilares fundamentales para la caracterización de un sitio en donde se pretenda instalar una planta de generación de energía eléctrica a través de turbinas de viento. La correcta estimación del potencial eólico de una región es de vital importancia a la hora de evaluar proyectos de inversión y sobre todo solicitar financiamiento para los mismos.  
+Al ser la velocidad de viento una variable aleatoria, la correcta identificación de la distribución y sus parámetros es fundamental en la determinación del potencial eólico. 
+Argentina es reconocida internacionalmente como uno de los países con mayor potencial para el desarrollo eólico. Dominada en su matriz energética eléctrica por la generación convencional fósil, cuenta con posibilidades inigualables en cuanto a recursos eólicos. Posee velocidades medias de viento en la mayor parte de su territorio, medidas a 50 metros de altura, que superan los 6 metros por segundo.  
+Actualmente el país cuenta aproximadamente con una potencia instalada a través de energía eólica que representa aproximadamente el 0,4% de la capacidad instalada total.  
+De acuerdo la Ley 26.190 de energías renovables, para el 2016 se deberá llegar al 8% de la matriz eléctrica con energía renovable. Para poder cumplir con este requerimiento, en el año 2010 se licitaron a través del GENREN alrededor de 900 MW para generación de energías renovables. De este total, 754 MW tendrán como fuente la energía eólica. Teniendo en cuenta que hasta el momento de la licitación, la Argentina solo contaba con 30MW de potencia instalada que utilizaban este tipo de energía, podemos tomar conciencia de la magnitud en el cambio propuesto.
+
+```{r}
+MtTom <- read.delim("D:/Proyecto_E.eolica/MtTom-0032_1999-12-01_2002-12-31.txt")
+```
+
+
+```{r, message=FALSE}
+library(WindResource)
+```
+
+
+```{r, message=FALSE}
+wdMtTom <- setWD (data = MtTom, 
+                  name = "Data MtTom",
+                  date.var = "Day.Month.Year", 
+                  date.format = "DD/MM/YYYY", 
+                  time.var ="Hour.Minute", 
+                  time.format = "HH:MM",
+                  ane.names = c("Anem24aMS","Anem24bMS","Anem37aMS","Anem37bMS"),
+                  ane.height= c(24,24,37,37),
+                  speed.ave.var = c("Anem24aMS","Anem24bMS","Anem37aMS","Anem37bMS"),
+                  speed.min.var = NA,
+                  speed.max.var = NA,
+                  speed.sd.var = c("AnemSD24aMS","AnemSD24bMS","AnemSD37aMS","AnemSD37bMS"),
+                  speed.unit = NA,
+                  dir.var = c("Vane24aDEG","Vane24aDEG","Vane37aDEG","Vane37aDEG"),
+                  dir.unit = "deg",
+                  temp.var = "Etmp3aDEGC",
+                  temp.unit = "C",
+                  pres.var = NA,
+                  pres.unit = NA,
+                  NA.values = c(-988, -989, -991, -999))
+```
+
+
+# Análisis descriptivo
+
+Los métodos empleados para realizar este tipo de análisis son *gráficos* y *tablas*, los cuales se obtienen mediante las funciones del paquete. 
+
+## Gráficos
+
+Para simplificar la operación, se ha unificado en una única función `plotWD` todos los gráficos. Así, la función `plotWD` permite describir en forma gráfica las principales caracterísicas de la velocidad del viento en intensidad y dirección.  
+
+Los gráficos que se pueden obtener a partir de esta función son: **histogramas**, **correlaciones**, **rosas de vientos**, **perfil de la distribución** y **boxplots**. Adicionalmente, permite evaluar la **turbulencias** y el **ajuste de distintas distribuciones de probabilidad** a la velocidad del viento.
+
+Esta función recibe como parámetros las variables a graficar, el tipo de gráfico, los anemómetros a considerar y especificaciones de filtro y segmentación. 
+Estos parámetros son:
+
+- **data** Variable tipo WindData generado con `setwd()` o `gen10m()`
+- **type** Especifica el tipo de gráfico que se desea generar. Lo valores posibles son: `histogram`, `rose`, `profile`, `boxplot`.
+- **ane** Es un vector con los distintos anemómetros que se tienen.
+- **var** Variable que se quiere estudiar. Por default se utiliza la media de la velocidad del viento. Se pueden utilizar los valores `min`, `max`, `sd`. También se pueden utilizar mediciones ambientales, como presión o temperatura. 
+- **by** Permite hacer comparaciones para distintos intervalos de tiempos.Las opciones de intervalos son `hour`, `day` y `month`.
+- **since**    En el caso de que no se desee incluir todo el rango de fechas disponibles 
+- **to**       Esta opción permite indicar hasta que fecha se requier el análisis
+- **bindwith** Para el caso de los histogramas, permite indicar el ancho del bin.
+
+
+### Histogramas 
+
+Se realiza para cada anemómetro, y puede ser solicitado segmentado por **Hora** o por **Mes**. 
+La única variable posible a graficar en el histograma es la velocidad media, por lo tanto no es necesario indicarlo.
+Si no se configura el parámetro `by` la función toma los datos en su conjunto sin tener en cuenta algún intervalo de tiempo.
+
+Se muestra a continuación el llamado de la función y un ejemplo para cada caso:
+
+```{r,fig.width= 5, fig.height= 4, fig.align='center'}
+plotWD(wdMtTom, ane = "Anem24aMS", type = "histogram")
+```
+<p><center>Gráfico 1. Histograma de velocidad de viento promedio para el anemómetro Anem24aMS.</center></p>
+
+Si deseamos ver cómo se comporta la variable en las distintas horas del día o en los diferentes meses del año se ejecuta la función de las siguientes maneras:
+```{r, fig.align='center'}
+plotWD(wdMtTom, ane="Anem24bMS", type="histogram", by="hour")
+```
+<p><center>Gráfico 2. Histogramas de velocidad de viento promedio para el anemómetro Anem24bMS para cada hora del día.</center></p>
+
+
+```{r, warning=FALSE, fig.align='center'}
+plotWD(wdMtTom, ane="Anem24bMS", type="histogram", by="month")
+```
+<p><center>Gráfico 3. Histogramas de velocidad de viento promedio para el anemómetro Anem24bMS para cada mes del año.</center></p>
+
+
+### Rosa de vientos 
+
+Se puede graficar la velocidad media o la frecuencia de ocurrencia en cada punto cardinal.
+
+Es posible realizar una rosa que contenga más de un anemómetro. Para ello ejecutamos la función como se expresa a continuación:
+
+```{r, warning=FALSE, fig.align='center'}
+plotWD(wdMtTom, ane=c("Anem24aMS","Anem37aMS"), var="mean", type="rose")
+```
+<p><center>Gráfico 4. Rosas de viento de velocidad media para el anemómetros Anem24bMS y Anem24aMS.</center></p> 
+
+Es posible realizar una rosa de viento para cada hora del día o mes del año, ya sea graficando la velocidad media o la frecuencia. 
+La función se ejecuta con los siguientes parámetros:
+
+```{r, warning=FALSE, fig.align='center'}
+plotWD(wdMtTom, ane="Anem24aMS", var="mean", type="rose", by = "hour")
+```
+<p><center>Gráfico 5. Rosas de viento de velocidad media para el anemómetro Anem24bMS a lo largo del día.</center></p>
+
+```{r, warning=FALSE, fig.align='center'}
+plotWD(wdMtTom, ane = "Anem24aMS", var="mean", type="rose", by = "month")
+```
+<p><center>Gráfico 6. Rosas de viento de velocidad media para el anemómetro Anem24bMS para cada día del mes.</center></p>
+
+
+### Boxplot
+
+Este gráfico es útil para verificar como se distribuyen las velocidades medias en las distintas horas del día o en cada mes del año.
+En un gráfico de boxplot se expresan diferentes medidas de posición, como son el *cuartil 1*, *mediana* y *cuartil 3*. También es posible observar si existen puntos anómalos, y como es el comportamiento de la variable.
+
+Para que la función `plotWD` realice este tipo de gráfico se procede como se muestra a continuación:
+
+```{r, fig.align='center'}
+plotWD(wdMtTom, ane="Anem24aMS", var="mean", type="boxplot", by = "hour")
+```
+<p><center>Gráfico 7. Gráfico de boxplot para el anemómetro Anem24aMS en cada hora del día.</center></p>
+
+
+```{r, fig.align='center'}
+plotWD(wdMtTom, ane="Anem24aMS", var="mean", type="boxplot", by = "month")
+```
+<p><center>Gráfico 8. Gráfico de boxplot para el anemómetro Anem24aMS en cada mes del año.</center></p>
+
+
+## Tablas
+
+El módulo tablas, permite obtener tablas de resumen de información que a su vez pueden ser guardadas en una variable y exportadas en formato .csv o similar.
+Por simplicidad, para la función `tableWD()`, utiliza exactamente los mismos parámetros de la función `plotWD()`.  
+
+A modo de ejemplo, se muestran los resultados de dos funciones mostradas anteriormente:
+
+```{r, warning=FALSE}
+tableWD(wdMtTom, ane="Anem24aMS", var="mean", type="histogram")
+```
+<p><center>Tabla 1. Tabla de frecuencias en intervalos de clases.</center></p>
+
+```{r, warning=FALSE}
+head(tableWD(wdMtTom, ane="Anem24bMS", var="mean", type="histogram", by="hour"))
+```
+<p><center>Tabla 2. Tabla de frecuencias en intervalos de clases por cada hora el día.</center></p>
+
+```{r, warning=FALSE}
+tableWD(wdMtTom, ane="Anem24bMS", var="mean", type="histogram", by="month")
+```
+<p><center>Tabla 3. Tabla de frecuencias en intervalos de clases por cada mes del año.</center></p>
+
+```{r, warning=FALSE}
+tableWD(wdMtTom, ane=c("Anem24aMS","Anem37aMS"), var="mean", type="rose")
+```
+<p><center>Tabla 4. Velocidades medias alcanzadas en cada punto cardinal.</center></p> 
+
+```{r, warning=FALSE}
+head(tableWD(wdMtTom, ane="Anem24bMS", var="mean", type="rose",  by='hour'))
+```
+<p><center>Tabla 5. Velocidades medias alcanzadas en cada punto cardinal para cada hora del día.</center></p> 
+
+```{r, warning=FALSE}
+head(tableWD(wdMtTom, ane="Anem24bMS", var="mean", type="rose",  by='month'))
+```
+<p><center>Tabla 6. Velocidades medias alcanzadas en cada punto cardinal para cada mes del año.</center></p>
+
+
+# Análisis de turbulencia
+
+
+```{r, warning=FALSE, fig.align='center'}
+data(wd10)
+plotWD(data=wd10, type="turbulence",ane=c("ane10"))
+```
+<p><center>Gráfico 10. Gráfico de turbulencia.</center><p>
+
+
+# Ajuste de distribuciones
+
+Uno de los análisis más frecuente a la hora de estudiar series de vientos para su uso eólico, es el estudio de su distribución de probabilidad. Si bien en la gran mayoría de los casos la distribución utilizada es la distribución de **Weibull**, también existen antecedentes de casos en los cuales el mejor ajuste se logró con otras distribuciones de asimetría positiva, como la distribución de **Gamma** o incluso la **LogNormal**.
+
+La función permite observar los ajustes de las tres distribuciones a los datos mediante curvas teóricas en los histogramas empíricos. También se grafican los qq-plots correspondientes a cada distribución para evaluar la bondad de ajuste de los mismos.
+
+Para obtener los ajustes mencionados, se llama a la función `plotWD` de la siguiente manera:
+
+```{r, fig.align='center'}
+plotWD(wdMtTom, ane="Anem24aMS", type="fit")
+```
+<p><center>Gráfico 9. Ajustes de distribuciones a los datos.</center><p> 
+
+Es posible apreciar los histogramas empíricos y junto con la curva teórica ajustada y los respectivos QQplots que permiten evaluar la bondad de ajuste de los mismos.
+Para obtener los valores de parámetros estimados junto con la verosimilitud y los Akaike, utilizamos la función `tableWD()` de la siguiente manera:
+
+```{r, warning=FALSE}
+tableWD(wdMtTom, ane="Anem24aMS", type="fit")
+```
+
+# Otros gráficos
+
+El paquete incluye dos funciones adicionales mas, que utilizan las funciones de google a ravés de GoogleViz. Dado que los parámetros de estas gráficos no coinciden con los anteriores, tienen dos funciones específicas: `plotwindserie()` y `plotcalendar()`.
+
+El primero de ellos es un gráfico interactivo de las series de valores, que permiten recorrer las series de datos (velocidad media, minimos, máximos, desvíos, presión y temperatura). Utiliza unos componentes desarrollados por Google que permiten realizar zooms y recorrer interactivamente las series de datos.
+
+```{r, warning=FALSE}
+#plotwindserie(wdMtTom, year=2000, month=01, var=c("mean"))
+```
+
+El segundo gráfico, conocido como `calendar`, permite apreciar de forma simple los valores promedios de velocidad para los distintos dias y además es una poderosa herramienta para determinar datos faltantes.
+
+
+```{r, warning=FALSE}
+# plotcalendar(wdMtTom, var="mean", ane="Anem37aMS", shiny=F)
+```
+
+
+# Interfaz web
+
+Una de las principales dificultades con las que se encuentran los usuarios de R, es una curva de aprendizaje lenta y pronunciada.  
+Teniendo en cuenta que los potenciales usuarios de la aplicación pueden tener poca experiencia en R, se ha desarrollado una interfaz web utilizando el paquete R `shiny`. La misma permite operar el sistema desde una interfaz web amigable para el usuario no familiarizado con R. En el gráfico 3, se muestra una captura de esta interfaz a modo de ejemplo.
+
+
+```{r, warning=FALSE}
+runGUI(wdMtTom)
+```
+
+También es posible acceder a una versión online: https://mbonoli.shinyapps.io/WindResource
+
+
+# Conclusiones
+
+El paquete WindResource para R brinda herramientas para la caracterización de recuso eólico similar a la que ofrecen los softs comerciales.  
+Para validar las salidas del paquete, el INTI Neuquén colabora suministrando los datos de recurso eólico de su centro de evaluación de aerogeneradores de baja potencia sito en la ciudad de Cutral Có, provincia del Neuquén. En contra partida este trabajo entrega, a tal institución, sus resultados.
