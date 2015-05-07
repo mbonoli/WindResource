@@ -14,13 +14,6 @@
 
 library("WindResource")
 library(googleVis)
-# data(wtgData)
-# wd10$dir$ang_16 <- (wd10$dir$sect_16-1)*22.5
-# class(wd10)<-"windata"
-
-# dataGUIwd<-wd10
-# print(getwd())
-# load(file=paste(path.package("WindResource"),"/shiny/dataGUIwd.Rd",sep=""))
 
 data(wdOlavarria)
 data(wdMtTom)

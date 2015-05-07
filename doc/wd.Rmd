@@ -1,6 +1,0 @@
----
-title: "Wind Resource Package"
-output: pdf_document
----
-### 1. La energía eólica en Argentina
-Argentina es reconocida internacionalmente como uno de los países con mayor potencial para el desarrollo eólico. Dominada en su matriz energética eléctrica por la generación convencional fósil, cuenta con posibilidades inigualables en cuanto a recursos eólicos. Posee velocidades medias de viento en la mayor parte de su territorio, que superan los 6 metros por segundo (medidas a 50 metros de altura).  
