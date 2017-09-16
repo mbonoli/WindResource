@@ -2,3 +2,4 @@ name: WindResource
 account: mbonoli
 bundleId: 170577
 url: http://mbonoli.shinyapps.io/WindResource
+server: shinyapps.io
