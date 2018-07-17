@@ -12,7 +12,9 @@
 #' @author Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
 #' @export
 
-library("WindResource")
+# devtools::install_github("mbonoli/WindResource")
+
+library(WindResource)
 library(googleVis)
 
 data(wdOlavarria)

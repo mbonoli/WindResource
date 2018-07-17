@@ -1,0 +1,12 @@
+name: windresource2
+title: WindResource2
+username:
+account: mbonoli
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 215471
+bundleId: 1484193
+url: https://mbonoli.shinyapps.io/windresource2/
+when: 1531831213.10498
+asMultiple: FALSE
+asStatic: FALSE
