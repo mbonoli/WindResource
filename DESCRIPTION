@@ -3,8 +3,8 @@ Type: Package
 Title: Package for studying wind resource
 Version: 0.1
 Date: 2013-08-27
-Author: Valeria Gogni, Mariano Bonoli, Ruben Bufanio, Diego Edwards
-Maintainer: Mariano Bonoli <mbonoli@fiuba.edu.ar>
+Author:  Mariano Bonoli, Diego Edwards, Valeria Gogni, Ruben Bufanio
+Maintainer: Mariano Bonoli <mbonoli@fi.uba.ar>
 Description: Functions to describe the wind resource
 License: GPL-2 | GPL-3
 Depends:

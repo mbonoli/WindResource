@@ -58,6 +58,8 @@
 tableWD <- function(datawd, ane = NA, var = c("mean"), type = "histogram", 
                     by = "none", since = NULL, to = NULL, binwidth = 1) {
   
+  require(WindResource)
+  
   rose_dir <- c("N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", 
                 "SW", "WSW", "W", "WNW", "NW", "NNW")
   month.names <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", 

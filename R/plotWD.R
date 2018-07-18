@@ -57,6 +57,8 @@
 plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"), 
                    by = "none", since = NULL, to = NULL, binwidth=1) {
   
+  require(WindResource)
+  
   if (class(datawd) != "windata") 
     stop("datawd is not windata class object.")
   
@@ -201,18 +203,25 @@ plotWD <- function(datawd, ane = NA, var = NA, type = c("histogram"),
   else if (type == "correlation") {
     df <- data.frame(x = datawd$ane[[1]]$ave, y = datawd$ane[[2]]$ave)
     df <- df[complete.cases(df), ]
-    ggplot(data = df, aes(x = x, y = y)) + geom_point(size = 1) + ggtitle("") + 
-      xlab(paste("Wind Speed ", datawd$info$ane$height[1], "m [", datawd$info$unit$speed, 
-                 "]", sep = "")) + ylab(paste("Wind Speed ", datawd$info$ane$height[2], 
-                                              "m [", datawd$info$unit$speed, "]", sep = ""))
+    ggplot(data = df, aes(x = x, y = y)) + 
+      geom_point(size = 1) + ggtitle("") + 
+      xlab(paste("Wind Speed ", datawd$info$ane$height[1],
+                 "m [", datawd$info$unit$speed, 
+                 "]", sep = "")) + 
+      ylab(paste("Wind Speed ", datawd$info$ane$height[2], 
+                 "m [", datawd$info$unit$speed, "]", sep = ""))
   } 
   else if (type == "profile") {
     df <- data.frame()
     for (i in ane) {
-      df <- rbind(df, data.frame(ave = datawd$ane[[i]]$ave, 
-                                 ane = i, 
-                                 month = factor(month.names[datawd$time$month], levels = month.names),
-                                 hour = factor(hour.names[datawd$time$hour + 1], levels = hour.names)))
+      df <- rbind(
+        df, 
+        data.frame(ave = datawd$ane[[i]]$ave, 
+                   ane = i, 
+                   month = factor(month.names[datawd$time$month], 
+                                  levels = month.names),
+                   hour = factor(hour.names[datawd$time$hour + 1], 
+                                 levels = hour.names)))
     }
     if (by == "month") {
       dataplot <- aggregate(ave ~ ane + month, data = df, switch(var, mean=mean,min=min,max=max))     
