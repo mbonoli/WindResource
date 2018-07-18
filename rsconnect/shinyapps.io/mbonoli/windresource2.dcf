@@ -5,8 +5,8 @@ account: mbonoli
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 215471
-bundleId: 1484865
+bundleId: 1485653
 url: https://mbonoli.shinyapps.io/windresource2/
-when: 1531849084.18886
+when: 1531882481.69468
 asMultiple: FALSE
 asStatic: FALSE
