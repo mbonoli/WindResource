@@ -14,8 +14,8 @@
 
 # devtools::install_github("mbonoli/WindResource")
 
-library(WindResource)
-library(googleVis)
+require(WindResource)
+require(googleVis)
 
 data(wdOlavarria)
 data(wdMtTom)
