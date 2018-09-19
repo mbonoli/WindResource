@@ -322,6 +322,12 @@ shinyServer(function(input, output) {
         )
       )
     } 
+    else if(input$SELanalysis=="roughness"){
+      tabsetPanel(
+        tabPanel("Data", tableOutput("tableRoughness")
+        )
+      )
+    } 
     else return(NULL)
   })
   
@@ -440,7 +446,6 @@ shinyServer(function(input, output) {
   # Plot Generation All Ane
   output$tableAll <- renderTable({
     data <- datasetInput2()
-    print(4)
     if (input$SELplottype=="profile" | input$SELplottype=="rose"){
       as.data.frame(
         tableWD(data=data,
@@ -464,6 +469,15 @@ shinyServer(function(input, output) {
     if(input$SELanalysis=="turbulence"){
       plotWD
       #tableWD(data=data, type="turbulence", ane=input$SELane)
+    } else return(NULL)
+  })
+  
+  # table Roughness
+  output$tableRoughness <- renderTable({
+    data <- datasetInput2()
+    if(input$SELanalysis=="roughness"){
+      data <- datasetInput2()
+      tableWD(data=data, type="roughness")
     } else return(NULL)
   })
   

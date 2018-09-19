@@ -91,15 +91,16 @@ tableWD <- function(datawd, ane = NA, var = c("mean"), type = "histogram",
       stop("No se cuenta con informacion diezminutal")
   }
   
+  
   # ane
   if (is.na(ane)[1]) {
-    if (type!="rose") {
+    if (type != "rose" & type !="roughness") {
       stop("The 'ane' parameter is mandatory.")
     } else {
       ane <- datawd[["ane"]][["ane.names"]]
     }
   }
-
+  
   # Control anemometros browser()
   if (is.na(ane[1])) {
     ane.names <- names(datawd$ane)
@@ -122,38 +123,38 @@ tableWD <- function(datawd, ane = NA, var = c("mean"), type = "histogram",
   
   if (type == "histogram") {
     if (by == "none") {
-        dp <- data.frame(mean = datawd$ane[[ane]]$ave)
-        histo <- hist(dp$mean, breaks = seq(0, max(as.numeric(dp$mean), 
-                                                   na.rm = T) + 1, by = binwidth), plot = F)
-        result <- data.frame(Lower = histo$breaks[-length(histo$breaks)], 
-                             Upper = histo$breaks[-1], Freq = histo$counts)
+      dp <- data.frame(mean = datawd$ane[[ane]]$ave)
+      histo <- hist(dp$mean, breaks = seq(0, max(as.numeric(dp$mean), 
+                                                 na.rm = T) + 1, by = binwidth), plot = F)
+      result <- data.frame(Lower = histo$breaks[-length(histo$breaks)], 
+                           Upper = histo$breaks[-1], Freq = histo$counts)
     } else if (by == "month") {
-        dp <- data.frame(mean = datawd$ane[[ane]]$ave, month = month.names[datawd$time$month])
-        histo <- hist(dp$mean, breaks = seq(0, max(as.numeric(dp$mean), 
-                                                   na.rm = T) + 1, by = binwidth), plot = F)
-        breaks <- histo$breaks
-        result <- data.frame(Lower = histo$breaks[-length(histo$breaks)], 
-                                  Upper = histo$breaks[-1])
-        for (m in month.names) {
-          dpm <- subset(dp, month == m)
-          histo <- hist(dpm$mean, breaks = breaks, plot = F)
-          result[m] <- histo$counts
-        }
+      dp <- data.frame(mean = datawd$ane[[ane]]$ave, month = month.names[datawd$time$month])
+      histo <- hist(dp$mean, breaks = seq(0, max(as.numeric(dp$mean), 
+                                                 na.rm = T) + 1, by = binwidth), plot = F)
+      breaks <- histo$breaks
+      result <- data.frame(Lower = histo$breaks[-length(histo$breaks)], 
+                           Upper = histo$breaks[-1])
+      for (m in month.names) {
+        dpm <- subset(dp, month == m)
+        histo <- hist(dpm$mean, breaks = breaks, plot = F)
+        result[m] <- histo$counts
+      }
     } else if (by == "hour") {
-        dp <- data.frame(mean = datawd$ane[[ane]]$ave, hour = factor(hour.names2[floor(datawd$time$hour/2) + 
+      dp <- data.frame(mean = datawd$ane[[ane]]$ave, hour = factor(hour.names2[floor(datawd$time$hour/2) + 
                                                                                  1], levels = hour.names2))
-        histo <- hist(dp$mean, breaks = seq(0, max(as.numeric(dp$mean), 
-                                                   na.rm = T) + 1, by = binwidth), plot = F)
-        breaks <- histo$breaks
-        result <- data.frame(Lower = histo$breaks[-length(histo$breaks)], 
-                                  Upper = histo$breaks[-1])
-        for (h in hour.names2) {
-          dpm <- subset(dp, hour == h)
-          histo <- hist(dpm$mean, breaks = breaks, plot = F)
-          result[h] <- histo$counts
-        }
+      histo <- hist(dp$mean, breaks = seq(0, max(as.numeric(dp$mean), 
+                                                 na.rm = T) + 1, by = binwidth), plot = F)
+      breaks <- histo$breaks
+      result <- data.frame(Lower = histo$breaks[-length(histo$breaks)], 
+                           Upper = histo$breaks[-1])
+      for (h in hour.names2) {
+        dpm <- subset(dp, hour == h)
+        histo <- hist(dpm$mean, breaks = breaks, plot = F)
+        result[h] <- histo$counts
       }
     }
+  }
   else if (type == "rose") {
     dfall <- data.frame()
     j <- switch(var, mean=1, min=2, max=3)
@@ -180,8 +181,8 @@ tableWD <- function(datawd, ane = NA, var = c("mean"), type = "histogram",
       names(dataplot)[names(dataplot)=="freq"]<- "value.start"
     }
     result <- dataplot
-
-   }
+    
+  }
   else if (type == "correlation") {
     if (nane != 2) 
       stop("There must be 2 anemometers to generate a correlation plot.")
@@ -209,20 +210,36 @@ tableWD <- function(datawd, ane = NA, var = c("mean"), type = "histogram",
   }
   else if (type == "boxplot") {
     result <- list()
-      df <- data.frame(hour = datawd$time$hour, day = datawd$time$day, month = datawd$time$month, 
-                       ave = datawd$ane[[ane]]$ave)  
-      a <- tapply(df$ave, df[[by]], summary)
-      desv <- tapply(df$ave, df[[by]], sd, na.rm = TRUE)
-      for (j in 1:length(table(df[by]))) {
-        if (length(a[[j]]) < 7) {
-          a[[j]][7] <- 0
-        }
-      } 
-      result <- data.frame(t(sapply(a, c)), round(desv, 4))
-      colnames(result) <- c("Min", "1st Qu", "Median", "Mean", "3rd Qu.", 
-                                 "Max.", "Nas", "DS")
+    df <- data.frame(hour = datawd$time$hour, day = datawd$time$day, month = datawd$time$month, 
+                     ave = datawd$ane[[ane]]$ave)  
+    a <- tapply(df$ave, df[[by]], summary)
+    desv <- tapply(df$ave, df[[by]], sd, na.rm = TRUE)
+    for (j in 1:length(table(df[by]))) {
+      if (length(a[[j]]) < 7) {
+        a[[j]][7] <- 0
+      }
+    } 
+    result <- data.frame(t(sapply(a, c)), round(desv, 4))
+    colnames(result) <- c("Min", "1st Qu", "Median", "Mean", "3rd Qu.", 
+                          "Max.", "Nas", "DS")
   } 
-  else if (type == "turbulence") {
+  # Roughness
+  else if (type == "roughness") {
+    result <- 
+      datawd$ane[[datawd$ane$ane.names[1]]] %>% 
+      filter(!is.na(ang_16)) %>% 
+      group_by(ang_16) %>% 
+      summarize(u1 = mean(ave, na.rm = T)) %>% 
+      mutate(h1 = datawd$ane$height[1]) %>% 
+      left_join(
+        datawd$ane[[datawd$ane$ane.names[2]]] %>% 
+          filter(!is.na(ang_16)) %>% 
+          group_by(ang_16) %>% 
+          summarize(u2 = mean(ave, na.rm = T)) %>% 
+          mutate(h2 = datawd$ane$height[2])) %>% 
+      mutate(z0 = exp((u1*log(h2) - u2*log(h1))/(u2-u1))) %>% 
+      as.data.frame()
+  } else if (type == "turbulence") {
     df <- data.frame(ave = datawd[["ane"]][[ane]][["ave"]], sd = datawd[["ane"]][[ane]][["sd"]])
     df$I <- df$sd/df$ave * 100
     df$bin <- floor(df$ave + 0.5)
