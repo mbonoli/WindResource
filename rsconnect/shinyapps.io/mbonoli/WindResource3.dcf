@@ -5,9 +5,9 @@ account: mbonoli
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 449998
-bundleId: 1588909
+bundleId: 1592930
 url: https://mbonoli.shinyapps.io/WindResource3/
-when: 1537151878.77323
+when: 1537329506.95679
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: .gitattributes|.Rbuildignore|DESCRIPTION|NAMESPACE|data/wd.rda|data/wd10.rda|data/wdMtTom.rda|data/wdOlavarria.rda|data/wtgData.rda|shinyapps/mbonoli/.gitignore|doc|man|R
+ignoredFiles: .gitattributes|.Rbuildignore|app.R|DESCRIPTION|NAMESPACE|shinyapps/mbonoli/.gitignore

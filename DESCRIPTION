@@ -11,6 +11,7 @@ Depends:
     grid
 Imports:
     fitdistrplus,
+    dplyr,
     ggplot2,
     data.table,
     googleVis
